@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.softuvo.ipundit.views.CustomLinearLayout
+        android:id="@+id/ll_match_stansing_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/tv_tap_club_match_standing"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_league_name"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@color/colorStandingScreenBackground"
+            android:gravity="center"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/text_size_medium"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorStandingScreenBackground"
+            android:orientation="horizontal"
+            android:weightSum="3"
+            android:paddingEnd="@dimen/pading_small">
+
+            <TextView
+                android:id="@+id/idForLeaguePos"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="0.3"
+                android:gravity="center"
+                android:text="@string/position"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_10sp" />
+
+            <TextView
+                android:id="@+id/idForLeagueClub"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1.12"
+                android:padding="@dimen/pading_small"
+                android:text="@string/club"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_10sp" />
+
+            <TextView
+                android:id="@+id/idForLeagueP"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="0.25"
+                android:gravity="center"
+                android:text="@string/played"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_10sp" />
+
+            <TextView
+                android:id="@+id/idForLeagueW"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="0.25"
+                android:gravity="center"
+                android:text="@string/win"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_10sp" />
+
+            <TextView
+                android:id="@+id/idForLeagueD"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="0.25"
+                android:gravity="center"
+                android:text="@string/draw"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_10sp" />
+
+            <TextView
+                android:id="@+id/idForLeagueL"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="0.25"
+                android:text="@string/loss"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_10sp"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/idforteamGD"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="0.29"
+                android:gravity="center"
+                android:text="@string/goal_differnece"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_10sp" />
+
+            <TextView
+                android:id="@+id/idForTeamPt"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="0.29"
+                android:text="@string/points"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_10sp"
+                android:gravity="center"/>
+        </LinearLayout>
+
+        <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/swiperefresh_standings"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_match_standing_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorMatchScreenBackground" />
+        </android.support.v4.widget.SwipeRefreshLayout>
+    </com.softuvo.ipundit.views.CustomLinearLayout>
+
+    <TextView
+        android:id="@+id/tv_no_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:text="@string/no_data_available"
+        android:textColor="@color/colorWhite"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tv_tap_club_match_standing"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorStandingScreenBackground"
+        android:gravity="center"
+        android:padding="@dimen/margin_2_dp"
+        android:text="@string/tap_club"
+        android:textColor="@color/colorWhite" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar_match_standings"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="31dp"
+        android:visibility="gone" />
+</RelativeLayout>

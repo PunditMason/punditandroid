@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.softuvo.ipundit.views.CustomLinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:Pundit="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ll_main_sports"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/margin_large">
+
+    <ImageView
+        android:id="@+id/imgLogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/app_logo_string"
+        android:src="@drawable/app_logo" />
+
+    <View
+        android:id="@+id/viewHorizontalLine"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:layout_below="@id/imgLogo"
+        android:background="@color/colorWhite"
+        android:layout_marginTop="@dimen/margin_large"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:background="@drawable/round_corner_for_searchview"
+        android:padding="@dimen/pading_small"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:layout_marginTop="@dimen/margin_xlarge"
+        android:focusableInTouchMode="true"
+        android:descendantFocusability="beforeDescendants">
+        <ImageView
+            android:id="@+id/iv_search_icon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/search"
+            android:layout_centerVertical="true"
+            android:padding="@dimen/pading_3dp" />
+        <EditText
+            android:id="@+id/ed_search_game"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/search_game"
+            android:layout_gravity="center"
+            android:background="@null"
+            android:imeOptions="actionDone"
+            android:layout_toEndOf="@+id/iv_search_icon"
+            android:layout_toStartOf="@+id/iv_close_search"
+            android:paddingStart="@dimen/margin_large"/>
+        <ImageView
+            android:id="@+id/iv_close_search"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="@dimen/margin_large"
+            android:src="@drawable/close"
+            android:padding="@dimen/pading_3dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/rl_search_type_container"
+        android:padding="@dimen/pading_3dp"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:visibility="gone"
+        >
+        <Button
+            android:id="@+id/btn_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorWhite"
+            android:layout_alignParentStart="true"
+            android:background="@color/colorMatchScreenHeadingBackground"
+            android:text="@string/user"
+            />
+        <Button
+            android:layout_centerInParent="true"
+            android:id="@+id/btn_team"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorWhite"
+
+            android:background="@color/colorMatchScreenHeadingBackground"
+            android:text="@string/team"
+            />
+        <Button
+            android:id="@+id/btn_sports"
+            android:layout_alignParentEnd="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:textColor="@color/colorPurple"
+            android:background="@color/colorMatchScreenHeadingBackground"
+            android:text="@string/sports"
+            />
+    </RelativeLayout>
+
+    <!--<android.support.v7.widget.SearchView-->
+        <!--android:id="@+id/sv_search_sport"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="@dimen/search_view_height"-->
+        <!--android:layout_below="@+id/viewHorizontalLine"-->
+        <!--android:layout_marginBottom="@dimen/margin_small"-->
+        <!--android:layout_marginTop="@dimen/margin_xlarge"-->
+        <!--android:background="@color/colorWhite"-->
+        <!--Pundit:queryHint="Select Sport / Find Game"/>-->
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swiperefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_game_items"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+    <ProgressBar
+        android:id="@+id/progress_bar_broadcastlistner_mainactivity"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="31dp"
+        android:layout_centerInParent="true"
+        android:visibility="visible"/>
+</com.softuvo.ipundit.views.CustomLinearLayout>

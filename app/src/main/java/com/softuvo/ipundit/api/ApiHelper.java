@@ -1,0 +1,468 @@
+package com.softuvo.ipundit.api;
+
+import com.softuvo.ipundit.R;
+import com.softuvo.ipundit.config.ApiConstants;
+import com.softuvo.ipundit.config.App;
+import com.softuvo.ipundit.models.AboutUsModel;
+import com.softuvo.ipundit.models.BreakingNewsParentModel;
+import com.softuvo.ipundit.models.BroadacstersDetailsModel;
+import com.softuvo.ipundit.models.BroadcastMatchlistModel;
+import com.softuvo.ipundit.models.DataModelBgImg;
+import com.softuvo.ipundit.models.FollowCheckModel;
+import com.softuvo.ipundit.models.FollowUnfollowModel;
+import com.softuvo.ipundit.models.ListnerCountModel;
+import com.softuvo.ipundit.models.LiveBroacastersListModel;
+import com.softuvo.ipundit.models.LiveBroadcstingModel;
+import com.softuvo.ipundit.models.LiveFeedsModel;
+import com.softuvo.ipundit.models.MatchListListnerModel;
+import com.softuvo.ipundit.models.MatchStandingListModel;
+import com.softuvo.ipundit.models.SportsNameModel;
+import com.softuvo.ipundit.models.StandingListeningModel;
+import com.softuvo.ipundit.models.TeamSearchSportsModel;
+import com.softuvo.ipundit.models.TermsAndServicesModel;
+import com.softuvo.ipundit.models.UserDetailsAndMatchDetailsModel;
+import com.softuvo.ipundit.models.UserProfileResponse;
+import com.softuvo.ipundit.models.UserProfileResponseModel;
+import com.softuvo.ipundit.models.UserSearchLeagueModel;
+import com.softuvo.ipundit.models.UserSearchSportsModel;
+
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+public class ApiHelper {
+    private static ApiHelper apiHelper;
+    private ApiService apiservice,apiservices;
+
+    private ApiHelper() {
+
+    }
+
+    public static ApiHelper init() {
+        if (apiHelper == null) {
+            apiHelper = new ApiHelper();
+            apiHelper.initApiService();
+            apiHelper.inItApiService();
+        }
+        return apiHelper;
+    }
+
+    private void initApiService() {
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .build();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(ApiConstants.APP_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(okHttpClient)
+                .build();
+        apiservice = retrofit.create(ApiService.class);
+    }
+
+    private void inItApiService() {
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .build();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(ApiConstants.STAGING_APP_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(okHttpClient)
+                .build();
+        apiservices = retrofit.create(ApiService.class);
+    }
+
+    public void getBackgroundImages(final ApiCallBack<DataModelBgImg> apiCallback) {
+        apiservice.getBackgroundImages().enqueue(new Callback<DataModelBgImg>() {
+            @Override
+            public void onResponse(Call<DataModelBgImg> call, Response<DataModelBgImg> response) {
+                apiCallback.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<DataModelBgImg> call, Throwable t) {
+                apiCallback.onFailure(t.getMessage());
+            }
+        });
+    }
+
+    public void getBreakingNews(final ApiCallBack<BreakingNewsParentModel> apiCallback) {
+        apiservice.getBreakingNews().enqueue(new Callback<BreakingNewsParentModel>() {
+            @Override
+            public void onResponse(Call<BreakingNewsParentModel> call, Response<BreakingNewsParentModel> response) {
+                apiCallback.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<BreakingNewsParentModel> call, Throwable t) {
+                apiCallback.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+
+    public void registerUser(Map map, final ApiCallBack<UserProfileResponse> apiCallback) {
+        apiservice.registerUser(map).enqueue(new Callback<UserProfileResponse>() {
+            @Override
+            public void onResponse(Call<UserProfileResponse> call, Response<UserProfileResponse> response) {
+                apiCallback.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<UserProfileResponse> call, Throwable t) {
+                apiCallback.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+    public void getAboutUs(final ApiCallBack<AboutUsModel> apiCallBack) {
+        apiservice.getAboutUs().enqueue(new Callback<AboutUsModel>() {
+            @Override
+            public void onResponse(Call<AboutUsModel> call, Response<AboutUsModel> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<AboutUsModel> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+    public void getUserDetailsAndMatchDetails(final ApiCallBack<UserDetailsAndMatchDetailsModel> apiCallBack) {
+        apiservice.getUserDetailsAndMatchDetails().enqueue(new Callback<UserDetailsAndMatchDetailsModel>() {
+            @Override
+            public void onResponse(Call<UserDetailsAndMatchDetailsModel> call, Response<UserDetailsAndMatchDetailsModel> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<UserDetailsAndMatchDetailsModel> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+
+    public void getUserProfile(Map map, final ApiCallBack<UserProfileResponseModel> apiCallBack) {
+        apiservice.getUserProfile(map).enqueue(new Callback<UserProfileResponseModel>() {
+            @Override
+            public void onResponse(Call<UserProfileResponseModel> call, Response<UserProfileResponseModel> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<UserProfileResponseModel> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+    public void getTermsAndServices(final ApiCallBack<TermsAndServicesModel> apiCallBack) {
+        apiservice.getTermsAndServices().enqueue(new Callback<TermsAndServicesModel>() {
+            @Override
+            public void onResponse(Call<TermsAndServicesModel> call, Response<TermsAndServicesModel> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<TermsAndServicesModel> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+
+    public void updateUserProfile(Map map, final ApiCallBack<Map> apiCallBack) {
+        apiservice.updateUserProfile(map).enqueue(new Callback<Map>() {
+            @Override
+            public void onResponse(Call<Map> call, Response<Map> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<Map> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+
+    public void getSportsAndLeauges(final ApiCallBack<SportsNameModel> apiCallBack) {
+        apiservice.getSportsAndLeauges().enqueue(new Callback<SportsNameModel>() {
+            @Override
+            public void onResponse(Call<SportsNameModel> call, Response<SportsNameModel> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<SportsNameModel> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+
+    public void getBrodcastMatchList(String stringPath, final ApiCallBack<BroadcastMatchlistModel> apiCallBack) {
+        apiservice.getBrodcastMatchList(stringPath).enqueue(new Callback<BroadcastMatchlistModel>() {
+            @Override
+            public void onResponse(Call<BroadcastMatchlistModel> call, Response<BroadcastMatchlistModel> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<BroadcastMatchlistModel> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+    public void getListnerMatchList(String stringPath, final ApiCallBack<MatchListListnerModel> apiCallBack) {
+        apiservice.getListnerMatchList(stringPath).enqueue(new Callback<MatchListListnerModel>() {
+            @Override
+            public void onResponse(Call<MatchListListnerModel> call, Response<MatchListListnerModel> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<MatchListListnerModel> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+
+    public void getMatchStandingsList(String stringPath, final ApiCallBack<MatchStandingListModel> apiCallBack) {
+        apiservice.getMatchStandingsList(stringPath).enqueue(new Callback<MatchStandingListModel>() {
+            @Override
+            public void onResponse(Call<MatchStandingListModel> call, Response<MatchStandingListModel> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<MatchStandingListModel> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+
+    public void mountOnServer(Map map, final ApiCallBack<LiveBroadcstingModel> apiCallBack) {
+        apiservice.mountOnServer(map).enqueue(new Callback<LiveBroadcstingModel>() {
+            @Override
+            public void onResponse(Call<LiveBroadcstingModel> call, Response<LiveBroadcstingModel> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<LiveBroadcstingModel> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+    public void searchSportsUser(Map map, final ApiCallBack<UserSearchSportsModel> apiCallBack) {
+        apiservices.searchSportsUser(map).enqueue(new Callback<UserSearchSportsModel>() {
+            @Override
+            public void onResponse(Call<UserSearchSportsModel> call, Response<UserSearchSportsModel> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<UserSearchSportsModel> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+    public void searchSportsTeam(Map map, final ApiCallBack<TeamSearchSportsModel> apiCallBack) {
+        apiservices.searchSportsTeam(map).enqueue(new Callback<TeamSearchSportsModel>() {
+            @Override
+            public void onResponse(Call<TeamSearchSportsModel> call, Response<TeamSearchSportsModel> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<TeamSearchSportsModel> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+
+    public void searchLeaguesUser(Map map, final ApiCallBack<UserSearchLeagueModel> apiCallBack) {
+        apiservices.searchLeaguesUser(map).enqueue(new Callback<UserSearchLeagueModel>() {
+            @Override
+            public void onResponse(Call<UserSearchLeagueModel> call, Response<UserSearchLeagueModel> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<UserSearchLeagueModel> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+    public void searchLeaguesTeam(Map map, final ApiCallBack<TeamSearchSportsModel> apiCallBack) {
+        apiservices.searchLeaguesTeam(map).enqueue(new Callback<TeamSearchSportsModel>() {
+            @Override
+            public void onResponse(Call<TeamSearchSportsModel> call, Response<TeamSearchSportsModel> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<TeamSearchSportsModel> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+    public void unmountOnServer(String stringPath, final ApiCallBack<Map> apiCallBack) {
+        apiservice.unmountOnServer(stringPath).enqueue(new Callback<Map>() {
+            @Override
+            public void onResponse(Call<Map> call, Response<Map> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<Map> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+    public void getLiveFeeds(String stringPath, final ApiCallBack<LiveFeedsModel> apiCallBack) {
+        apiservice.getLiveFeeds(stringPath).enqueue(new Callback<LiveFeedsModel>() {
+            @Override
+            public void onResponse(Call<LiveFeedsModel> call, Response<LiveFeedsModel> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<LiveFeedsModel> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+    public void getLiveBroadcastersList(String stringPath, final ApiCallBack<LiveBroacastersListModel> apiCallBack) {
+        apiservice.getLiveBroadcastersList(stringPath).enqueue(new Callback<LiveBroacastersListModel>() {
+            @Override
+            public void onResponse(Call<LiveBroacastersListModel> call, Response<LiveBroacastersListModel> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<LiveBroacastersListModel> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+    public void getTeamStandingsList(String stringPath, final ApiCallBack<StandingListeningModel> apiCallBack) {
+        apiservice.getTeamStandingsList(stringPath).enqueue(new Callback<StandingListeningModel>() {
+            @Override
+            public void onResponse(Call<StandingListeningModel> call, Response<StandingListeningModel> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<StandingListeningModel> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+
+    public void followunfollow(String stringPath, final ApiCallBack<FollowUnfollowModel> apiCallBack) {
+        apiservice.followunfollow(stringPath).enqueue(new Callback<FollowUnfollowModel>() {
+            @Override
+            public void onResponse(Call<FollowUnfollowModel> call, Response<FollowUnfollowModel> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<FollowUnfollowModel> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+    public void getFollowCount(String stringPath, final ApiCallBack<FollowCheckModel> apiCallBack) {
+        apiservice.getFollowCount(stringPath).enqueue(new Callback<FollowCheckModel>() {
+            @Override
+            public void onResponse(Call<FollowCheckModel> call, Response<FollowCheckModel> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<FollowCheckModel> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+    public void getBroadcastersDetails(String stringPath, final ApiCallBack<BroadacstersDetailsModel> apiCallBack) {
+        apiservice.getBroadcastersDetails(stringPath).enqueue(new Callback<BroadacstersDetailsModel>() {
+            @Override
+            public void onResponse(Call<BroadacstersDetailsModel> call, Response<BroadacstersDetailsModel> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<BroadacstersDetailsModel> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+    public void getListnerBroadcastersMainCount(final ApiCallBack<ListnerCountModel> apiCallBack) {
+        apiservice.getListnerBroadcastersMainCount().enqueue(new Callback<ListnerCountModel>() {
+            @Override
+            public void onResponse(Call<ListnerCountModel> call, Response<ListnerCountModel> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<ListnerCountModel> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+    public void getListnerCount(String stringPath, final ApiCallBack<ListnerCountModel> apiCallBack) {
+        apiservice.getListnerCount(stringPath).enqueue(new Callback<ListnerCountModel>() {
+            @Override
+            public void onResponse(Call<ListnerCountModel> call, Response<ListnerCountModel> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<ListnerCountModel> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+    public void unmountListenerOnServer(String stringPath, final ApiCallBack<Map> apiCallBack) {
+        apiservice.unmountListenerOnServer(stringPath).enqueue(new Callback<Map>() {
+            @Override
+            public void onResponse(Call<Map> call, Response<Map> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<Map> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+}
+
