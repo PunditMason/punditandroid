@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--
+    ================================================================================================
+    Common For App
+    ================================================================================================
+    -->
+    <dimen name="margin_1_dp">1dp</dimen>
+    <dimen name="margin_2_dp">2dp</dimen>
+    <dimen name="margin_small">4dp</dimen>
+    <dimen name="margin_small_large">8dp</dimen>
+    <dimen name="margin_large">12dp</dimen>
+    <dimen name="margin_xlarge">16dp</dimen>
+    <dimen name="margin_xxlarge">20dp</dimen>
+    <dimen name="margin_xxxlarge">25dp</dimen>
+    <dimen name="margin_extra_large">50dp</dimen>
+
+
+    <dimen name="pading_3dp">3dp</dimen>
+    <dimen name="pading_small">5dp</dimen>
+    <dimen name="pading_large">10dp</dimen>
+    <dimen name="pading_xxlarge">25dp</dimen>
+
+
+    <dimen name="breaking_news_height">25dp</dimen>
+    <dimen name="breaking_news_width">60dp</dimen>
+
+
+    <dimen name="text_size_small">8sp</dimen>
+    <dimen name="text_size_10sp">10sp</dimen>
+    <dimen name="text_size_11sp">11sp</dimen>
+    <dimen name="text_size_medium">16sp</dimen>
+    <dimen name="text_size_large">20sp</dimen>
+    <dimen name="text_size_xlarge">25sp</dimen>
+    <dimen name="text_sizex_large">40sp</dimen>
+    <dimen name="text_size_xxlarge">90sp</dimen>
+
+    <dimen name="search_view_height">35dp</dimen>
+
+    <dimen name="weekview_height">60dp</dimen>
+
+
+
+
+
+
+
+
+    <!--
+    ================================================================================================
+    Login Activity
+    ================================================================================================
+    -->
+    <dimen name="edit_username_margintop">8dp</dimen>
+
+</resources>

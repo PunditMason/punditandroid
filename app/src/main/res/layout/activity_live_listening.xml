@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.softuvo.ipundit.views.CustomRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:Pundit="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rl_live_listening_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="1"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.27"
+            android:orientation="vertical"
+            android:padding="@dimen/margin_small">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/app_logo_string"
+                android:padding="@dimen/margin_large"
+                android:src="@drawable/app_logo" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <com.softuvo.ipundit.views.CustomTextView
+                    android:id="@+id/txt_match_name_top"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.4"
+                    android:textColor="@color/colorWhite" />
+
+                <com.softuvo.ipundit.views.CustomTextView
+                    android:id="@+id/txt_match_time_top"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.6"
+                    android:textColor="@color/colorWhite"
+                    android:gravity="center"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <com.softuvo.ipundit.views.CustomTextView
+                    android:id="@+id/txt_broadcaster_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.4"
+                    android:textColor="@color/colorWhite" />
+
+                <com.softuvo.ipundit.views.CustomTextView
+                    android:id="@+id/txt_kick_off_Time"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.6"
+                    android:textColor="@color/colorWhite"
+                    android:gravity="center"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.1"
+            android:background="@color/colorTransparent"
+            android:orientation="horizontal"
+            android:padding="@dimen/margin_2_dp"
+            android:layout_marginBottom="@dimen/margin_2_dp"
+            android:weightSum="1">
+
+            <ImageView
+                android:id="@+id/iv_league_logo"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="0.25"
+                android:contentDescription="@string/app_name" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.75"
+                android:orientation="vertical"
+                android:weightSum="1"
+                android:layout_gravity="center">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.5"
+                    android:gravity="end|center_vertical"
+                    android:orientation="horizontal">
+
+                    <com.softuvo.ipundit.views.CustomTextView
+                        android:id="@+id/tv_team1_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:textColor="@color/colorWhite" />
+
+                    <com.softuvo.ipundit.views.CustomTextView
+                        android:id="@+id/tv_team1_score"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:textColor="@color/colorWhite"
+                        android:padding="@dimen/margin_2_dp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.5"
+                    android:gravity="end|center_vertical"
+                    android:orientation="horizontal">
+
+                    <com.softuvo.ipundit.views.CustomTextView
+                        android:id="@+id/tv_team2_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:textColor="@color/colorWhite" />
+
+                    <com.softuvo.ipundit.views.CustomTextView
+                        android:id="@+id/tv_team2_score"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:textColor="@color/colorWhite"
+                        android:padding="@dimen/margin_2_dp"
+                        />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.54"
+            android:layout_marginTop="@dimen/margin_2_dp"
+           >
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_livefeeds_container1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_weight="0.75"
+                />
+            <com.softuvo.ipundit.views.CustomTextView
+                android:id="@+id/tv_no_deta"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_centerInParent="true"
+                android:textColor="@color/colorWhite"
+                android:visibility="gone" />
+            <LinearLayout
+                android:id="@+id/ll_broadcasters_profile"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:orientation="horizontal"
+                android:layout_alignParentBottom="true"
+                android:weightSum="4"
+                android:padding="@dimen/margin_small_large"
+                android:background="@color/colorProfileBg"
+                android:visibility="gone">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/iv_profile_img"
+                    android:layout_width="0dp"
+                    android:layout_height="85dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    Pundit:civ_border_color="@color/colorGray"
+                    Pundit:civ_border_width="@dimen/margin_2_dp"
+                    android:background="@drawable/profile_dummy_image" />
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    >
+                    <com.softuvo.ipundit.views.CustomTextView
+                        android:id="@+id/tv_broadcasters_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorWhite"
+                        android:layout_centerHorizontal="true"
+                        android:padding="@dimen/margin_small"
+                        android:textSize="@dimen/text_size_medium"
+                        android:layout_above="@+id/view_line"
+                        Pundit:fonttextview="@string/helvetica_neue_medium"
+                        />
+                    <View
+                        android:id="@+id/view_line"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/colorGray"
+                        android:layout_above="@+id/ll_followcount"/>
+                    <LinearLayout
+                        android:id="@+id/ll_followcount"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginBottom="@dimen/margin_large"
+                        android:weightSum="1">
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="0.50"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <com.softuvo.ipundit.views.CustomTextView
+                                android:id="@+id/tv_pundits_following_count"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="@string/follower_initial_count"
+                                android:textSize="@dimen/text_size_medium"
+                                android:textColor="@color/colorWhite"
+                                Pundit:fonttextview="@string/helvetica_neue_medium"/>
+
+                            <com.softuvo.ipundit.views.CustomTextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="@string/following_string"
+                                android:textSize="@dimen/text_size_medium"
+                                android:textColor="@color/colorWhite"
+                                android:textStyle="bold"
+                                Pundit:fonttextview="@string/helvetica_neue_medium"/>
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="0.5dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/colorGray" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:layout_weight="0.50"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <com.softuvo.ipundit.views.CustomTextView
+                                android:id="@+id/tv_pundits_follower_count"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="@string/follower_initial_count"
+                                android:textSize="@dimen/text_size_medium"
+                                android:textColor="@color/colorWhite"
+                                Pundit:fonttextview="@string/helvetica_neue_medium"/>
+
+                            <com.softuvo.ipundit.views.CustomTextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:textSize="@dimen/text_size_medium"
+                                android:text="@string/follower_string"
+                                android:textColor="@color/colorWhite"
+                                android:textStyle="bold"
+                                Pundit:fonttextview="@string/helvetica_neue_medium"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </RelativeLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <Button
+                        android:id="@+id/btn_follow_unfollow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:background="@color/colorRed"
+                        android:padding="@dimen/margin_small"
+                        android:text="@string/follow"
+                        android:textColor="@android:color/white" />
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/live_icon"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:layout_gravity="center_horizontal"/>
+                </LinearLayout>
+
+
+            </LinearLayout>
+            <ProgressBar
+                android:id="@+id/progress_bar_live_listen"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="31dp"
+                android:layout_centerInParent="true"
+                android:visibility="gone"/>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/bottum_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight=".11"
+            android:background="@color/colorBlack"
+            android:orientation="horizontal"
+            android:weightSum="5"
+            android:padding="@dimen/margin_small_large">
+            <RelativeLayout
+                android:id="@+id/rl_switch_tile"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/iv_switch_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/switch_user"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/margin_small_large"
+                    android:contentDescription="@string/app_name"/>
+
+                <com.softuvo.ipundit.views.CustomTextView
+                    android:id="@+id/tv_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/iv_switch_icon"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/switch_text"
+                    android:textColor="@color/colorWhite"
+                    Pundit:fonttextview="@string/helvetica_neue_medium"
+                    />
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/rl_share_tile"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/iv_share_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/share_icon"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/margin_small_large"
+                    android:contentDescription="@string/app_name"/>
+
+                <com.softuvo.ipundit.views.CustomTextView
+                    android:id="@+id/tv_share"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/iv_share_icon"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/share_text"
+                    android:textColor="@color/colorWhite"
+                    Pundit:fonttextview="@string/helvetica_neue_medium"
+                    />
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/rl_pundit_tile"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/iv_pundit_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/pundit_icon"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/margin_small_large"
+                    android:contentDescription="@string/app_name"/>
+
+                <com.softuvo.ipundit.views.CustomTextView
+                    android:id="@+id/tv_pundit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/iv_pundit_icon"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/pundit_text"
+                    android:textColor="@color/colorWhite"
+                    Pundit:fonttextview="@string/helvetica_neue_medium"
+                    />
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/rl_chat_tile"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/iv_chat_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/chat_icon"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/margin_small_large"
+                    android:contentDescription="@string/app_name"/>
+
+                <com.softuvo.ipundit.views.CustomTextView
+                    android:id="@+id/tv_chat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/iv_chat_icon"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/chat_text"
+                    android:textColor="@color/colorWhite"
+                    Pundit:fonttextview="@string/helvetica_neue_medium"
+                    />
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/rl_listner_count_tile"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/iv_listners"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/listen_background" />
+
+                <com.softuvo.ipundit.views.CustomTextView
+                    android:id="@+id/tv_listners_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:paddingTop="@dimen/margin_small_large"
+                    android:textSize="@dimen/text_size_10sp"
+                    android:textColor="@color/colorBlack"
+                    Pundit:fonttextview="@string/helvetica_neue_medium" />
+
+            </RelativeLayout>
+        </LinearLayout>
+    </LinearLayout>
+</com.softuvo.ipundit.views.CustomRelativeLayout>

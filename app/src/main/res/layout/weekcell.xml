@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="35dp"
+    android:background="#045597"
+    android:layout_marginLeft="3dp"
+    android:layout_marginRight="3dp"
+    android:layout_weight="7">
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        >
+
+        <TextView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:textSize="16sp"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:id="@+id/sun_txt"
+            android:text="21"
+            android:textStyle="bold"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+
+        >
+
+        <TextView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:layout_centerInParent="true"
+            android:textColor="@android:color/white"
+            android:id="@+id/mon_txt"
+            android:text="21"
+            android:textStyle="bold"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        >
+
+        <TextView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:layout_centerInParent="true"
+            android:textColor="@android:color/white"
+            android:id="@+id/tue_txt"
+            android:text="21"
+            android:textStyle="bold"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+
+        >
+
+        <TextView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:id="@+id/wen_txt"
+            android:layout_centerInParent="true"
+            android:textColor="@android:color/white"
+            android:text="21"
+            android:textStyle="bold"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+
+        >
+
+        <TextView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:layout_centerInParent="true"
+            android:textColor="@android:color/white"
+            android:id="@+id/thu_txt"
+            android:text="21"
+            android:textStyle="bold"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+
+        >
+
+        <TextView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:layout_centerInParent="true"
+            android:textColor="@android:color/white"
+            android:id="@+id/fri_txt"
+            android:text="21"
+            android:textStyle="bold"/>
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        >
+
+        <TextView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:layout_centerInParent="true"
+            android:id="@+id/sat_txt"
+            android:textColor="@android:color/white"
+            android:text="21"
+            android:textStyle="bold"/>
+    </RelativeLayout>
+
+
+
+</LinearLayout>

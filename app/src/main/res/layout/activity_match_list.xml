@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.softuvo.ipundit.views.CustomRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_match_listing_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.softuvo.ipundit.activities.MatchListActivity">
+    <ImageView
+        android:id="@+id/ponditlogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/app_logo_string"
+        android:padding="@dimen/margin_large"
+        android:src="@drawable/app_logo" />
+    <View
+        android:layout_below="@+id/ponditlogo"
+        android:id="@+id/viewHorizontalLine"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/margin_small"
+        android:layout_marginRight="@dimen/margin_small"
+        android:background="#ffffff"/>
+
+    <RelativeLayout
+        android:layout_below="@+id/viewHorizontalLine"
+        android:id="@+id/calender_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_xxlarge"
+        android:layout_marginTop="@dimen/margin_xlarge"
+        android:layout_marginRight="@dimen/margin_xxlarge">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/container"
+            android:contentDescription="@string/app_name">
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="250dp"
+            android:layout_height="40dp">
+            <ImageView
+                android:layout_alignParentStart="true"
+                android:id="@+id/iv_leauge_icon"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_centerVertical="true"
+                android:contentDescription="@string/app_name"
+                android:padding="@dimen/margin_small" />
+            <TextView
+                android:id="@+id/tv_leauge_name"
+                android:layout_width="150dp"
+                android:layout_height="25dp"
+                android:textSize="@dimen/text_size_11sp"
+                android:layout_toEndOf="@+id/iv_leauge_icon"
+                android:layout_centerInParent="true"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:gravity="center"/>
+        </RelativeLayout>
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_below="@id/calender_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="2"
+        android:orientation="vertical">
+        <include layout="@layout/broadcast_match_headings"/>
+        <include layout="@layout/listening_match_headings"/>
+        <RelativeLayout
+            android:layout_weight="1.55"
+            android:id="@+id/tableview"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/colorMatchScreenBackground"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp">
+            <RelativeLayout
+                android:id="@+id/recyclerview_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorMatchScreenBackground">
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_match_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="@string/no_mataches_available"
+                    android:visibility="gone"
+                    android:id="@+id/tv_no_match_message"
+                    android:textColor="@color/colorWhite"/>
+            </RelativeLayout>
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.29"
+            android:layout_marginEnd="@dimen/margin_xxxlarge"
+            android:layout_marginStart="@dimen/margin_xxxlarge">
+            <TextView
+                android:id="@+id/tv_leauge_table_teams"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/league_table_teams"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:background="@color/colorMatchScreenBackground"
+                android:textColor="@color/colorWhite"
+                android:layout_marginTop="@dimen/margin_large"
+                android:layout_marginBottom="@dimen/margin_small_large"/>
+            <com.softuvo.ipundit.views.CustomRelativeLayout
+                android:id="@+id/crl_team_broadcasters_count"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@drawable/round_redcolor_shape"
+                android:layout_alignParentEnd="true"
+                android:visibility="gone"
+                android:layout_margin="@dimen/margin_2_dp">
+
+                <com.softuvo.ipundit.views.CustomTextView
+                    android:id="@+id/tv_team_broadcasters_count"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:textColor="@android:color/white" />
+            </com.softuvo.ipundit.views.CustomRelativeLayout>
+        </RelativeLayout>
+        <LinearLayout
+            android:layout_weight="0.16"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/colorBlack"
+            android:orientation="horizontal"
+            android:layout_marginBottom="@dimen/margin_small">
+            <com.softuvo.ipundit.views.CustomTextView
+                android:layout_width="@dimen/breaking_news_width"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@color/colorBreakingNewsHeader"
+                android:gravity="end|center_vertical"
+                android:padding="2dp"
+                android:text="@string/breaking_news_heading_text"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/text_size_small" />
+
+            <com.softuvo.ipundit.views.CustomTextView
+                android:id="@+id/tv_breaking_news_match_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="start|center"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_small" />
+        </LinearLayout>
+    </LinearLayout>
+    <ProgressBar
+        android:id="@+id/progress_barmatch_list"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="31dp"
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
+
+</com.softuvo.ipundit.views.CustomRelativeLayout>

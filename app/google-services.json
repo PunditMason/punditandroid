@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "608775025693",
+    "firebase_url": "https://pundit-c2abf.firebaseio.com",
+    "project_id": "pundit-c2abf",
+    "storage_bucket": "pundit-c2abf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:608775025693:android:346ff10d4657647a",
+        "android_client_info": {
+          "package_name": "com.softuvo.ipundit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "608775025693-kcpd38qpsjsaqb6icvv6eq776t8j647l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.softuvo.ipundit",
+            "certificate_hash": "8933a87167295a7a5db9734e88b08a20fc823e0c"
+          }
+        },
+        {
+          "client_id": "608775025693-54tm8ljh556elnafgd4lsrkv8d9tc613.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUZE049S_I2Y26Tgxrp_UaEpgOh1sQdX0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "608775025693-54tm8ljh556elnafgd4lsrkv8d9tc613.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

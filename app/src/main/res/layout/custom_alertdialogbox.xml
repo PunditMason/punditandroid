@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/custom_alert_shape">
+
+    <TextView
+        android:id="@+id/tv_terms_and_condition_heading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center|top"
+        android:text="Terms of Service"
+        android:textColor="@color/colorBlack"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/ll_buttoncontainer"
+        android:layout_below="@id/tv_terms_and_condition_heading"
+        android:padding="12dp">
+
+        <TextView
+            android:id="@+id/tv_terms_and_condition_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="false"
+            android:text=""
+            android:textAlignment="gravity"
+            android:textColor="@color/colorBlack"
+            android:textSize="14sp" />
+    </ScrollView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/ll_buttoncontainer"
+        android:background="@color/colorPrivacyPolicyBackground" />
+
+    <LinearLayout
+        android:id="@+id/ll_buttoncontainer"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <Button
+            android:id="@+id/btn_accept"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".5"
+            android:background="@color/colorWhite"
+            android:elevation="@dimen/cardview_default_elevation"
+            android:gravity="center"
+            android:text="@string/accept"
+            android:textColor="@color/colorPrivacyPolicyBackground"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:background="@color/colorPrivacyPolicyBackground" />
+
+        <Button
+            android:id="@+id/btn_decline"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".5"
+            android:background="@color/colorWhite"
+            android:elevation="@dimen/cardview_default_elevation"
+            android:gravity="center"
+            android:text="@string/decline"
+            android:textColor="@color/colorPrivacyPolicyBackground" />
+    </LinearLayout>
+</RelativeLayout>

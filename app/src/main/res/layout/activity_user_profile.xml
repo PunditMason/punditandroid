@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.softuvo.ipundit.views.CustomLinearLayout
+        android:id="@+id/ll_user_profile_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/default_background"
+        android:descendantFocusability="beforeDescendants"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical"
+        android:weightSum="1"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
+
+        <com.softuvo.ipundit.views.CustomRelativeLayout
+            android:id="@+id/rl_blur_profile_pic"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.4">
+
+            <ImageView
+                android:id="@+id/iv_save_profile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:padding="5dp"
+                android:src="@drawable/save_profile" />
+
+            <FrameLayout
+                android:id="@+id/fl_profileImage"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:layout_centerInParent="true">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/iv_profile_img"
+                    android:layout_width="140dp"
+                    android:layout_height="140dp"
+                    android:layout_gravity="center"
+                    app:civ_border_color="@color/colorGray"
+                    app:civ_border_width="@dimen/margin_2_dp"
+                    android:background="@drawable/profile_dummy_image" />
+
+                <ImageView
+                    android:id="@+id/iv_delete_profileImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top|left"
+                    android:src="@drawable/delete_profile" />
+
+                <ImageView
+                    android:id="@+id/iv_edit_profileImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|right"
+                    android:src="@drawable/edit_profile" />
+            </FrameLayout>
+
+            <EditText
+                android:id="@+id/ed_userName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/fl_profileImage"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="5dp"
+                android:background="@android:color/transparent"
+                android:gravity="bottom"
+                android:imeOptions="actionDone"
+                android:textColor="@color/colorWhite"
+                android:textSize="18dp" />
+        </com.softuvo.ipundit.views.CustomRelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.09"
+            android:background="@color/colorGray"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="0.50"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <com.softuvo.ipundit.views.CustomTextView
+                    android:id="@+id/tv_follower_count"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/follower_initial_count"
+                    android:textColor="@color/colorWhite" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/follower_string"
+                    android:textColor="@color/colorWhite" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="3dp"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp"
+                android:background="@color/colorWhite" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="0.50"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <com.softuvo.ipundit.views.CustomTextView
+                    android:id="@+id/tv_following_count"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/follower_initial_count"
+                    android:textColor="@color/colorWhite" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/following_string"
+                    android:textColor="@color/colorWhite" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.56"
+            android:orientation="vertical"
+            android:padding="@dimen/margin_large"
+            android:weightSum="6">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1.8"
+                android:orientation="horizontal"
+                android:weightSum="1">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight=".2"
+                    android:text="@string/bio_string"
+                    android:textColor="@color/colorWhite" />
+
+                <EditText
+                    android:id="@+id/et_userBio"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".8"
+                    android:background="@color/colorTransparent"
+                    android:imeOptions="actionNext"
+                    android:paddingStart="@dimen/margin_small"
+                    android:textColor="@color/colorWhite" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:weightSum="1">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight=".2"
+                    android:text="@string/facebook_string"
+                    android:textColor="@color/colorWhite" />
+
+                <EditText
+                    android:id="@+id/ed_facebook"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".8"
+                    android:background="@color/colorTransparent"
+                    android:maxLines="1"
+                    android:paddingStart="@dimen/margin_small"
+                    android:textColor="@color/colorWhite" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:weightSum="1">
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight=".2"
+                    android:text="@string/twitter_string"
+                    android:textColor="@color/colorWhite" />
+
+                <EditText
+                    android:id="@+id/ed_twitter"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".8"
+                    android:background="@color/colorTransparent"
+                    android:imeOptions="actionNext"
+                    android:maxLines="1"
+                    android:paddingStart="@dimen/margin_small"
+                    android:textColor="@color/colorWhite" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:weightSum="1">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight=".2"
+                    android:text="@string/youtube_string"
+                    android:textColor="@color/colorWhite" />
+
+                <EditText
+                    android:id="@+id/et_youtube"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".8"
+                    android:background="@color/colorTransparent"
+                    android:imeOptions="actionDone"
+                    android:maxLines="1"
+                    android:paddingStart="@dimen/margin_small"
+                    android:textColor="@color/colorWhite" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </com.softuvo.ipundit.views.CustomLinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_bar_user_profile"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+</RelativeLayout>
