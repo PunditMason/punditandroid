@@ -6,9 +6,6 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * Created by softuvo on 20-06-2017.
- */
 
 public class SportsNameModel implements Serializable{
 

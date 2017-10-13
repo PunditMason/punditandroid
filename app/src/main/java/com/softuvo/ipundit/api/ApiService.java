@@ -16,6 +16,7 @@ import com.softuvo.ipundit.models.LoginUserModel;
 import com.softuvo.ipundit.models.MatchListListnerModel;
 import com.softuvo.ipundit.models.MatchStandingListModel;
 import com.softuvo.ipundit.models.ServerAddressModel;
+import com.softuvo.ipundit.models.ServerListenerAddressModel;
 import com.softuvo.ipundit.models.SportsNameModel;
 import com.softuvo.ipundit.models.StandingListeningModel;
 import com.softuvo.ipundit.models.TeamSearchSportsModel;
@@ -26,6 +27,7 @@ import com.softuvo.ipundit.models.UserProfileResponseModel;
 import com.softuvo.ipundit.models.UserSearchLeagueModel;
 import com.softuvo.ipundit.models.UserSearchSportsModel;
 
+import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -138,7 +140,10 @@ interface ApiService {
     @POST(ApiConstants.FOLLOW_NOTIFICATION)
     Call<Map> followNotification(@Body Map map);
 
-    @GET("{path}/?action=broadcast")
+    @GET("event/live/{path}/?action=broadcast")
     Call<ServerAddressModel> getServerAddress(@Path("path") String stringPath);
+
+    @GET(ApiConstants.LISTENING_URL)
+    Call<List<ServerListenerAddressModel>> getListeningServerAddress();
 
 }

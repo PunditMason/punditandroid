@@ -63,7 +63,7 @@ import static com.softuvo.ipundit.config.AppConstant.USER_NAME;
 public class LiveBroadCastingActivity extends BaseActivity {
     private static Activity mContext;
     private int minutes = 0, seconds = 0;
-    private String strName, strMatchId, strBroadcastName, strBroadcastId, strStream, strAppName, strChannelType, shareUrl, team1Score, team2Score, status,strFollowMsg,Score_team1, Score_team2,team1_id,team2_id;;
+    private String strName, strMatchId, strBroadcastName, strBroadcastId, strStream, strAppName, strChannelType, shareUrl, team1Score, team2Score, status,strFollowMsg,Score_team1, Score_team2,team1_id,team2_id,serverAddress;
     private static R5Stream stream;
     private LiveFeedsAdapter liveFeedsAdapter;
     private static String channelId;
@@ -295,10 +295,11 @@ public class LiveBroadCastingActivity extends BaseActivity {
                 @Override
                 public void onSuccess(ServerAddressModel serverAddressModel) {
                     if(serverAddressModel!=null){
-                        //    serverAddress=serverAddressModel.getServerAddress();
-                        configRedPro();
-                        stream.publish(serverAddressModel.getName(), R5Stream.RecordType.Record);
+                        serverAddress=serverAddressModel.getServerAddress();
                         strStream = serverAddressModel.getName();
+                        configRedPro(serverAddress);
+                        stream.publish(serverAddressModel.getName(), R5Stream.RecordType.Record);
+
                     }
                 }
 
@@ -468,8 +469,8 @@ public class LiveBroadCastingActivity extends BaseActivity {
         }, 0, 10000);
     }
 
-    private void configRedPro() {
-        R5Configuration configuration = new R5Configuration(R5StreamProtocol.RTSP, AppConstant.RED5PRO_SERVER_IP, AppConstant.RED5PRO_SERVER_PORT, AppConstant.RED5PRO_SERVER_APP_NAME, AppConstant.RED5PRO_SERVER_CASHE);
+    private void configRedPro(String serverIP) {
+        R5Configuration configuration = new R5Configuration(R5StreamProtocol.RTSP, serverIP, AppConstant.RED5PRO_SERVER_PORT, AppConstant.RED5PRO_SERVER_APP_NAME, AppConstant.RED5PRO_SERVER_CASHE);
         configuration.setLicenseKey(AppConstant.RED5PRO_LICENSE_KEY);
         configuration.setBundleID(mContext.getPackageName());
         stream = new R5Stream(new R5Connection(configuration));

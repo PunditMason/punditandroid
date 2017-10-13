@@ -18,6 +18,7 @@ import com.softuvo.ipundit.models.LoginUserModel;
 import com.softuvo.ipundit.models.MatchListListnerModel;
 import com.softuvo.ipundit.models.MatchStandingListModel;
 import com.softuvo.ipundit.models.ServerAddressModel;
+import com.softuvo.ipundit.models.ServerListenerAddressModel;
 import com.softuvo.ipundit.models.SportsNameModel;
 import com.softuvo.ipundit.models.StandingListeningModel;
 import com.softuvo.ipundit.models.TeamSearchSportsModel;
@@ -28,6 +29,7 @@ import com.softuvo.ipundit.models.UserProfileResponseModel;
 import com.softuvo.ipundit.models.UserSearchLeagueModel;
 import com.softuvo.ipundit.models.UserSearchSportsModel;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -598,6 +600,20 @@ public class ApiHelper {
             @Override
             public void onFailure(Call<ServerAddressModel> call, Throwable t) {
                 apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+    public void getListeningServerAddress(final ApiCallBack<List<ServerListenerAddressModel>> apiCallback) {
+        apiservices1.getListeningServerAddress().enqueue(new Callback<List<ServerListenerAddressModel>>() {
+            @Override
+            public void onResponse(Call<List<ServerListenerAddressModel>> call, Response<List<ServerListenerAddressModel>> response) {
+                apiCallback.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<List<ServerListenerAddressModel>> call, Throwable t) {
+                apiCallback.onFailure(t.getMessage());
             }
         });
     }
