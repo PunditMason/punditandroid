@@ -17,6 +17,7 @@ import com.softuvo.ipundit.models.LiveFeedsModel;
 import com.softuvo.ipundit.models.LoginUserModel;
 import com.softuvo.ipundit.models.MatchListListnerModel;
 import com.softuvo.ipundit.models.MatchStandingListModel;
+import com.softuvo.ipundit.models.RedFiveProGroupIdModel;
 import com.softuvo.ipundit.models.ServerAddressModel;
 import com.softuvo.ipundit.models.ServerListenerAddressModel;
 import com.softuvo.ipundit.models.SportsNameModel;
@@ -604,8 +605,8 @@ public class ApiHelper {
         });
     }
 
-    public void getListeningServerAddress(final ApiCallBack<List<ServerListenerAddressModel>> apiCallback) {
-        apiservices1.getListeningServerAddress().enqueue(new Callback<List<ServerListenerAddressModel>>() {
+    public void getListeningServerAddress(String stringPath,final ApiCallBack<List<ServerListenerAddressModel>> apiCallback) {
+        apiservices1.getListeningServerAddress(stringPath).enqueue(new Callback<List<ServerListenerAddressModel>>() {
             @Override
             public void onResponse(Call<List<ServerListenerAddressModel>> call, Response<List<ServerListenerAddressModel>> response) {
                 apiCallback.onSuccess(response.body());
@@ -618,6 +619,19 @@ public class ApiHelper {
         });
     }
 
+    public void getRedFiveProGroupId(final ApiCallBack<List<RedFiveProGroupIdModel>> apiCallback) {
+        apiservices1.getRedFiveProGroupId().enqueue(new Callback<List<RedFiveProGroupIdModel>>() {
+            @Override
+            public void onResponse(Call<List<RedFiveProGroupIdModel>> call, Response<List<RedFiveProGroupIdModel>> response) {
+                apiCallback.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<List<RedFiveProGroupIdModel>> call, Throwable t) {
+                apiCallback.onFailure(t.getMessage());
+            }
+        });
+    }
 
 }
 

@@ -21,7 +21,7 @@ public class ApiConstants {
     public static final String PROFILE_IMAGE_BASE_URL = "http://punditsports.com:81/pundit-ios/profileusrimg/";
     public static final String LEAGUE_IMAGE_BASE_URL = "http://punditsports.com:81/pundit-ios/assets/img/league_mark/";
     public static final String SHARE_BASE_URL = "http://punditsports.com:81/play/broadcast/";
-    public static final String LISTENING_URL = "admin/nodegroup/group-b8fc5323-240b-41eb-932b-70e3f1d027b0/node/edge?accessToken=pest8Mmyriad";
+    public static final String GROUP_ID_URL= "admin/nodegroup?accessToken=pest8Mmyriad";
 
 
     public static final String REGISTER_URL = "app/registerUser";

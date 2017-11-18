@@ -318,7 +318,7 @@ public class DashboardActivity extends BaseActivity {
     }
 
     @OnClick(R.id.iv_cross_signin)
-    public void onClickCrossSignIn(){
+    public void onClickCrossSignIn() {
         rlBackgroundSignin.setVisibility(View.GONE);
         rlBackgroundSignin.animate()
                 .translationYBy(rlBackgroundSignin.getHeight())
@@ -331,12 +331,21 @@ public class DashboardActivity extends BaseActivity {
                         rlBackgroundSignin.animate().setListener(null);
                     }
                 });
+        edEmailSignIn.setText("");
+        edPasswordSignIn.setText("");
+        hideKeyboard();
 
     }
 
     @OnClick(R.id.iv_cross_sign_up)
-    public void onClickCrossSignUp(){
+    public void onClickCrossSignUp() {
         llSignupBackground.setVisibility(View.GONE);
+        edEmail.setText("");
+        edName.setText("");
+        edPassword.setText("");
+        edConfirmPassword.setText("");
+        hideKeyboard();
+
     }
     private void loginNewUser(Map map) {
         if (ConnectivityReceivers.isConnected()) {
@@ -369,6 +378,7 @@ public class DashboardActivity extends BaseActivity {
                                     });
                             edEmailSignIn.setText("");
                             edPasswordSignIn.setText("");
+                            hideKeyboard();
 
                         } else if (!(loginUserModel.getResponsestatus().booleanValue())) {
                             SnackbarUtil.showErrorShortSnackbar(mContext, loginUserModel.getMessage());
@@ -504,10 +514,11 @@ public class DashboardActivity extends BaseActivity {
                                         rlBackgroundSignin.animate().setListener(null);
                                     }
                                 });
-
-                    } else {
-                        SnackbarUtil.showErrorLongSnackbar(mContext, map.getMessage().toString());
-
+                        edEmail.setText("");
+                        edName.setText("");
+                        edPassword.setText("");
+                        edConfirmPassword.setText("");
+                        hideKeyboard();
                     }
                 }
 
@@ -522,6 +533,7 @@ public class DashboardActivity extends BaseActivity {
         }
 
     }
+
 
 
     @OnClick(R.id.tv_facebook_login)

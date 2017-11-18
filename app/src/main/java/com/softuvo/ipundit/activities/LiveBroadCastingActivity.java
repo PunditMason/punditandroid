@@ -7,12 +7,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Base64;
-import android.util.Log;
+
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -45,17 +46,14 @@ import com.softuvo.ipundit.views.CustomGifImageView;
 import com.softuvo.ipundit.views.CustomRelativeLayout;
 import com.softuvo.ipundit.views.CustomTextView;
 import com.squareup.picasso.Picasso;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
 import static com.softuvo.ipundit.config.AppConstant.APP_BACKGROUND;
 import static com.softuvo.ipundit.config.AppConstant.USER_ID;
 import static com.softuvo.ipundit.config.AppConstant.USER_NAME;
@@ -63,11 +61,12 @@ import static com.softuvo.ipundit.config.AppConstant.USER_NAME;
 public class LiveBroadCastingActivity extends BaseActivity {
     private static Activity mContext;
     private int minutes = 0, seconds = 0;
-    private String strName, strMatchId, strBroadcastName, strBroadcastId, strStream, strAppName, strChannelType, shareUrl, team1Score, team2Score, status,strFollowMsg,Score_team1, Score_team2,team1_id,team2_id,serverAddress;
+    private String strName, strMatchId, strBroadcastName, strBroadcastId, strStream, strAppName, strChannelType, shareUrl, team1Score, team2Score, status, strFollowMsg, Score_team1, Score_team2, team1_id, team2_id, serverAddress;
     private static R5Stream stream;
     private LiveFeedsAdapter liveFeedsAdapter;
     private static String channelId;
-    private int visible=0;
+    private int visible = 0;
+    private R5Configuration configuration;
 
     @BindView(R.id.rl_live_broadcasting_main)
     CustomRelativeLayout rlLiveBroadcastingMain;
@@ -76,7 +75,7 @@ public class LiveBroadCastingActivity extends BaseActivity {
     CustomTextView tvMatcNameTop;
 
     @BindView(R.id.tv_match_time_top)
-    CustomTextView tvMatchTimeTop;
+    public CustomTextView tvMatchTimeTop;
 
     @BindView(R.id.tv_broadcsaters_name)
     CustomTextView tvBroadcsatersName;
@@ -99,12 +98,10 @@ public class LiveBroadCastingActivity extends BaseActivity {
     @BindView(R.id.tv_team2_score)
     CustomTextView tvTeam2Score;
 
-   /* @BindView(R.id.iv_sharefacebook)
-    ImageView ivShareFacebook;
+    @BindView(R.id.rv_live_feeds)
+    RecyclerView rvLiveFeeds;
 
-    @BindView(R.id.iv_sharetwitter)
-    ImageView ivShareTwitter;
-*/
+
     @BindView(R.id.iv_share)
     ImageView ivShare;
 
@@ -128,9 +125,6 @@ public class LiveBroadCastingActivity extends BaseActivity {
 
     @BindView(R.id.progress_bar_live_broadcasting)
     ProgressBar progressarLiveBroadcasting;
-
-    @BindView(R.id.rv_live_feeds)
-    RecyclerView rvLiveFeeds;
 
     @BindView(R.id.rl_score_board)
     RelativeLayout rlScoreBoard;
@@ -159,6 +153,8 @@ public class LiveBroadCastingActivity extends BaseActivity {
     @BindView(R.id.iv_edit_score)
     ImageView ivEditScore;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -184,8 +180,8 @@ public class LiveBroadCastingActivity extends BaseActivity {
                     tvTeam1nameVsTeam2name.setText(mBrDatum.getTeam1Name() + " Vs " + mBrDatum.getTeam2Name());
                     tvTeam1Name.setText(mBrDatum.getTeam1Name() + ":");
                     tvTeam2Name.setText(mBrDatum.getTeam2Name() + ":");
-                    team1_id=mBrDatum.getTeam1Id();
-                    team2_id=mBrDatum.getTeam2Id();
+                    team1_id = mBrDatum.getTeam1Id();
+                    team2_id = mBrDatum.getTeam2Id();
                     tvTeam1NameEditboard.setText(mBrDatum.getTeam1Name());
                     tvTeam2NameEditboard.setText(mBrDatum.getTeam2Name());
                     strName = mBrDatum.getTeam1Name() + " Vs " + mBrDatum.getTeam2Name() + "-" + AppPreferences.init(mContext).getString(AppConstant.USER_NAME);
@@ -194,7 +190,7 @@ public class LiveBroadCastingActivity extends BaseActivity {
                     strBroadcastId = AppPreferences.init(mContext).getString(AppConstant.USER_ID);
                     strAppName = "live";
                     strChannelType = mUserComingFrom;
-                    strFollowMsg=AppPreferences.init(mContext).getString(USER_NAME)+"is now the live pundit on "+mBrDatum.getTeam1Name() + " Vs " + mBrDatum.getTeam2Name()+", "+"Listen now";
+                    strFollowMsg = AppPreferences.init(mContext).getString(USER_NAME) + "is now the live pundit on " + mBrDatum.getTeam1Name() + " Vs " + mBrDatum.getTeam2Name() + ", " + "Listen now";
                 }
                 getLiveFeedsFromServer(strMatchId);
             } else if ((getIntent().getStringExtra("userComingFrom")).equalsIgnoreCase("matchStandingList")) {
@@ -216,7 +212,7 @@ public class LiveBroadCastingActivity extends BaseActivity {
                     strChannelType = mUserComingFrom;
                     tvNo_DataBr.setVisibility(View.VISIBLE);
                     tvNo_DataBr.setText(R.string.team_talk);
-                    strFollowMsg=AppPreferences.init(mContext).getString(USER_NAME)+"is now the live pundit on "+mBrDatum.getContestantName()+", "+"Listen now";
+                    strFollowMsg = AppPreferences.init(mContext).getString(USER_NAME) + "is now the live pundit on " + mBrDatum.getContestantName() + ", " + "Listen now";
                 }
             }
             if (AppPreferences.init(mContext).getString(AppConstant.LEAGUE_IMAGE_URL) != null && !AppPreferences.init(mContext).getString(AppConstant.LEAGUE_IMAGE_URL).equalsIgnoreCase(""))
@@ -228,6 +224,14 @@ public class LiveBroadCastingActivity extends BaseActivity {
             createMap();
         }
     }
+
+//    private void setupViewPager(ViewPager viewPager, String strMatchId) {
+//        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+//        adapter.addFragment(LiveFeedsFragment.newInstance("Broadcasting", strMatchId), "Overview");
+//        adapter.addFragment(LiveFeedsPlayerFragment.newInstance("Broadcasting", strMatchId), "Lineups");
+//        viewPager.setAdapter(adapter);
+//    }
+
 
     private void setkickofftime() {
         Timer t = new Timer();
@@ -270,7 +274,6 @@ public class LiveBroadCastingActivity extends BaseActivity {
                         channelId = map.getChannelid().toString();
 
 
-
                         getListnerCountData(channelId);
                     } else {
                         progressarLiveBroadcasting.setVisibility(View.GONE);
@@ -289,13 +292,13 @@ public class LiveBroadCastingActivity extends BaseActivity {
             SnackbarUtil.showWarningLongSnackbar(mContext, getResources().getString(R.string.internet_not_connected_text));
     }
 
-    private void getServerAddressData(String StreamName){
+    private void getServerAddressData(String StreamName) {
         if (ConnectivityReceivers.isConnected()) {
             App.getApiHelper().getServerAddress(StreamName, new ApiCallBack<ServerAddressModel>() {
                 @Override
                 public void onSuccess(ServerAddressModel serverAddressModel) {
-                    if(serverAddressModel!=null){
-                        serverAddress=serverAddressModel.getServerAddress();
+                    if (serverAddressModel != null) {
+                        serverAddress = serverAddressModel.getServerAddress();
                         strStream = serverAddressModel.getName();
                         configRedPro(serverAddress);
                         stream.publish(serverAddressModel.getName(), R5Stream.RecordType.Record);
@@ -333,23 +336,29 @@ public class LiveBroadCastingActivity extends BaseActivity {
     }
 
     private void unmountUser() {
-        if (ConnectivityReceivers.isConnected()) {
-            App.getApiHelper().unmountOnServer(channelId, new ApiCallBack<Map>() {
-                @Override
-                public void onSuccess(Map map) {
-                    if (map != null) {
-                        stream.stop();
-                        finish();
+        try {
+            if (ConnectivityReceivers.isConnected()) {
+                App.getApiHelper().unmountOnServer(channelId, new ApiCallBack<Map>() {
+                    @Override
+                    public void onSuccess(Map map) {
+                        if (map != null) {
+                            if(stream != null) {
+                                stream.stop();
+                                finish();
+                            }
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(String message) {
+                    @Override
+                    public void onFailure(String message) {
 //                    SnackbarUtil.showErrorLongSnackbar(mContext, message);
-                }
-            });
-        } else {
-//            SnackbarUtil.showWarningLongSnackbar(mContext, getResources().getString(R.string.internet_not_connected_text));
+                    }
+                });
+            } else {
+                SnackbarUtil.showWarningLongSnackbar(mContext, getResources().getString(R.string.internet_not_connected_text));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -386,7 +395,7 @@ public class LiveBroadCastingActivity extends BaseActivity {
                                 @Override
                                 public void onSuccess(ListnerCountModel listnerCountModel) {
                                     if (listnerCountModel != null)
-                                        tvListnersCount.setText(listnerCountModel.getCount()+"");
+                                        tvListnersCount.setText(listnerCountModel.getCount() + "");
                                 }
 
                                 @Override
@@ -398,9 +407,8 @@ public class LiveBroadCastingActivity extends BaseActivity {
                     });
                 }
             }, 0, 5000);
-        }
-        else{
-            SnackbarUtil.showWarningLongSnackbar(mContext,getResources().getString(R.string.internet_not_connected_text));
+        } else {
+            SnackbarUtil.showWarningLongSnackbar(mContext, getResources().getString(R.string.internet_not_connected_text));
         }
     }
 
@@ -470,12 +478,13 @@ public class LiveBroadCastingActivity extends BaseActivity {
     }
 
     private void configRedPro(String serverIP) {
-        R5Configuration configuration = new R5Configuration(R5StreamProtocol.RTSP, serverIP, AppConstant.RED5PRO_SERVER_PORT, AppConstant.RED5PRO_SERVER_APP_NAME, AppConstant.RED5PRO_SERVER_CASHE);
+        configuration = new R5Configuration(R5StreamProtocol.RTSP, serverIP, AppConstant.RED5PRO_SERVER_PORT, AppConstant.RED5PRO_SERVER_APP_NAME, AppConstant.RED5PRO_SERVER_CASHE);
         configuration.setLicenseKey(AppConstant.RED5PRO_LICENSE_KEY);
         configuration.setBundleID(mContext.getPackageName());
         stream = new R5Stream(new R5Connection(configuration));
         R5Microphone r5Microphone = new R5Microphone();
         stream.attachMic(r5Microphone);
+        r5Microphone.setBitRate(AppConstant.RED5PRO_BIT_RATE);
     }
 
     protected void publish() {
@@ -498,12 +507,13 @@ public class LiveBroadCastingActivity extends BaseActivity {
         followNotificationMessage(mountMap);
 
     }
-    private void followNotificationMessage(Map<String, String> mountMap){
+
+    private void followNotificationMessage(Map<String, String> mountMap) {
         if (ConnectivityReceivers.isConnected()) {
             App.getApiHelper().followNotification(mountMap, new ApiCallBack<Map>() {
                 @Override
                 public void onSuccess(Map map) {
-                    Log.e("sucess",map.toString());
+
                 }
 
                 @Override
@@ -556,10 +566,10 @@ public class LiveBroadCastingActivity extends BaseActivity {
     @OnClick(R.id.rl_share_tile)
     public void onShare() {
         if (ConnectivityReceivers.isConnected()) {
-            String encodedUserId=Base64.encodeToString(AppPreferences.init(mContext).getString(USER_ID).getBytes(), Base64.NO_WRAP);
-            String username=AppPreferences.init(mContext).getString(USER_NAME);
+            String encodedUserId = Base64.encodeToString(AppPreferences.init(mContext).getString(USER_ID).getBytes(), Base64.NO_WRAP);
+            String username = AppPreferences.init(mContext).getString(USER_NAME);
             username = username.replace(" ", "");
-            shareUrl = ApiConstants.SHARE_BASE_URL +username+"-"+encodedUserId;
+            shareUrl = ApiConstants.SHARE_BASE_URL + username + "-" + encodedUserId;
             AppPreferences.init(mContext).putString(AppConstant.User_CURRENT_STATE, "3");
             if (getIntent().getStringExtra("userComingFrom") != null) {
                 if ((getIntent().getStringExtra("userComingFrom")).equalsIgnoreCase("matchList")) {
@@ -577,7 +587,7 @@ public class LiveBroadCastingActivity extends BaseActivity {
             Intent i = new Intent(Intent.ACTION_SEND);
             i.setType("text/plain");
             i.putExtra(Intent.EXTRA_SUBJECT, "Pundit");
-            i.putExtra(Intent.EXTRA_TEXT, shareUrl+"\n"+status);
+            i.putExtra(Intent.EXTRA_TEXT, shareUrl + "\n" + status);
             startActivity(Intent.createChooser(i, "Share Via...."));
         }
 
@@ -624,7 +634,6 @@ public class LiveBroadCastingActivity extends BaseActivity {
 
     public static void stopBroadcastAppBackground() {
         if (stream != null) {
-//            stream.stop();
             if (mContext != null) {
                 new LiveBroadCastingActivity().unmountUser();
                 if (!mContext.isFinishing())
@@ -665,14 +674,14 @@ public class LiveBroadCastingActivity extends BaseActivity {
             mgr.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
         }
     }
+
     @OnClick(R.id.iv_edit_score)
-    public void showScoreBoard(){
-        if(visible==0) {
+    public void showScoreBoard() {
+        if (visible == 0) {
             visible = 1;
             String[] data = new String[20];
-            for(int i=0; i<data.length;i++)
-            {
-                data[i]=String.valueOf(i);
+            for (int i = 0; i < data.length; i++) {
+                data[i] = String.valueOf(i);
             }
             npTeam1Score.setMinValue(0);
             npTeam2Score.setMinValue(0);
@@ -693,8 +702,8 @@ public class LiveBroadCastingActivity extends BaseActivity {
                             rlScoreBoard.animate().setListener(null);
                         }
                     });
-            tvTeam1EditedScore.setText(npTeam1Score.getValue()+"");
-            tvTeam2EditedScore.setText(npTeam2Score.getValue()+"");
+            tvTeam1EditedScore.setText(npTeam1Score.getValue() + "");
+            tvTeam2EditedScore.setText(npTeam2Score.getValue() + "");
             npTeam1Score.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
                 @Override
                 public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
@@ -711,8 +720,8 @@ public class LiveBroadCastingActivity extends BaseActivity {
             });
             Score_team1 = npTeam1Score.getValue() + "";
             Score_team2 = npTeam2Score.getValue() + "";
-        }else if(visible==1){
-            visible=0;
+        } else if (visible == 1) {
+            visible = 0;
             rlLiveBroadcastingMain.setFocusableInTouchMode(true);
             rlScoreBoard.setVisibility(View.GONE);
             rlScoreBoard.animate()
@@ -728,10 +737,11 @@ public class LiveBroadCastingActivity extends BaseActivity {
                     });
         }
     }
+
     @OnClick(R.id.rl_live_broadcasting_main)
-    public void hideScore(){
-        if(visible==1){
-            visible=0;
+    public void hideScore() {
+        if (visible == 1) {
+            visible = 0;
             rlLiveBroadcastingMain.setFocusableInTouchMode(true);
             rlScoreBoard.setVisibility(View.GONE);
             rlScoreBoard.animate()
@@ -750,24 +760,25 @@ public class LiveBroadCastingActivity extends BaseActivity {
 
 
     @OnClick(R.id.tv_done)
-    public void hideScoreBoard(){
+    public void hideScoreBoard() {
         updateTeamsScore();
-            visible=0;
-            rlScoreBoard.setVisibility(View.GONE);
-            rlScoreBoard.animate()
-                    .translationYBy(rlScoreBoard.getHeight())
-                    .translationY(0)
-                    .setDuration(10000)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            super.onAnimationEnd(animation);
-                            rlScoreBoard.animate().setListener(null);
-                        }
-                    });
+        visible = 0;
+        rlScoreBoard.setVisibility(View.GONE);
+        rlScoreBoard.animate()
+                .translationYBy(rlScoreBoard.getHeight())
+                .translationY(0)
+                .setDuration(10000)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        rlScoreBoard.animate().setListener(null);
+                    }
+                });
 
     }
-    private void updateTeamsScore(){
+
+    private void updateTeamsScore() {
         Map<String, String> updateScoreMap = new HashMap<>();
         updateScoreMap.put("match_id", strMatchId);
         updateScoreMap.put("team1_id", team1_id);
@@ -777,7 +788,7 @@ public class LiveBroadCastingActivity extends BaseActivity {
         App.getApiHelper().updateScore(updateScoreMap, new ApiCallBack<Map>() {
             @Override
             public void onSuccess(Map map) {
-                if(map!=null){
+                if (map != null) {
                     if ((map.get("Result")) != null) {
                         tvTeam1Score.setText(((LinkedTreeMap) (map.get("Result"))).get("team1_score").toString());
                         tvTeam2Score.setText(((LinkedTreeMap) (map.get("Result"))).get("team2_score").toString());
@@ -795,9 +806,10 @@ public class LiveBroadCastingActivity extends BaseActivity {
 
 
     }
+
     @OnClick(R.id.rl_chat_tile)
-    public  void onClickChatBroadcast(){
-        SnackbarUtil.showWarningShortSnackbar(mContext,getString(R.string.under_development_message));
+    public void onClickChatBroadcast() {
+        SnackbarUtil.showWarningShortSnackbar(mContext, getString(R.string.under_development_message));
     }
 }
 

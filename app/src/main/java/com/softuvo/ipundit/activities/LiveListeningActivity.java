@@ -38,6 +38,7 @@ import com.softuvo.ipundit.models.ListnerCountModel;
 import com.softuvo.ipundit.models.LiveBroacastersListModel;
 import com.softuvo.ipundit.models.LiveFeedsModel;
 import com.softuvo.ipundit.models.MatchListListnerModel;
+import com.softuvo.ipundit.models.RedFiveProGroupIdModel;
 import com.softuvo.ipundit.models.ServerListenerAddressModel;
 import com.softuvo.ipundit.models.StandingListeningModel;
 import com.softuvo.ipundit.models.TeamSearchSportsModel;
@@ -70,7 +71,7 @@ public class LiveListeningActivity extends BaseActivity {
     private Timer t;
     private static String listenerId;
     private String shareUrl, team1Score, team2Score, matchContenstentId, followUnfoloowPath,
-            getfollowunfollowpath, status, broadcasterId, broadcasterName, channelId, streamName,serverAddress;
+            getfollowunfollowpath, status, broadcasterId, broadcasterName, channelId, streamName,serverAddress,groupID;
     private int followStatus, strMin = 0, strSec = 0, visible = 0;
 
     @BindView(R.id.rl_live_listening_main)
@@ -168,7 +169,7 @@ public class LiveListeningActivity extends BaseActivity {
                     broadcasterId = channel.getBroadcasterId();
                     channelId = channel.getId();
                     streamName = channel.getStreamName();
-                    getServerAddress();
+                    getRed5ProGroupId();
 //                    configRedPro(streamName);
                     getLiveFeedsFromServer(matchContenstentId);
 
@@ -191,7 +192,7 @@ public class LiveListeningActivity extends BaseActivity {
                     broadcasterId = channel.getBroadcasterId();
                     channelId = channel.getId();
                     streamName = channel.getStreamName();
-                    getServerAddress();
+                    getRed5ProGroupId();
 //                    configRedPro(streamName);
                 }
             } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("pundits")) {
@@ -212,7 +213,7 @@ public class LiveListeningActivity extends BaseActivity {
                             broadcasterId = channell.getChannelInfo().get(0).getChannel().getBroadcasterId();
                             channelId = channell.getChannelInfo().get(0).getChannel().getId();
                             streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
-                            getServerAddress();
+                            getRed5ProGroupId();
 //                            configRedPro(streamName);
                             getLiveFeedsFromServer(matchContenstentId);
                         } else if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
@@ -229,7 +230,7 @@ public class LiveListeningActivity extends BaseActivity {
                             tvNoData.setVisibility(View.VISIBLE);
                             tvNoData.setText(R.string.team_talk);
                             streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
-                            getServerAddress();
+                            getRed5ProGroupId();
 //                            configRedPro(streamName);
                         }
                     }
@@ -253,7 +254,7 @@ public class LiveListeningActivity extends BaseActivity {
                             broadcasterId = channel.getBroadcasterId();
                             channelId = channel.getId();
                             streamName = channel.getStreamName();
-                            getServerAddress();
+                            getRed5ProGroupId();
 //                            configRedPro(streamName);
                             getLiveFeedsFromServer(matchContenstentId);
                         } else if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
@@ -270,7 +271,7 @@ public class LiveListeningActivity extends BaseActivity {
                             tvNoData.setVisibility(View.VISIBLE);
                             tvNoData.setText(R.string.team_talk);
                             streamName = channel.getStreamName();
-                            getServerAddress();
+                            getRed5ProGroupId();
 //                            configRedPro(streamName);
                         }
                     }
@@ -293,7 +294,7 @@ public class LiveListeningActivity extends BaseActivity {
                             broadcasterId = channell.getChannelInfo().get(0).getChannel().getBroadcasterId();
                             channelId = channell.getChannelInfo().get(0).getChannel().getId();
                             streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
-                            getServerAddress();
+                            getRed5ProGroupId();
 //                            configRedPro(streamName);
                             getLiveFeedsFromServer(matchContenstentId);
                         } else if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
@@ -310,7 +311,7 @@ public class LiveListeningActivity extends BaseActivity {
                             tvNoData.setVisibility(View.VISIBLE);
                             tvNoData.setText(R.string.team_talk);
                             streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
-                            getServerAddress();
+                            getRed5ProGroupId();
 //                            configRedPro(streamName);
                         }
                     }
@@ -333,7 +334,7 @@ public class LiveListeningActivity extends BaseActivity {
                             broadcasterId = channel.getBroadcasterId();
                             channelId = channel.getId();
                             streamName = channel.getStreamName();
-                            getServerAddress();
+                            getRed5ProGroupId();
 //                            configRedPro(streamName);
                             getLiveFeedsFromServer(matchContenstentId);
                         } else if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
@@ -350,7 +351,7 @@ public class LiveListeningActivity extends BaseActivity {
                             tvNoData.setVisibility(View.VISIBLE);
                             tvNoData.setText(R.string.team_talk);
                             streamName = channel.getStreamName();
-                            getServerAddress();
+                            getRed5ProGroupId();
 //                            configRedPro(streamName);
                         }
                     }
@@ -375,7 +376,7 @@ public class LiveListeningActivity extends BaseActivity {
                             tvNoData.setVisibility(View.VISIBLE);
                             tvNoData.setText(R.string.team_talk);
                             streamName = channel.getStreamName();
-                            getServerAddress();
+                            getRed5ProGroupId();
 //                            configRedPro(streamName);
                         }
                     }
@@ -398,7 +399,7 @@ public class LiveListeningActivity extends BaseActivity {
                             broadcasterId = channell.getChannelInfo().get(0).getChannel().getBroadcasterId();
                             channelId = channell.getChannelInfo().get(0).getChannel().getId();
                             streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
-                            getServerAddress();
+                            getRed5ProGroupId();
 //                            configRedPro(streamName);
                             getLiveFeedsFromServer(matchContenstentId);
                         } else if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
@@ -415,7 +416,7 @@ public class LiveListeningActivity extends BaseActivity {
                             tvNoData.setVisibility(View.VISIBLE);
                             tvNoData.setText(R.string.team_talk);
                             streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
-                            getServerAddress();
+                            getRed5ProGroupId();
 //                            configRedPro(streamName);
                         }
                     }
@@ -437,7 +438,7 @@ public class LiveListeningActivity extends BaseActivity {
                             broadcasterId = channel.getBroadcasterId();
                             channelId = channel.getId();
                             streamName = channel.getStreamName();
-                            getServerAddress();
+                            getRed5ProGroupId();
 //                            configRedPro(streamName);
                             getLiveFeedsFromServer(matchContenstentId);
                         } else if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
@@ -454,7 +455,7 @@ public class LiveListeningActivity extends BaseActivity {
                             tvNoData.setVisibility(View.VISIBLE);
                             tvNoData.setText(R.string.team_talk);
                             streamName = channel.getStreamName();
-                            getServerAddress();
+                            getRed5ProGroupId();
 //                            configRedPro(streamName);
                         }
                     }
@@ -479,7 +480,7 @@ public class LiveListeningActivity extends BaseActivity {
                             tvNoData.setVisibility(View.VISIBLE);
                             tvNoData.setText(R.string.team_talk);
                             streamName = channel.getStreamName();
-                            getServerAddress();
+                            getRed5ProGroupId();
 //                            configRedPro(streamName);
                         }
                     }
@@ -497,27 +498,50 @@ public class LiveListeningActivity extends BaseActivity {
 
     }
 
-    public void getServerAddress(){
-        App.getApiHelper().getListeningServerAddress(new ApiCallBack <List<ServerListenerAddressModel>>() {
+
+    public void getRed5ProGroupId(){
+        App.getApiHelper().getRedFiveProGroupId(new ApiCallBack<List<RedFiveProGroupIdModel>>() {
+            @Override
+            public void onSuccess(List<RedFiveProGroupIdModel> redFiveProGroupIdModels) {
+                if(redFiveProGroupIdModels.get(0).getName()!=null){
+                    groupID=redFiveProGroupIdModels.get(0).getName();
+                    getServerAddress(groupID);
+                }
+            }
+
+            @Override
+            public void onFailure(String message) {
+                Log.e("hello",message);
+            }
+        });
+
+    }
+
+    public void getServerAddress(String groupID) {
+        App.getApiHelper().getListeningServerAddress(groupID,new ApiCallBack<List<ServerListenerAddressModel>>() {
             @Override
             public void onSuccess(List<ServerListenerAddressModel> serverListenerAddressModel) {
-                for(int i=0;i<serverListenerAddressModel.size();i++)
-                    if(serverListenerAddressModel.get(i).getState().equalsIgnoreCase("inservice")){
-                        serverAddress=serverListenerAddressModel.get(i).getAddress();
-                        if(streamName!=null) {
-                            configRedPro(streamName, serverAddress);
-                        }else{
-                            SnackbarUtil.showWarningShortSnackbar(mContext,getResources().getString(R.string.fb_error_message));
+                for (int i = 0; i < serverListenerAddressModel.size(); i++)
+                    if (serverListenerAddressModel.get(i).getState() != null) {
+                        if (serverListenerAddressModel.get(i).getState().equalsIgnoreCase("inservice")) {
+                            if (serverListenerAddressModel.get(i).getAddress() != null)
+                                serverAddress = serverListenerAddressModel.get(i).getAddress();
+                            if (streamName != null) {
+                                configRedPro(streamName, serverAddress);
+                            } else {
+                                SnackbarUtil.showWarningShortSnackbar(mContext, getResources().getString(R.string.fb_error_message));
+                            }
                         }
                     }
             }
 
             @Override
             public void onFailure(String message) {
-
+                Log.e("getserver",message);
             }
         });
     }
+
 
     @OnClick(R.id.rl_switch_tile)
     public void switchBroacaster() {
@@ -1322,21 +1346,27 @@ public class LiveListeningActivity extends BaseActivity {
                             App.getApiHelper().getBroadcastersDetails(matchcontestentId, new ApiCallBack<BroadacstersDetailsModel>() {
                                 @Override
                                 public void onSuccess(BroadacstersDetailsModel broadacstersDetailsModel) {
-                                    if (broadacstersDetailsModel.getChannel().size() == 0) {
-                                        t.cancel();
-                                        broadcasterLeaveDialog();
-                                    } else {
-                                        boolean streamlive = false;
-                                        for (int i = 0; i < broadacstersDetailsModel.getChannel().size(); i++) {
-                                            if ((broadacstersDetailsModel.getChannel().get(i).getStreamName()).equalsIgnoreCase(streamName)) {
-                                                streamlive = true;
-                                                return;
+                                    try {
+                                        if (broadacstersDetailsModel != null && broadacstersDetailsModel.getChannel() != null) {
+                                            if (broadacstersDetailsModel.getChannel().size() == 0) {
+                                                t.cancel();
+                                                broadcasterLeaveDialog();
+                                            } else {
+                                                boolean streamlive = false;
+                                                for (int i = 0; i < broadacstersDetailsModel.getChannel().size(); i++) {
+                                                    if ((broadacstersDetailsModel.getChannel().get(i).getStreamName()).equalsIgnoreCase(streamName)) {
+                                                        streamlive = true;
+                                                        return;
+                                                    }
+                                                }
+                                                if (!streamlive) {
+                                                    t.cancel();
+                                                    broadcasterLeaveDialog();
+                                                }
                                             }
                                         }
-                                        if (!streamlive) {
-                                            t.cancel();
-                                            broadcasterLeaveDialog();
-                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
                                     }
                                 }
 
@@ -1344,6 +1374,8 @@ public class LiveListeningActivity extends BaseActivity {
                                 public void onFailure(String message) {
                                 }
                             });
+                        } else {
+                            SnackbarUtil.showWarningLongSnackbar(mContext, getResources().getString(R.string.internet_not_connected_text));
                         }
                     }
                 });

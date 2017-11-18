@@ -15,6 +15,7 @@ import com.softuvo.ipundit.models.LiveFeedsModel;
 import com.softuvo.ipundit.models.LoginUserModel;
 import com.softuvo.ipundit.models.MatchListListnerModel;
 import com.softuvo.ipundit.models.MatchStandingListModel;
+import com.softuvo.ipundit.models.RedFiveProGroupIdModel;
 import com.softuvo.ipundit.models.ServerAddressModel;
 import com.softuvo.ipundit.models.ServerListenerAddressModel;
 import com.softuvo.ipundit.models.SportsNameModel;
@@ -143,7 +144,10 @@ interface ApiService {
     @GET("event/live/{path}/?action=broadcast")
     Call<ServerAddressModel> getServerAddress(@Path("path") String stringPath);
 
-    @GET(ApiConstants.LISTENING_URL)
-    Call<List<ServerListenerAddressModel>> getListeningServerAddress();
+    @GET("admin/nodegroup/{path}/node/edge?accessToken=pest8Mmyriad")
+    Call<List<ServerListenerAddressModel>> getListeningServerAddress(@Path("path") String stringPath);
+
+    @GET(ApiConstants.GROUP_ID_URL)
+    Call<List<RedFiveProGroupIdModel>> getRedFiveProGroupId();
 
 }
