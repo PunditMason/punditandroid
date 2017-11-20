@@ -10,15 +10,17 @@ import android.widget.TextView;
 
 import com.softuvo.ipundit.R;
 import com.softuvo.ipundit.models.LiveFeedsModel;
+import com.softuvo.ipundit.models.LiveFeedsNewModel;
+import com.softuvo.ipundit.models.PlayerDataModel;
 
 import java.util.List;
 
 public class LiveFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     Context context;
-    List<LiveFeedsModel.Feed> liveFeedsList;
+    List<PlayerDataModel> liveFeedsList;
 
 
-    public LiveFeedsAdapter(Context context, List<LiveFeedsModel.Feed> liveFeedsList) {
+    public LiveFeedsAdapter(Context context, List<PlayerDataModel> liveFeedsList) {
         this.context = context;
         this.liveFeedsList = liveFeedsList;
     }
@@ -31,7 +33,7 @@ public class LiveFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
         LiveFeedsViewHolder holder = (LiveFeedsViewHolder) viewHolder;
-        if (liveFeedsList.get(position) != null) {
+        /*if (liveFeedsList.get(position) != null) {
             if (liveFeedsList.get(position).getType() != null) {
                 if (liveFeedsList.get(position).getType().equalsIgnoreCase("YC")) {
                     holder.tvPlayerNameAndTimeMin.setText(liveFeedsList.get(position).getPlayerName() + ":" + liveFeedsList.get(position).getTimeMin());
@@ -62,6 +64,19 @@ public class LiveFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 holder.tvPlayerNameAndTimeMin.setText(liveFeedsList.get(position).getPlayerOffName() + ":" + liveFeedsList.get(position).getPlayerOnName() + ": " + liveFeedsList.get(position).getTimeMin());
                 holder.liveFeedIcon.setImageResource(R.drawable.substitution_of_player);
             }
+        }*/
+//        if(liveFeedsList.get(0).getGoals().size()>0){
+//            for(int i=0;i<=liveFeedsList.get(0).getGoals().size();i++){
+              //  holder.tvPlayerNameAndTimeMin.setText(liveFeedsList.get(position).getGoal());
+//            }
+
+//        }
+        if(liveFeedsList.get(position).getType().equalsIgnoreCase("Goal")){
+            holder.tvPlayerNameAndTimeMin.setText(liveFeedsList.get(position).getGoal());
+            holder.liveFeedIcon.setImageResource(R.drawable.goal);
+        }else if(liveFeedsList.get(position).getType().equalsIgnoreCase("Substitute")){
+            holder.tvPlayerNameAndTimeMin.setText(liveFeedsList.get(position).getName()+";"+liveFeedsList.get(position).getReplacedby()+": "+liveFeedsList.get(position).getMinute());
+            holder.liveFeedIcon.setImageResource(R.drawable.substitution_of_player);
         }
     }
 

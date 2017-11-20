@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
-
 import com.bumptech.glide.Glide;
 import com.softuvo.ipundit.R;
 import com.softuvo.ipundit.api.ApiCallBack;

@@ -16,6 +16,7 @@
         android:id="@+id/live_feed_icon"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:padding="@dimen/margin_2_dp"/>
+        android:padding="@dimen/margin_2_dp"
+        android:contentDescription="@string/app_name"/>
 
 </RelativeLayout>

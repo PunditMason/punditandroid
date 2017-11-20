@@ -1,6 +1,7 @@
 package com.softuvo.ipundit.activities;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Dialog;
@@ -177,6 +178,7 @@ public class MatchStandingActivity extends BaseActivity {
 
 
     public void openBottomSheet(final MatchStandingListModel.Datum mBrDatum) {
+        @SuppressLint("InflateParams")
         View view = getLayoutInflater().inflate(R.layout.layout_bottom_sheet_fragment, null);
         final Dialog mBottomSheetDialog = new Dialog(mContext, R.style.MaterialDialogSheet);
         mBottomSheetDialog.setContentView(view);
@@ -262,7 +264,7 @@ public class MatchStandingActivity extends BaseActivity {
                     tvTapClubMatchStanding.setText(getString(R.string.tap_club_listen));
                 }
             }
-            swipeDownRefresh = (SwipeRefreshLayout) findViewById(R.id.swiperefresh_standings);
+            swipeDownRefresh =  findViewById(R.id.swiperefresh_standings);
             swipeDownRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {

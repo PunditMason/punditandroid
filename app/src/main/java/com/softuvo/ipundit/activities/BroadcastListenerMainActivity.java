@@ -99,7 +99,7 @@ public class BroadcastListenerMainActivity extends BaseActivity {
         setContentView(R.layout.activity_broadcast_listner_main);
         mContext = BroadcastListenerMainActivity.this;
         ButterKnife.bind(mContext);
-        swipeDownRefresh = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
+        swipeDownRefresh =  findViewById(R.id.swiperefresh);
         swipeDownRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

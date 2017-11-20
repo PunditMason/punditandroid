@@ -50,7 +50,7 @@ public class LiveBroadcastersListActivity extends AppCompatActivity {
         mContext = LiveBroadcastersListActivity.this;
         ButterKnife.bind(mContext);
         checkConnection();
-        swiperefreshLiveBroadcasterList = (SwipeRefreshLayout) findViewById(R.id.swiperefresh_live_broadcaster_list);
+        swiperefreshLiveBroadcasterList = findViewById(R.id.swiperefresh_live_broadcaster_list);
         swiperefreshLiveBroadcasterList.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

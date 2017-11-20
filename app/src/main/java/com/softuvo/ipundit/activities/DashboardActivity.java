@@ -65,8 +65,11 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -318,7 +321,7 @@ public class DashboardActivity extends BaseActivity {
     }
 
     @OnClick(R.id.iv_cross_signin)
-    public void onClickCrossSignIn(){
+    public void onClickCrossSignIn() {
         rlBackgroundSignin.setVisibility(View.GONE);
         rlBackgroundSignin.animate()
                 .translationYBy(rlBackgroundSignin.getHeight())
@@ -331,13 +334,23 @@ public class DashboardActivity extends BaseActivity {
                         rlBackgroundSignin.animate().setListener(null);
                     }
                 });
+        edEmailSignIn.setText("");
+        edPasswordSignIn.setText("");
+        hideKeyboard();
 
     }
 
     @OnClick(R.id.iv_cross_sign_up)
-    public void onClickCrossSignUp(){
+    public void onClickCrossSignUp() {
         llSignupBackground.setVisibility(View.GONE);
+        edEmail.setText("");
+        edName.setText("");
+        edPassword.setText("");
+        edConfirmPassword.setText("");
+        hideKeyboard();
+
     }
+
     private void loginNewUser(Map map) {
         if (ConnectivityReceivers.isConnected()) {
             App.getApiHelper().loginUser(map, new ApiCallBack<LoginUserModel>() {
@@ -359,7 +372,7 @@ public class DashboardActivity extends BaseActivity {
                             rlBackgroundSignin.animate()
                                     .translationYBy(rlBackgroundSignin.getHeight())
                                     .translationY(0)
-                                    .setDuration(10000)
+                                    .setDuration(20000)
                                     .setListener(new AnimatorListenerAdapter() {
                                         @Override
                                         public void onAnimationEnd(Animator animation) {
@@ -369,6 +382,7 @@ public class DashboardActivity extends BaseActivity {
                                     });
                             edEmailSignIn.setText("");
                             edPasswordSignIn.setText("");
+                            hideKeyboard();
 
                         } else if (!(loginUserModel.getResponsestatus().booleanValue())) {
                             SnackbarUtil.showErrorShortSnackbar(mContext, loginUserModel.getMessage());
@@ -399,13 +413,12 @@ public class DashboardActivity extends BaseActivity {
         View forgotPasswordView = layoutInflater.inflate(R.layout.forgot_password_alert_dialog, null);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(DashboardActivity.this);
         alertDialogBuilder.setView(forgotPasswordView);
-        final EditText emailForgotPassword = (EditText) forgotPasswordView.findViewById(R.id.ed_email_forgot_pssword);
-        // setup a dialog window
+        final EditText emailForgotPassword = forgotPasswordView.findViewById(R.id.ed_email_forgot_pssword);
         alertDialogBuilder.setCancelable(false)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, int id) {
                         if (emailForgotPassword.getText().toString().equalsIgnoreCase("")) {
-                            SnackbarUtil.showWarningShortSnackbar(mContext,getResources().getString(R.string.fields_error_message));
+                            SnackbarUtil.showWarningShortSnackbar(mContext, getResources().getString(R.string.fields_error_message));
                         } else {
                             Map<String, String> forgotpasswordMap = new HashMap<>();
                             forgotpasswordMap.put(ApiConstants.USER_EMAIL, emailForgotPassword.getText().toString());
@@ -504,10 +517,11 @@ public class DashboardActivity extends BaseActivity {
                                         rlBackgroundSignin.animate().setListener(null);
                                     }
                                 });
-
-                    } else {
-                        SnackbarUtil.showErrorLongSnackbar(mContext, map.getMessage().toString());
-
+                        edEmail.setText("");
+                        edName.setText("");
+                        edPassword.setText("");
+                        edConfirmPassword.setText("");
+                        hideKeyboard();
                     }
                 }
 
@@ -675,19 +689,20 @@ public class DashboardActivity extends BaseActivity {
                 @Override
                 public void onCompleted(JSONObject object, GraphResponse response) {
                     try {
-                        if (object.has("id"))
-                            userId = object.getString("id");
-                        if (object.has("first_name"))
-                            userFirstName = (object.getString("first_name"));
-                        if (object.has("last_name"))
-                            userLastName = (object.getString("last_name"));
-                        if (object.has("email"))
-                            userEmail = (object.getString("email"));
-                        else
-                            userEmail = ("");
-
-                        userName = userFirstName + " " + userLastName;
-                        new CallAsncTask().execute("https://graph.facebook.com/" + userId + "/picture?type=large");
+                        if(object!=null) {
+                            if (object.has("id"))
+                                userId = object.getString("id");
+                            if (object.has("first_name"))
+                                userFirstName = (object.getString("first_name"));
+                            if (object.has("last_name"))
+                                userLastName = (object.getString("last_name"));
+                            if (object.has("email"))
+                                userEmail = (object.getString("email"));
+                            else
+                                userEmail = ("");
+                            userName = userFirstName + " " + userLastName;
+                            new CallAsncTask().execute("https://graph.facebook.com/" + userId + "/picture?type=large");
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -753,7 +768,7 @@ public class DashboardActivity extends BaseActivity {
     // Getting News From Servr Every 20 sec.
     private void getNewsFromServer() {
         if (ConnectivityReceivers.isConnected()) {
-            int apiHitTimeInterval = 30000;
+            int apiHitTimeInterval = 40000;
             Timer t = new Timer();
             t.scheduleAtFixedRate(new TimerTask() {
                 @Override
@@ -761,7 +776,7 @@ public class DashboardActivity extends BaseActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            App.getApiHelper().getBreakingNews(new ApiCallBack<BreakingNewsParentModel>() {
+                           /* App.getApiHelper().getBreakingNews(new ApiCallBack<BreakingNewsParentModel>() {
                                 @Override
                                 public void onSuccess(BreakingNewsParentModel breakingNewsParentModel) {
                                     if (breakingNewsParentModel != null) {
@@ -780,6 +795,27 @@ public class DashboardActivity extends BaseActivity {
                                 @Override
                                 public void onFailure(String message) {
                                     SnackbarUtil.showErrorLongSnackbar(mContext, message);
+                                }
+                            });*/
+                            App.getApiHelper().getBreakingNewsList("null", new ApiCallBack<BreakingNewsParentModel>() {
+                                @Override
+                                public void onSuccess(BreakingNewsParentModel breakingNewsParentModel) {
+                                    if (breakingNewsParentModel != null) {
+                                        ArrayList<BreakingNewsDatum> breakingNewsResponse = (ArrayList<BreakingNewsDatum>) breakingNewsParentModel.getData();
+                                        List<String> breakingNews = new ArrayList<>();
+                                        for (int i = 0; i < breakingNewsResponse.size(); i++) {
+                                            if (breakingNewsResponse.get(i).getTitle() != null)
+                                                breakingNews.add(breakingNewsResponse.get(i).getTitle());
+                                        }
+                                        String SubTitle = (breakingNews.toString().replace("[", "").replace("]", "").trim()).replaceAll(",", ". ||   ");
+                                        tvBreakingNews.setText(SubTitle);
+                                        tvBreakingNews.setSelected(true);
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(String message) {
+
                                 }
                             });
                         }

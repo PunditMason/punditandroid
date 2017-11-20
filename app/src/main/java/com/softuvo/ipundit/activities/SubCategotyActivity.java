@@ -108,7 +108,7 @@ public class SubCategotyActivity extends BaseActivity {
 
     private void checkConnection() {
         if (ConnectivityReceivers.isConnected()) {
-            getNewsFromServer();
+               getNewsFromServer();
             setData();
         } else {
             SnackbarUtil.showWarningLongSnackbar(mContext, getResources().getString(R.string.internet_not_connected_text));
@@ -239,7 +239,7 @@ public class SubCategotyActivity extends BaseActivity {
 
     // Getting News From Servr Every 20 sec.
     private void getNewsFromServer() {
-        int apiHitTimeInterval = 20000;
+        int apiHitTimeInterval = 40000;
         Timer t = new Timer();
         t.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -247,7 +247,7 @@ public class SubCategotyActivity extends BaseActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        App.getApiHelper().getBreakingNews(new ApiCallBack<BreakingNewsParentModel>() {
+                       /* App.getApiHelper().getBreakingNews(new ApiCallBack<BreakingNewsParentModel>() {
                             @Override
                             public void onSuccess(BreakingNewsParentModel breakingNewsParentModel) {
                                 if (breakingNewsParentModel != null) {
@@ -266,6 +266,27 @@ public class SubCategotyActivity extends BaseActivity {
                             @Override
                             public void onFailure(String message) {
                                 SnackbarUtil.showErrorLongSnackbar(mContext, message);
+                            }
+                        });*/
+                        App.getApiHelper().getBreakingNewsList("null" , new ApiCallBack<BreakingNewsParentModel>() {
+                            @Override
+                            public void onSuccess(BreakingNewsParentModel breakingNewsParentModel) {
+                                if (breakingNewsParentModel != null) {
+                                    ArrayList<BreakingNewsDatum> breakingNewsResponse = (ArrayList<BreakingNewsDatum>) breakingNewsParentModel.getData();
+                                    List<String> breakingNews = new ArrayList<>();
+                                    for (int i = 0; i < breakingNewsResponse.size(); i++) {
+                                        if (breakingNewsResponse.get(i).getTitle() != null)
+                                            breakingNews.add(breakingNewsResponse.get(i).getTitle());
+                                    }
+                                    String SubTitle = (breakingNews.toString().replace("[", "").replace("]", "").trim()).replaceAll(",", ". ||   ");
+                                    tvSubCatBreakingNews.setText(SubTitle);
+                                    tvSubCatBreakingNews.setSelected(true);
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(String message) {
+
                             }
                         });
                     }
@@ -374,7 +395,7 @@ public class SubCategotyActivity extends BaseActivity {
         edSearchLeague.setText("");
         rlSearchTypeContainer.setVisibility(View.GONE);
         Picasso.with(mContext).load(ApiConstants.PROFILE_IMAGE_BASE_URL + AppPreferences.init(mContext).getString(AppConstant.USER_PROFILE_PIC)).into(ivUserProfileImage);
-        swipeDownRefreshSubCat = (SwipeRefreshLayout) findViewById(R.id.swiperefreshSubcat);
+        swipeDownRefreshSubCat = findViewById(R.id.swiperefreshSubcat);
         swipeDownRefreshSubCat.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

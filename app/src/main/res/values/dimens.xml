@@ -19,6 +19,7 @@
 
     <dimen name="pading_3dp">3dp</dimen>
     <dimen name="pading_small">5dp</dimen>
+    <dimen name="pading_smalll">6dp</dimen>
     <dimen name="pading_large">10dp</dimen>
     <dimen name="pading_xxlarge">25dp</dimen>
 

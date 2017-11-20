@@ -1,6 +1,7 @@
 package com.softuvo.ipundit.activities;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -226,6 +227,7 @@ public class UserProfileActivity extends BaseActivity {
         Map<String, String> profileMap = new HashMap<>();
         profileMap.put(ApiConstants.USER_ID, userId);
         App.getApiHelper().getUserProfile(profileMap, new ApiCallBack<UserProfileResponseModel>() {
+            @SuppressLint("StaticFieldLeak")
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onSuccess(final UserProfileResponseModel userProfileResponseModel) {

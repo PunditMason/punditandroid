@@ -60,12 +60,18 @@ public class MatchListBroadcastAdapter extends RecyclerView.Adapter<RecyclerView
         else
             holder1.team2Score.setText(gameItemList.get(position).getTeam2Score());
         if (gameItemList.get(position).getMatchStatus()!= null) {
-            if (gameItemList.get(position).getMatchStatus().equalsIgnoreCase("Fixture"))
-                holder1.timeInterval.setText(gameItemList.get(position).getMatchStatus());
-            else if (gameItemList.get(position).getMatchStatus().equalsIgnoreCase("Played")) {
+            if (gameItemList.get(position).getMatchStatus().contains("Kick off"))
+                holder1.timeInterval.setText(context.getString(R.string.fixture_string));
+            else if (gameItemList.get(position).getMatchStatus().equalsIgnoreCase("Full Time")) {
                 holder1.timeInterval.setText("FT");
-            } else if (gameItemList.get(position).getMatchStatus().equalsIgnoreCase("Playing")) {
-                holder1.timeInterval.setText(gameItemList.get(position).getMatchLengthMin() + ":" + gameItemList.get(position).getMatchLengthSec());
+            } else if (gameItemList.get(position).getMatchStatus().contains("First Half")||gameItemList.get(position).getMatchStatus().contains("Second Half")) {
+                holder1.timeInterval.setText(context.getString(R.string.playing_String));
+            }
+            else if (gameItemList.get(position).getMatchStatus().equalsIgnoreCase("Match Postponed")) {
+                holder1.timeInterval.setText(context.getString(R.string.postpone_string));
+            }
+            else {
+                holder1.timeInterval.setText("-");
             }
         }
 
