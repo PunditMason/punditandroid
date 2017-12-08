@@ -112,6 +112,9 @@
     <string name="cancel_broadcast_message">Are you sure to stop Broadcasting?</string>
     <string name="start_broadcast_success_msg">You are live now!</string>
     <string name="ft_string">FT</string>
+    <string name="fixture_string">Fixture</string>
+    <string name="playing_String">Playing</string>
+    <string name="postpone_string">Postponed</string>
     <string name="click_name_to_listen_message">Click Name To Listen</string>
     <string name="update_success_scores">Scores Updated Successfully.</string>
     <string name="cancel_listen_title">Stop Listening!</string>
@@ -124,6 +127,9 @@
     <string name="broadcaster_left_message">Broadcaster Left</string>
     <string name="ok">OK</string>
     <string name="done_text">Done</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

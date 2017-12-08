@@ -1,6 +1,7 @@
 package com.softuvo.ipundit.activities;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Dialog;
@@ -44,8 +45,12 @@ import com.softuvo.ipundit.views.CustomRelativeLayout;
 import com.softuvo.ipundit.views.CustomTextView;
 import com.squareup.picasso.Picasso;
 import org.joda.time.LocalDateTime;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -108,7 +113,13 @@ public class MatchListActivity extends BaseActivity implements DatePickerDialog.
         ButterKnife.bind(mContext);
         setData();
         initCal();
-        getNewsFromServer();
+        String[] parts = getIntent().getStringExtra("sportsLeagueId").split("/");
+        String leagueId = parts[parts.length-1];
+        @SuppressLint("SimpleDateFormat")
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        Date date = new Date();
+        String currentDate = dateFormat.format(date);
+        getNewsFromServer(currentDate,leagueId);
     }
 
     @OnClick(R.id.tv_leauge_table_teams)
@@ -288,8 +299,8 @@ public class MatchListActivity extends BaseActivity implements DatePickerDialog.
     }
 
     // Getting News From Servr Every 20 sec.
-    private void getNewsFromServer() {
-        int apiHitTimeInterval = 20000;
+    private void getNewsFromServer(final String currentDate, final String leagueId) {
+        int apiHitTimeInterval = 40000;
         Timer t = new Timer();
         t.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -298,7 +309,7 @@ public class MatchListActivity extends BaseActivity implements DatePickerDialog.
                     @Override
                     public void run() {
                         if (ConnectivityReceivers.isConnected()) {
-                            App.getApiHelper().getBreakingNews(new ApiCallBack<BreakingNewsParentModel>() {
+                           /* App.getApiHelper().getBreakingNews(new ApiCallBack<BreakingNewsParentModel>() {
                                 @Override
                                 public void onSuccess(BreakingNewsParentModel breakingNewsParentModel) {
                                     if (breakingNewsParentModel != null) {
@@ -318,6 +329,27 @@ public class MatchListActivity extends BaseActivity implements DatePickerDialog.
                                 public void onFailure(String message) {
                                     SnackbarUtil.showErrorLongSnackbar(mContext, message);
                                 }
+                            });*/
+                            App.getApiHelper().getBreakingNewsList(leagueId+"/"+currentDate , new ApiCallBack<BreakingNewsParentModel>() {
+                                @Override
+                                public void onSuccess(BreakingNewsParentModel breakingNewsParentModel) {
+                                    if (breakingNewsParentModel != null) {
+                                        ArrayList<BreakingNewsDatum> breakingNewsResponse = (ArrayList<BreakingNewsDatum>) breakingNewsParentModel.getData();
+                                        List<String> breakingNews = new ArrayList<>();
+                                        for (int i = 0; i < breakingNewsResponse.size(); i++) {
+                                            if (breakingNewsResponse.get(i).getTitle() != null)
+                                                breakingNews.add(breakingNewsResponse.get(i).getTitle());
+                                        }
+                                        String SubTitle = (breakingNews.toString().replace("[", "").replace("]", "").trim()).replaceAll(",", ". ||   ");
+                                        tvBreakingNewsMatchList.setText(SubTitle);
+                                        tvBreakingNewsMatchList.setSelected(true);
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(String message) {
+
+                                }
                             });
                         } else {
                             SnackbarUtil.showWarningLongSnackbar(mContext, getResources().getString(R.string.internet_not_connected_text));
@@ -331,6 +363,7 @@ public class MatchListActivity extends BaseActivity implements DatePickerDialog.
     }
 
     public void openBottomSheet(final BroadcastMatchlistModel.Datum mBrDatum) {
+        @SuppressLint("InflateParams")
         View view = getLayoutInflater().inflate(R.layout.layout_bottom_sheet_fragment, null);
         final Dialog mBottomSheetDialog = new Dialog(mContext, R.style.MaterialDialogSheet);
         mBottomSheetDialog.setContentView(view);

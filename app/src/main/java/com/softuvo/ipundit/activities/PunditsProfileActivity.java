@@ -27,7 +27,13 @@ import butterknife.OnClick;
 
 public class PunditsProfileActivity extends BaseActivity {
     private Activity mContext;
-    private String punditsName,profilepic,followingCount,followerCount,punditsBio,live,punditsId,followUnfoloowPath;
+    private String punditsName;
+    private String profilepic;
+    private String followingCount;
+    private String followerCount;
+    private String punditsBio;
+    private String live;
+    private String punditsId;
     private int followStatus;
 
     @BindView(R.id.tv_pundits_name)
@@ -139,10 +145,11 @@ public class PunditsProfileActivity extends BaseActivity {
 
     @OnClick(R.id.iv_follow_me)
     public void buttonFollowUnfollow() {
-        if(AppPreferences.init(mContext).getString(AppConstant.USER_ID)==punditsId){
+        if(AppPreferences.init(mContext).getString(AppConstant.USER_ID).equalsIgnoreCase(punditsId)){
             SnackbarUtil.showWarningShortSnackbar(mContext,getString(R.string.self_follow_text));
             ivFollowMe.setClickable(false);
         } else {
+            String followUnfoloowPath;
             if (followStatus == 0) {
                 ivFollowMe.setImageResource(R.drawable.follow_me);
                 followUnfoloowPath = AppPreferences.init(mContext).getString(AppConstant.USER_ID) + "/" + punditsId;
@@ -168,7 +175,6 @@ public class PunditsProfileActivity extends BaseActivity {
                         } else if (followStatus == 1) {
                             ivFollowMe.setImageResource(R.drawable.unfollow);
                             tvPunditsFollowerCount.setText(followUnfollowModel.getData().getCount().toString());
-
                         }
                     }
                 }

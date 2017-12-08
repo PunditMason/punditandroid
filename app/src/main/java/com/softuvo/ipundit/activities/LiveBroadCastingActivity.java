@@ -6,14 +6,14 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Base64;
-
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -29,16 +29,20 @@ import com.red5pro.streaming.config.R5Configuration;
 import com.red5pro.streaming.source.R5Microphone;
 import com.softuvo.ipundit.R;
 import com.softuvo.ipundit.adapters.LiveFeedsAdapter;
+import com.softuvo.ipundit.adapters.ViewPagerAdapter;
 import com.softuvo.ipundit.api.ApiCallBack;
 import com.softuvo.ipundit.config.ApiConstants;
 import com.softuvo.ipundit.config.App;
 import com.softuvo.ipundit.config.AppConstant;
 import com.softuvo.ipundit.config.AppPreferences;
+import com.softuvo.ipundit.fragments.LiveFeedsFragment;
+import com.softuvo.ipundit.fragments.LiveFeedsPlayerFragment;
 import com.softuvo.ipundit.models.BroadcastMatchlistModel;
 import com.softuvo.ipundit.models.ListnerCountModel;
 import com.softuvo.ipundit.models.LiveBroadcstingModel;
-import com.softuvo.ipundit.models.LiveFeedsModel;
+import com.softuvo.ipundit.models.LiveFeedsNewModel;
 import com.softuvo.ipundit.models.MatchStandingListModel;
+import com.softuvo.ipundit.models.PlayerDataModel;
 import com.softuvo.ipundit.models.ServerAddressModel;
 import com.softuvo.ipundit.receivers.ConnectivityReceivers;
 import com.softuvo.ipundit.utils.SnackbarUtil;
@@ -46,14 +50,17 @@ import com.softuvo.ipundit.views.CustomGifImageView;
 import com.softuvo.ipundit.views.CustomRelativeLayout;
 import com.softuvo.ipundit.views.CustomTextView;
 import com.squareup.picasso.Picasso;
+
 import java.util.HashMap;
-import java.util.List;
+
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
 import static com.softuvo.ipundit.config.AppConstant.APP_BACKGROUND;
 import static com.softuvo.ipundit.config.AppConstant.USER_ID;
 import static com.softuvo.ipundit.config.AppConstant.USER_NAME;
@@ -61,12 +68,10 @@ import static com.softuvo.ipundit.config.AppConstant.USER_NAME;
 public class LiveBroadCastingActivity extends BaseActivity {
     private static Activity mContext;
     private int minutes = 0, seconds = 0;
-    private String strName, strMatchId, strBroadcastName, strBroadcastId, strStream, strAppName, strChannelType, shareUrl, team1Score, team2Score, status, strFollowMsg, Score_team1, Score_team2, team1_id, team2_id, serverAddress;
+    private String strName, strMatchId, strBroadcastName, strBroadcastId, strAppName, strChannelType, strStream,shareUrl,status, strFollowMsg, Score_team1, Score_team2, team1_id, team2_id, serverAddress;
     private static R5Stream stream;
-    private LiveFeedsAdapter liveFeedsAdapter;
     private static String channelId;
     private int visible = 0;
-    private R5Configuration configuration;
 
     @BindView(R.id.rl_live_broadcasting_main)
     CustomRelativeLayout rlLiveBroadcastingMain;
@@ -98,10 +103,12 @@ public class LiveBroadCastingActivity extends BaseActivity {
     @BindView(R.id.tv_team2_score)
     CustomTextView tvTeam2Score;
 
-    @BindView(R.id.rv_live_feeds)
-    RecyclerView rvLiveFeeds;
+    /* @BindView(R.id.iv_sharefacebook)
+     ImageView ivShareFacebook;
 
-
+     @BindView(R.id.iv_sharetwitter)
+     ImageView ivShareTwitter;
+ */
     @BindView(R.id.iv_share)
     ImageView ivShare;
 
@@ -153,7 +160,11 @@ public class LiveBroadCastingActivity extends BaseActivity {
     @BindView(R.id.iv_edit_score)
     ImageView ivEditScore;
 
+    @BindView(R.id.tabs)
+    TabLayout mTabLayout;
 
+    @BindView(R.id.viewpager)
+    ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -192,7 +203,10 @@ public class LiveBroadCastingActivity extends BaseActivity {
                     strChannelType = mUserComingFrom;
                     strFollowMsg = AppPreferences.init(mContext).getString(USER_NAME) + "is now the live pundit on " + mBrDatum.getTeam1Name() + " Vs " + mBrDatum.getTeam2Name() + ", " + "Listen now";
                 }
-                getLiveFeedsFromServer(strMatchId);
+//                getLiveFeedsFromServer(strMatchId);
+                setupViewPager(mViewPager, strMatchId);
+                mViewPager.setOffscreenPageLimit(0);
+                mTabLayout.setupWithViewPager(mViewPager);
             } else if ((getIntent().getStringExtra("userComingFrom")).equalsIgnoreCase("matchStandingList")) {
                 mUserComingFrom = "team";
                 if (getIntent().getSerializableExtra("mBrDatum") != null) {
@@ -225,12 +239,12 @@ public class LiveBroadCastingActivity extends BaseActivity {
         }
     }
 
-//    private void setupViewPager(ViewPager viewPager, String strMatchId) {
-//        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-//        adapter.addFragment(LiveFeedsFragment.newInstance("Broadcasting", strMatchId), "Overview");
-//        adapter.addFragment(LiveFeedsPlayerFragment.newInstance("Broadcasting", strMatchId), "Lineups");
-//        viewPager.setAdapter(adapter);
-//    }
+    private void setupViewPager(ViewPager viewPager, String strMatchId) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(LiveFeedsFragment.newInstance("Broadcasting", strMatchId), "Overview");
+        adapter.addFragment(LiveFeedsPlayerFragment.newInstance("Broadcasting", strMatchId), "Lineups");
+        viewPager.setAdapter(adapter);
+    }
 
 
     private void setkickofftime() {
@@ -272,8 +286,6 @@ public class LiveBroadCastingActivity extends BaseActivity {
                         SnackbarUtil.showSuccessLongSnackbar(mContext, getString(R.string.start_broadcast_success_msg));
                         setkickofftime();
                         channelId = map.getChannelid().toString();
-
-
                         getListnerCountData(channelId);
                     } else {
                         progressarLiveBroadcasting.setVisibility(View.GONE);
@@ -342,10 +354,9 @@ public class LiveBroadCastingActivity extends BaseActivity {
                     @Override
                     public void onSuccess(Map map) {
                         if (map != null) {
-                            if(stream != null) {
+                            if (stream != null)
                                 stream.stop();
-                                finish();
-                            }
+                            finish();
                         }
                     }
 
@@ -412,7 +423,7 @@ public class LiveBroadCastingActivity extends BaseActivity {
         }
     }
 
-    private void getLiveFeedsFromServer(final String matchId) {
+    /*private void getLiveFeedsFromServer(final String matchId) {
         Timer t = new Timer();
         t.scheduleAtFixedRate(new TimerTask() {
 
@@ -422,19 +433,19 @@ public class LiveBroadCastingActivity extends BaseActivity {
                     @Override
                     public void run() {
                         if (ConnectivityReceivers.isConnected()) {
-                            App.getApiHelper().getLiveFeeds(matchId, new ApiCallBack<LiveFeedsModel>() {
+                            App.getApiHelper().getLiveFeedsData(matchId, new ApiCallBack<LiveFeedsNewModel>() {
                                 @Override
-                                public void onSuccess(LiveFeedsModel liveFeedsModel) {
-                                    if (liveFeedsModel != null) {
-                                        if (liveFeedsModel.getMatchinfo().getMatchStatus() != null) {
-                                            if (liveFeedsModel.getMatchinfo().getMatchStatus().equalsIgnoreCase("Fixture")) {
+                                public void onSuccess(LiveFeedsNewModel liveFeedsNewModel) {
+                                    if (liveFeedsNewModel != null) {
+                                        if (liveFeedsNewModel.getMatch() != null) {
+                                           *//* if (liveFeedsModel.getMatchinfo().getMatchStatus().equalsIgnoreCase("Fixture")) {
                                                 tvMatchTimeTop.setText(liveFeedsModel.getMatchinfo().getMatchStatus());
                                             } else if (liveFeedsModel.getMatchinfo().getMatchStatus().equalsIgnoreCase("Played")) {
                                                 tvMatchTimeTop.setText(getString(R.string.ft_string));
                                             } else if (liveFeedsModel.getMatchinfo().getMatchStatus().equalsIgnoreCase("Playing")) {
                                                 tvMatchTimeTop.setText(liveFeedsModel.getMatchinfo().getMatchLengthMin() + ":" + liveFeedsModel.getMatchinfo().getMatchLengthSec());
-                                            }
-                                            if (liveFeedsModel.getMatchinfo().getTeam1Score() == null || liveFeedsModel.getMatchinfo().getTeam1Score().equalsIgnoreCase(""))
+                                            }*//*
+                                           *//* if (liveFeedsNewModel.getMatchinfo().getTeam1Score() == null || liveFeedsModel.getMatchinfo().getTeam1Score().equalsIgnoreCase(""))
                                                 team1Score = "N/A";
                                             else
                                                 team1Score = liveFeedsModel.getMatchinfo().getTeam1Score();
@@ -444,11 +455,61 @@ public class LiveBroadCastingActivity extends BaseActivity {
                                             else
                                                 team2Score = liveFeedsModel.getMatchinfo().getTeam2Score();
                                             tvTeam2Score.setText(team2Score);
-                                            tvTeam1scoreVsTeam2score.setText(team1Score + ":" + team2Score);
-                                            List<LiveFeedsModel.Feed> liveFeedsList = liveFeedsModel.getFeeds();
-                                            if (liveFeedsList.size() > 0) {
+                                            tvTeam1scoreVsTeam2score.setText(team1Score + ":" + team2Score);*//*
+                                            if (liveFeedsNewModel.getMatch().getStatus().contains("Kick off")) {
+                                                tvMatchTimeTop.setText(getString(R.string.fixture_string));
+                                            } else if (liveFeedsNewModel.getMatch().getStatus().equalsIgnoreCase("Full Time")) {
+                                                tvMatchTimeTop.setText(getString(R.string.ft_string));
+                                            } else if (liveFeedsNewModel.getMatch().getStatus().contains("First Half") || liveFeedsNewModel.getMatch().getStatus().contains("Second Half")) {
+                                                tvMatchTimeTop.setText(getString(R.string.playing_String));
+                                            } else {
+                                                tvMatchTimeTop.setText("-");
+                                            }
+                                            if (liveFeedsNewModel.getMatch().getTeams().get(0).getScore() == null)
+                                                team1Score = "N/A";
+                                            else
+                                                team1Score = liveFeedsNewModel.getMatch().getTeams().get(0).getScore();
+                                            tvTeam1Score.setText(team1Score);
+                                            if (liveFeedsNewModel.getMatch().getTeams().get(1).getScore() == null)
+                                                team2Score = "N/A";
+                                            else
+                                                team2Score = liveFeedsNewModel.getMatch().getTeams().get(1).getScore();
+                                            tvTeam2Score.setText(team2Score);
+
+                                            List<PlayerDataModel> playerDataModelsList = new ArrayList<PlayerDataModel>();
+                                            List<LiveFeedsNewModel.Match.Team> liveFeedsList = liveFeedsNewModel.getMatch().getTeams();
+
+                                            for (int i = 0; i < liveFeedsList.size(); i++) {
+                                                if (liveFeedsList.get(i).getGoals() != null) {
+                                                    if (liveFeedsList.get(i).getGoals().size() > 0) {
+                                                        for (int j = 0; j < liveFeedsList.get(i).getGoals().size(); j++) {
+                                                            PlayerDataModel mPlyerListData = new PlayerDataModel();
+                                                            mPlyerListData.setGoal(liveFeedsList.get(i).getGoals().get(j).getGoal());
+                                                            mPlyerListData.setType("Goal");
+                                                            playerDataModelsList.add(mPlyerListData);
+                                                        }
+                                                    }
+                                                }
+                                                if (liveFeedsList.get(i).getPlayers() != null) {
+                                                    if (liveFeedsList.get(i).getPlayers().size() > 0) {
+                                                        for (int j = 0; j < liveFeedsList.get(i).getPlayers().size(); j++) {
+                                                            if (liveFeedsList.get(i).getPlayers().get(j).getSubstitution() != null) {
+                                                                PlayerDataModel mPlyerListData = new PlayerDataModel();
+                                                                mPlyerListData.setName(liveFeedsList.get(i).getPlayers().get(j).getName());
+                                                                mPlyerListData.setType("Substitute");
+                                                                mPlyerListData.setReplacedby(liveFeedsList.get(i).getPlayers().get(j).getSubstitution().getReplacedBy());
+                                                                mPlyerListData.setMinute(liveFeedsList.get(i).getPlayers().get(j).getSubstitution().getMinute());
+                                                                playerDataModelsList.add(mPlyerListData);
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                            }
+
+                                            if (playerDataModelsList.size() > 0) {
                                                 tvNo_DataBr.setVisibility(View.GONE);
-                                                liveFeedsAdapter = new LiveFeedsAdapter(mContext, liveFeedsList);
+                                                liveFeedsAdapter = new LiveFeedsAdapter(mContext, playerDataModelsList);
                                                 rvLiveFeeds.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
                                                 rvLiveFeeds.setAdapter(liveFeedsAdapter);
                                             } else {
@@ -474,11 +535,11 @@ public class LiveBroadCastingActivity extends BaseActivity {
                     }
                 });
             }
-        }, 0, 10000);
-    }
+        }, 0, 20000);
+    }*/
 
     private void configRedPro(String serverIP) {
-        configuration = new R5Configuration(R5StreamProtocol.RTSP, serverIP, AppConstant.RED5PRO_SERVER_PORT, AppConstant.RED5PRO_SERVER_APP_NAME, AppConstant.RED5PRO_SERVER_CASHE);
+        R5Configuration configuration = new R5Configuration(R5StreamProtocol.RTSP, serverIP, AppConstant.RED5PRO_SERVER_PORT, AppConstant.RED5PRO_SERVER_APP_NAME, AppConstant.RED5PRO_SERVER_CASHE);
         configuration.setLicenseKey(AppConstant.RED5PRO_LICENSE_KEY);
         configuration.setBundleID(mContext.getPackageName());
         stream = new R5Stream(new R5Connection(configuration));

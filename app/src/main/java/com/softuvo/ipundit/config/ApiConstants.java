@@ -4,32 +4,29 @@ public class ApiConstants {
     //API URL
 
 
-  /*  public static final String APP_BASE_URL = "http://54.154.252.47/pundit-ios/v1/";
-    public static final String STAGING_APP_BASE_URL = "http://54.154.252.47/pundit-ios/v2/";
-    public static final String RED_FIVE_PRO_URL = "http://54.76.147.237:5080/streammanager/api/2.0/event/live/";
-    public static final String IMAGE_BASE_URL = "http://54.154.252.47/pundit-ios/assets/img/icons/";
-    public static final String PROFILE_IMAGE_BASE_URL = "http://54.154.252.47/pundit-ios/profileusrimg/";
-    public static final String LEAGUE_IMAGE_BASE_URL = "http://54.154.252.47/pundit-ios/assets/img/league_mark/";
-    public static final String SHARE_BASE_URL = "http://54.154.252.47/play/broadcast/";
+   /* public static final String APP_BASE_URL = "http://54.171.92.176/pundit-ios/v1/";
+    public static final String STAGING_APP_BASE_URL = "http://54.171.92.176/pundit-ios/v2/";
+    public static final String IMAGE_BASE_URL = "http://54.171.92.176/pundit-ios/assets/img/icons/";
+    public static final String PROFILE_IMAGE_BASE_URL = "http://54.171.92.176/pundit-ios/profileusrimg/";
+    public static final String LEAGUE_IMAGE_BASE_URL = "http://54.171.92.176/pundit-ios/assets/img/league_mark/";
+    public static final String SHARE_BASE_URL = "http://54.171.92.176/play/broadcast/";
 */
-
-
     public static final String APP_BASE_URL = "http://punditsports.com:81/pundit-ios/v1/";
     public static final String STAGING_APP_BASE_URL = "http://punditsports.com:81/pundit-ios/v2/";
-    public static final String RED_FIVE_PRO_URL = "http://54.76.147.237:5080/streammanager/api/2.0/";
     public static final String IMAGE_BASE_URL = "http://punditsports.com:81/pundit-ios/assets/img/icons/";
     public static final String PROFILE_IMAGE_BASE_URL = "http://punditsports.com:81/pundit-ios/profileusrimg/";
     public static final String LEAGUE_IMAGE_BASE_URL = "http://punditsports.com:81/pundit-ios/assets/img/league_mark/";
     public static final String SHARE_BASE_URL = "http://punditsports.com:81/play/broadcast/";
+
+    public static final String LIVE_FEEDS_BASE_URL="https://www.footballwebpages.co.uk/";
+    public static final String RED_FIVE_PRO_URL = "http://54.76.147.237:5080/streammanager/api/2.0/";
     public static final String GROUP_ID_URL= "admin/nodegroup?accessToken=pest8Mmyriad";
-
-
     public static final String REGISTER_URL = "app/registerUser";
     public static final String LOGIN_URL = "app/login_User";
     public static final String FORGET_PASSWORD = "app/forgotPassword";
     public static final String BREAKING_NEWS_URL = "Game/news";
+    public static final String BREAKING_NEWS_NEW_URL = "Game/getLeaguenewsList/";
     public static final String DASHBOARD_IMAGES_URL = "Game/get_image";
-   // public static final String USER_REGISTER_URL = "app/login";
     public static final String USER_REGISTER_NEW_URL = "App/loginusertoken";
     public static final String ABOUT_US_URL = "Game/get_about";
     public static final String GET_USER_PROFILE_URL = "App/get_profile";

@@ -277,9 +277,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:src="@drawable/cross"
-            android:layout_margin="@dimen/margin_small_large"/>
+            android:layout_margin="@dimen/margin_small_large"
+            android:contentDescription="@string/app_name"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -302,7 +303,6 @@
                     android:layout_marginStart="@dimen/margin_large"
                     android:layout_marginTop="@dimen/margin_xxxlarge"
                     android:text="@string/sign_in"
-
                     android:textColor="@color/colorWhite"
                     android:textSize="@dimen/text_size_xlarge" />
 
@@ -312,7 +312,8 @@
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="@dimen/margin_large"
                     android:layout_marginTop="@dimen/margin_xxxlarge"
-                    android:src="@drawable/pundit_sign" />
+                    android:src="@drawable/pundit_sign"
+                    android:contentDescription="@string/app_name"/>
             </RelativeLayout>
 
             <com.softuvo.ipundit.views.CustomEditText
@@ -321,8 +322,9 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_small_large"
                 android:background="@color/colorWhite"
-                android:drawableRight="@drawable/user"
+                android:drawableEnd="@drawable/user"
                 android:hint="@string/email"
+                android:inputType="textEmailAddress"
                 android:imeOptions="actionNext"
                 android:padding="@dimen/pading_large" />
 
@@ -332,7 +334,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_small_large"
                 android:background="@color/colorWhite"
-                android:drawableRight="@drawable/password"
+                android:drawableEnd="@drawable/password"
                 android:hint="@string/password"
                 android:imeOptions="actionDone"
                 android:inputType="textPassword"
@@ -403,9 +405,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:src="@drawable/cross"
-            android:layout_margin="@dimen/margin_small_large"/>
+            android:layout_margin="@dimen/margin_small_large"
+            android:contentDescription="@string/app_name"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -437,7 +440,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/pundit_sign" />
+                    android:src="@drawable/pundit_sign"
+                    android:contentDescription="@string/app_name"/>
             </RelativeLayout>
 
             <com.softuvo.ipundit.views.CustomEditText
@@ -446,7 +450,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_small_large"
                 android:background="@color/colorWhite"
-                android:drawableRight="@drawable/user"
+                android:drawableEnd="@drawable/user"
                 android:hint="@string/name"
                 android:imeOptions="actionNext"
                 android:padding="@dimen/pading_large" />
@@ -457,8 +461,9 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_small_large"
                 android:background="@color/colorWhite"
-                android:drawableRight="@drawable/user"
+                android:drawableEnd="@drawable/user"
                 android:hint="@string/email"
+                android:inputType="textEmailAddress"
                 android:imeOptions="actionNext"
                 android:padding="@dimen/pading_large" />
 
@@ -468,7 +473,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_small_large"
                 android:background="@color/colorWhite"
-                android:drawableRight="@drawable/password"
+                android:drawableEnd="@drawable/password"
                 android:hint="@string/password"
                 android:imeOptions="actionNext"
                 android:inputType="textPassword"
@@ -480,7 +485,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_small_large"
                 android:background="@color/colorWhite"
-                android:drawableRight="@drawable/password"
+                android:drawableEnd="@drawable/password"
                 android:hint="@string/confirm_password"
                 android:imeOptions="actionDone"
                 android:inputType="textPassword"

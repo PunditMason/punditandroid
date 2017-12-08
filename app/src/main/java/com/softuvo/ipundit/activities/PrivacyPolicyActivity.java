@@ -14,7 +14,6 @@ import butterknife.ButterKnife;
 import static com.softuvo.ipundit.config.AppConstant.APP_BACKGROUND;
 
 public class PrivacyPolicyActivity extends BaseActivity {
-    private Activity mContext;
 
     @BindView(R.id.tv_privacypolicy_content)
     TextView tvPrivacyPolicyContent;
@@ -26,7 +25,7 @@ public class PrivacyPolicyActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_privacy_policy);
-        mContext=PrivacyPolicyActivity.this;
+        Activity mContext = PrivacyPolicyActivity.this;
         ButterKnife.bind(mContext);
         if(AppPreferences.init(mContext).getString(APP_BACKGROUND)!=null)
         Picasso.with(mContext).load(AppPreferences.init(mContext).getString(APP_BACKGROUND)).into(rlPrivacyPolicyMainBackground);

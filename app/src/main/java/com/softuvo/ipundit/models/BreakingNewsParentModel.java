@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class BreakingNewsParentModel {
-    @SerializedName("data")
+    @SerializedName("news")
     @Expose
     private List<BreakingNewsDatum> data = null;
 

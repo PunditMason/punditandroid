@@ -8,6 +8,7 @@ import com.softuvo.ipundit.models.BroadcastMatchlistModel;
 import com.softuvo.ipundit.models.DataModelBgImg;
 import com.softuvo.ipundit.models.FollowCheckModel;
 import com.softuvo.ipundit.models.FollowUnfollowModel;
+import com.softuvo.ipundit.models.LiveFeedsNewModel;
 import com.softuvo.ipundit.models.ListnerCountModel;
 import com.softuvo.ipundit.models.LiveBroacastersListModel;
 import com.softuvo.ipundit.models.LiveBroadcstingModel;
@@ -36,6 +37,7 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 interface ApiService {
 
@@ -78,6 +80,9 @@ interface ApiService {
     @POST(ApiConstants.GET_SPORTS_AND_LEAGUES_URL)
     Call<SportsNameModel> getSportsAndLeauges();
 
+    @POST("Game/getLeaguenewsList/{path}")
+    Call<BreakingNewsParentModel> getBreakingNewsList(@Path(value = "path", encoded = true) String stringPath);
+
     @POST("Game/get_match_list_filter/{path}")
     Call<BroadcastMatchlistModel> getBrodcastMatchList(@Path(value = "path", encoded = true) String stringPath);
 
@@ -110,6 +115,9 @@ interface ApiService {
 
     @POST("Game/getMatchLiveFeedsdata/{path}")
     Call<LiveFeedsModel> getLiveFeeds(@Path(value = "path", encoded = true) String stringPath);
+
+    @POST("match.json")
+    Call<LiveFeedsNewModel> getLiveFeedsData(@Query(value = "match", encoded = true) String stringPath);
 
     @POST("Game/broadcaster_detail/{path}")
     Call<LiveBroacastersListModel> getLiveBroadcastersList(@Path(value = "path", encoded = true) String stringPath);

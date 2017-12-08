@@ -10,6 +10,7 @@ import com.softuvo.ipundit.models.BroadcastMatchlistModel;
 import com.softuvo.ipundit.models.DataModelBgImg;
 import com.softuvo.ipundit.models.FollowCheckModel;
 import com.softuvo.ipundit.models.FollowUnfollowModel;
+import com.softuvo.ipundit.models.LiveFeedsNewModel;
 import com.softuvo.ipundit.models.ListnerCountModel;
 import com.softuvo.ipundit.models.LiveBroacastersListModel;
 import com.softuvo.ipundit.models.LiveBroadcstingModel;
@@ -44,7 +45,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiHelper {
     private static ApiHelper apiHelper;
-    private ApiService apiservice, apiservices, apiservices1;
+    private ApiService apiservice, apiservices, apiservices1,apiServices2;
 
     private ApiHelper() {
 
@@ -56,11 +57,14 @@ public class ApiHelper {
             apiHelper.initApiService();
             apiHelper.inItApiService();
             apiHelper.inItApiServices();
+            apiHelper.inItApiServices1();
         }
         return apiHelper;
     }
 
     private void initApiService() {
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
@@ -74,6 +78,8 @@ public class ApiHelper {
     }
 
     private void inItApiService() {
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
@@ -100,6 +106,22 @@ public class ApiHelper {
                 .client(okHttpClient)
                 .build();
         apiservices1 = retrofit.create(ApiService.class);
+    }
+
+    private void inItApiServices1() {
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .addInterceptor(interceptor)
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .build();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(ApiConstants.LIVE_FEEDS_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(okHttpClient)
+                .build();
+        apiServices2 = retrofit.create(ApiService.class);
     }
 
     public void getBackgroundImages(final ApiCallBack<DataModelBgImg> apiCallback) {
@@ -320,6 +342,20 @@ public class ApiHelper {
         });
     }
 
+    public void getBreakingNewsList(String stringPath, final ApiCallBack<BreakingNewsParentModel> apiCallBack) {
+        apiservice.getBreakingNewsList(stringPath).enqueue(new Callback<BreakingNewsParentModel>() {
+            @Override
+            public void onResponse(Call<BreakingNewsParentModel> call, Response<BreakingNewsParentModel> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<BreakingNewsParentModel> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
     public void getListnerMatchList(String stringPath, final ApiCallBack<MatchListListnerModel> apiCallBack) {
         apiservice.getListnerMatchList(stringPath).enqueue(new Callback<MatchListListnerModel>() {
             @Override
@@ -460,6 +496,20 @@ public class ApiHelper {
 
             @Override
             public void onFailure(Call<LiveFeedsModel> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+    public void getLiveFeedsData(String stringPath, final ApiCallBack<LiveFeedsNewModel> apiCallBack) {
+        apiServices2.getLiveFeedsData(stringPath).enqueue(new Callback<LiveFeedsNewModel>() {
+            @Override
+            public void onResponse(Call<LiveFeedsNewModel> call, Response<LiveFeedsNewModel> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<LiveFeedsNewModel> call, Throwable t) {
                 apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
             }
         });
@@ -632,6 +682,7 @@ public class ApiHelper {
             }
         });
     }
+
 
 }
 

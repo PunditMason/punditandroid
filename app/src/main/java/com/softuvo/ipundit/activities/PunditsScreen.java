@@ -9,7 +9,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
-
 import com.softuvo.ipundit.R;
 import com.softuvo.ipundit.adapters.AllUsersDetailsAdapter;
 import com.softuvo.ipundit.api.ApiCallBack;
@@ -42,7 +41,7 @@ public class PunditsScreen extends BaseActivity {
         mContext = PunditsScreen.this;
         ButterKnife.bind(mContext);
         getUserDetailsList(AppPreferences.init(mContext).getString(AppConstant.USER_ID));
-        swipeDownRefreshUserDetails = (SwipeRefreshLayout) findViewById(R.id.swiperefresh_userdetails);
+        swipeDownRefreshUserDetails =  findViewById(R.id.swiperefresh_userdetails);
         swipeDownRefreshUserDetails.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -68,18 +67,20 @@ public class PunditsScreen extends BaseActivity {
                     progressBarPundits.setVisibility(View.GONE);
                     enableUserIntraction();
                     rvUserDetails.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
-                    final List<UserDetailsAndMatchDetailsModel.UsersList> userDetailsList = userDetailsAndMatchDetailsModel.getUsersList();
-                    allUsersDetailsAdapter = new AllUsersDetailsAdapter(mContext, userDetailsList, new AllUsersDetailsAdapter.ItemClickListener() {
-                        @Override
-                        public void onClick(int position) {
-                            Intent intent =new Intent(mContext,PunditsProfileActivity.class);
-                            intent.putExtra("userComingFrom", "pundits");
-                            intent.putExtra("mUserDatum", userDetailsList.get(position));
-                            startActivity(intent);
-                        }
-                    });
-                    rvUserDetails.setAdapter(allUsersDetailsAdapter);
-                    allUsersDetailsAdapter.notifyDataSetChanged();
+                    if(userDetailsAndMatchDetailsModel!=null) {
+                        final List<UserDetailsAndMatchDetailsModel.UsersList> userDetailsList = userDetailsAndMatchDetailsModel.getUsersList();
+                        allUsersDetailsAdapter = new AllUsersDetailsAdapter(mContext, userDetailsList, new AllUsersDetailsAdapter.ItemClickListener() {
+                            @Override
+                            public void onClick(int position) {
+                                Intent intent = new Intent(mContext, PunditsProfileActivity.class);
+                                intent.putExtra("userComingFrom", "pundits");
+                                intent.putExtra("mUserDatum", userDetailsList.get(position));
+                                startActivity(intent);
+                            }
+                        });
+                        rvUserDetails.setAdapter(allUsersDetailsAdapter);
+                        allUsersDetailsAdapter.notifyDataSetChanged();
+                    }
                 }
 
                 @Override

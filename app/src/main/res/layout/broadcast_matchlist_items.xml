@@ -29,7 +29,7 @@
             android:id="@+id/team_container"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="2"
+            android:layout_weight="1.8"
             android:orientation="vertical">
             <TextView
                 android:id="@+id/tv_first_team"
@@ -73,7 +73,7 @@
             android:id="@+id/tv_time_interval"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.5"
+            android:layout_weight="0.7"
             android:gravity="center"
             android:textColor="@color/colorWhite"
             android:textSize="@dimen/text_size_11sp" />

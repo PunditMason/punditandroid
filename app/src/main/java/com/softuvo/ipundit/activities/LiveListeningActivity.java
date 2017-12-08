@@ -8,6 +8,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,18 +28,23 @@ import com.red5pro.streaming.R5StreamProtocol;
 import com.red5pro.streaming.config.R5Configuration;
 import com.softuvo.ipundit.R;
 import com.softuvo.ipundit.adapters.LiveFeedsAdapter;
+import com.softuvo.ipundit.adapters.ViewPagerAdapter;
 import com.softuvo.ipundit.api.ApiCallBack;
 import com.softuvo.ipundit.config.ApiConstants;
 import com.softuvo.ipundit.config.App;
 import com.softuvo.ipundit.config.AppConstant;
 import com.softuvo.ipundit.config.AppPreferences;
+import com.softuvo.ipundit.fragments.LiveFeedsFragment;
+import com.softuvo.ipundit.fragments.LiveFeedsPlayerFragment;
 import com.softuvo.ipundit.models.BroadacstersDetailsModel;
 import com.softuvo.ipundit.models.FollowCheckModel;
 import com.softuvo.ipundit.models.FollowUnfollowModel;
 import com.softuvo.ipundit.models.ListnerCountModel;
 import com.softuvo.ipundit.models.LiveBroacastersListModel;
 import com.softuvo.ipundit.models.LiveFeedsModel;
+import com.softuvo.ipundit.models.LiveFeedsNewModel;
 import com.softuvo.ipundit.models.MatchListListnerModel;
+import com.softuvo.ipundit.models.PlayerDataModel;
 import com.softuvo.ipundit.models.RedFiveProGroupIdModel;
 import com.softuvo.ipundit.models.ServerListenerAddressModel;
 import com.softuvo.ipundit.models.StandingListeningModel;
@@ -52,6 +59,7 @@ import com.softuvo.ipundit.views.CustomRelativeLayout;
 import com.softuvo.ipundit.views.CustomTextView;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,7 +79,7 @@ public class LiveListeningActivity extends BaseActivity {
     private Timer t;
     private static String listenerId;
     private String shareUrl, team1Score, team2Score, matchContenstentId, followUnfoloowPath,
-            getfollowunfollowpath, status, broadcasterId, broadcasterName, channelId, streamName,serverAddress,groupID;
+            getfollowunfollowpath, status, broadcasterId, broadcasterName, channelId, streamName, serverAddress,groupID;
     private int followStatus, strMin = 0, strSec = 0, visible = 0;
 
     @BindView(R.id.rl_live_listening_main)
@@ -104,9 +112,9 @@ public class LiveListeningActivity extends BaseActivity {
     @BindView(R.id.iv_league_logo)
     ImageView ivLeagueLogo;
 
-    @BindView(R.id.rv_livefeeds_container1)
-    RecyclerView rvLivefeedsContainer;
-
+    /* @BindView(R.id.rv_livefeeds_container1)
+     RecyclerView rvLivefeedsContainer;
+ */
     @BindView(R.id.iv_profile_img)
     ImageView ivProfileImg;
 
@@ -135,6 +143,11 @@ public class LiveListeningActivity extends BaseActivity {
     @BindView(R.id.progress_bar_live_listen)
     ProgressBar progressBarLiveListen;
 
+    @BindView(R.id.tabs)
+    TabLayout mTabLayout;
+
+    @BindView(R.id.viewpager)
+    ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,8 +184,10 @@ public class LiveListeningActivity extends BaseActivity {
                     streamName = channel.getStreamName();
                     getRed5ProGroupId();
 //                    configRedPro(streamName);
-                    getLiveFeedsFromServer(matchContenstentId);
-
+//                    getLiveFeedsFromServer(matchContenstentId);
+                    setupViewPager(mViewPager, matchContenstentId);
+                    mViewPager.setOffscreenPageLimit(0);
+                    mTabLayout.setupWithViewPager(mViewPager);
                 }
             } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("matchStandingListenList")) {
                 if (getIntent().getSerializableExtra("mMatchDatum") != null) {
@@ -215,7 +230,11 @@ public class LiveListeningActivity extends BaseActivity {
                             streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
                             getRed5ProGroupId();
 //                            configRedPro(streamName);
-                            getLiveFeedsFromServer(matchContenstentId);
+//                            getLiveFeedsFromServer(matchContenstentId);
+                            setupViewPager(mViewPager, matchContenstentId);
+                            mViewPager.setOffscreenPageLimit(0);
+                            mTabLayout.setupWithViewPager(mViewPager);
+
                         } else if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
                             channell = (UserDetailsAndMatchDetailsModel.UsersList) getIntent().getSerializableExtra("mUserDatum");
                             matchContenstentId = userDatum.getChannelInfo().get(0).getChannel().getMatchId();
@@ -236,8 +255,7 @@ public class LiveListeningActivity extends BaseActivity {
                     }
 
                 }
-            }
-            else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("punditsSwitch")) {
+            } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("punditsSwitch")) {
                 if (getIntent().getSerializableExtra("mUserDatum") != null) {
                     UserDetailsAndMatchDetailsModel.UsersList userDatum = (UserDetailsAndMatchDetailsModel.UsersList) getIntent().getSerializableExtra("mUserDatum");
                     if (userDatum.getChannelInfo().get(0).getChannel().getMarkImage() != null)
@@ -256,7 +274,10 @@ public class LiveListeningActivity extends BaseActivity {
                             streamName = channel.getStreamName();
                             getRed5ProGroupId();
 //                            configRedPro(streamName);
-                            getLiveFeedsFromServer(matchContenstentId);
+//                            getLiveFeedsFromServer(matchContenstentId);
+                            setupViewPager(mViewPager, matchContenstentId);
+                            mViewPager.setOffscreenPageLimit(0);
+                            mTabLayout.setupWithViewPager(mViewPager);
                         } else if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
                             channel = (LiveBroacastersListModel.Channel) getIntent().getSerializableExtra("mBrListDatum");
                             matchContenstentId = userDatum.getChannelInfo().get(0).getChannel().getMatchId();
@@ -296,7 +317,10 @@ public class LiveListeningActivity extends BaseActivity {
                             streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
                             getRed5ProGroupId();
 //                            configRedPro(streamName);
-                            getLiveFeedsFromServer(matchContenstentId);
+//                            getLiveFeedsFromServer(matchContenstentId);
+                            setupViewPager(mViewPager, matchContenstentId);
+                            mViewPager.setOffscreenPageLimit(0);
+                            mTabLayout.setupWithViewPager(mViewPager);
                         } else if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
                             channell = (UserSearchSportsModel.UserDatum) getIntent().getSerializableExtra("mUserDatum");
                             matchContenstentId = userDatum.getChannelInfo().get(0).getChannel().getMatchId();
@@ -316,8 +340,7 @@ public class LiveListeningActivity extends BaseActivity {
                         }
                     }
                 }
-            }
-            else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("sprotsUserSearchSwitch")) {
+            } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("sprotsUserSearchSwitch")) {
                 if (getIntent().getSerializableExtra("mUserDatum") != null) {
                     UserSearchSportsModel.UserDatum userDatum = (UserSearchSportsModel.UserDatum) getIntent().getSerializableExtra("mUserDatum");
                     if (userDatum.getChannelInfo().get(0).getChannel().getMarkImage() != null)
@@ -336,7 +359,10 @@ public class LiveListeningActivity extends BaseActivity {
                             streamName = channel.getStreamName();
                             getRed5ProGroupId();
 //                            configRedPro(streamName);
-                            getLiveFeedsFromServer(matchContenstentId);
+//                            getLiveFeedsFromServer(matchContenstentId);
+                            setupViewPager(mViewPager, matchContenstentId);
+                            mViewPager.setOffscreenPageLimit(0);
+                            mTabLayout.setupWithViewPager(mViewPager);
                         } else if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
                             channel = (LiveBroacastersListModel.Channel) getIntent().getSerializableExtra("mBrListDatum");
                             matchContenstentId = userDatum.getChannelInfo().get(0).getChannel().getMatchId();
@@ -401,7 +427,10 @@ public class LiveListeningActivity extends BaseActivity {
                             streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
                             getRed5ProGroupId();
 //                            configRedPro(streamName);
-                            getLiveFeedsFromServer(matchContenstentId);
+//                            getLiveFeedsFromServer(matchContenstentId);
+                            setupViewPager(mViewPager, matchContenstentId);
+                            mViewPager.setOffscreenPageLimit(0);
+                            mTabLayout.setupWithViewPager(mViewPager);
                         } else if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
                             channell = (UserSearchLeagueModel.Datum) getIntent().getSerializableExtra("mUserDatum");
                             matchContenstentId = userDatum.getChannelInfo().get(0).getChannel().getMatchId();
@@ -440,7 +469,10 @@ public class LiveListeningActivity extends BaseActivity {
                             streamName = channel.getStreamName();
                             getRed5ProGroupId();
 //                            configRedPro(streamName);
-                            getLiveFeedsFromServer(matchContenstentId);
+//                            getLiveFeedsFromServer(matchContenstentId);
+                            setupViewPager(mViewPager, matchContenstentId);
+                            mViewPager.setOffscreenPageLimit(0);
+                            mTabLayout.setupWithViewPager(mViewPager);
                         } else if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
                             channel = (LiveBroacastersListModel.Channel) getIntent().getSerializableExtra("mBrListDatum");
                             matchContenstentId = userDatum.getChannelInfo().get(0).getChannel().getMatchId();
@@ -460,7 +492,7 @@ public class LiveListeningActivity extends BaseActivity {
                         }
                     }
                 }
-            }else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("leaguesTeamSearch")) {
+            } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("leaguesTeamSearch")) {
                 if (getIntent().getSerializableExtra("mTeamSearchDatum") != null) {
                     TeamSearchSportsModel.Datum teamDatum = (TeamSearchSportsModel.Datum) getIntent().getSerializableExtra("mTeamSearchDatum");
                     if (teamDatum.getMarkImage() != null)
@@ -498,6 +530,12 @@ public class LiveListeningActivity extends BaseActivity {
 
     }
 
+    private void setupViewPager(ViewPager viewPager, String strMatchId) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(LiveFeedsFragment.newInstance("Listening", strMatchId), "Overview");
+        adapter.addFragment(LiveFeedsPlayerFragment.newInstance("Listening", strMatchId), "Lineups");
+        viewPager.setAdapter(adapter);
+    }
 
     public void getRed5ProGroupId(){
         App.getApiHelper().getRedFiveProGroupId(new ApiCallBack<List<RedFiveProGroupIdModel>>() {
@@ -542,7 +580,6 @@ public class LiveListeningActivity extends BaseActivity {
         });
     }
 
-
     @OnClick(R.id.rl_switch_tile)
     public void switchBroacaster() {
         if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("pundits")) {
@@ -579,8 +616,7 @@ public class LiveListeningActivity extends BaseActivity {
             intent.putExtra("mUserDatum", getIntent().getSerializableExtra("mUserDatum"));
             startActivity(intent);
             finish();
-        }
-        else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("sprotsUserSearchSwitch")) {
+        } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("sprotsUserSearchSwitch")) {
             if (subscribe != null) {
                 subscribe.stop();
             }
@@ -591,7 +627,7 @@ public class LiveListeningActivity extends BaseActivity {
             intent.putExtra("mUserDatum", getIntent().getSerializableExtra("mUserDatum"));
             startActivity(intent);
             finish();
-        }else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("leaguesUserSearch")) {
+        } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("leaguesUserSearch")) {
             if (subscribe != null) {
                 subscribe.stop();
             }
@@ -602,8 +638,7 @@ public class LiveListeningActivity extends BaseActivity {
             intent.putExtra("mUserDatum", getIntent().getSerializableExtra("mUserDatum"));
             startActivity(intent);
             finish();
-        }
-        else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("sprotsUserSearchSwitch")) {
+        } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("sprotsUserSearchSwitch")) {
             if (subscribe != null) {
                 subscribe.stop();
             }
@@ -614,7 +649,7 @@ public class LiveListeningActivity extends BaseActivity {
             intent.putExtra("mUserDatum", getIntent().getSerializableExtra("mUserDatum"));
             startActivity(intent);
             finish();
-        }else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("sprotsTeamSearch")) {
+        } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("sprotsTeamSearch")) {
             if (subscribe != null) {
                 subscribe.stop();
             }
@@ -790,34 +825,12 @@ public class LiveListeningActivity extends BaseActivity {
         }
     }
 
-  /*  @OnClick(R.id.rl_live_listening_main)
-    public void hideUserProfile() {
-        rlBlurBackground.setVisibility(View.GONE);
-        rlBlurBackground.animate()
-                .translationYBy(rlBlurBackground.getHeight())
-                .translationY(0)
-                .setDuration(10000)
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        super.onAnimationEnd(animation);
-                        rlBlurBackground.animate().setListener(null);
-                    }
-                });
-
-        btnShowProfile.setVisibility(View.VISIBLE);
-        btnFollowUnfollowBg.setVisibility(View.VISIBLE);
-        btnRedirctBroadcastersProfileBg.setVisibility(View.VISIBLE);
-        btnHideProfile.setVisibility(View.GONE);
-
-    }*/
-
     @OnClick(R.id.rl_share_tile)
     public void onShare() {
         if (ConnectivityReceivers.isConnected()) {
             String encodedBroadcastersId = Base64.encodeToString(broadcasterId.getBytes(), Base64.NO_WRAP);
             String username = broadcasterName.replace(" ", "");
-            shareUrl = ApiConstants.SHARE_BASE_URL + username+ "-" + encodedBroadcastersId;
+            shareUrl = ApiConstants.SHARE_BASE_URL + username + "-" + encodedBroadcastersId;
             if (getIntent().getStringExtra("userComingFrom") != null) {
                 if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("matchList")) {
                     if (getIntent().getSerializableExtra("mMatchDatum") != null) {
@@ -843,8 +856,7 @@ public class LiveListeningActivity extends BaseActivity {
                             }
                         }
                     }
-                }
-                else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("punditsSwitch")) {
+                } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("punditsSwitch")) {
                     if (getIntent().getSerializableExtra("mUserDatum") != null) {
                         UserDetailsAndMatchDetailsModel.UsersList userDatum = (UserDetailsAndMatchDetailsModel.UsersList) getIntent().getSerializableExtra("mUserDatum");
                         if (userDatum.getChannelInfo().get(0).getChannel() != null) {
@@ -869,8 +881,7 @@ public class LiveListeningActivity extends BaseActivity {
                             }
                         }
                     }
-                }
-                else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("sprotsUserSearchSwitch")) {
+                } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("sprotsUserSearchSwitch")) {
                     if (getIntent().getSerializableExtra("mUserDatum") != null) {
                         UserSearchSportsModel.UserDatum userDatum = (UserSearchSportsModel.UserDatum) getIntent().getSerializableExtra("mUserDatum");
                         if (userDatum.getChannelInfo().get(0).getChannel() != null) {
@@ -895,8 +906,7 @@ public class LiveListeningActivity extends BaseActivity {
                             }
                         }
                     }
-                }
-                else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("leaguesUserSearchSwitch")) {
+                } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("leaguesUserSearchSwitch")) {
                     if (getIntent().getSerializableExtra("mUserDatum") != null) {
                         UserSearchLeagueModel.Datum userDatum = (UserSearchLeagueModel.Datum) getIntent().getSerializableExtra("mUserDatum");
                         if (userDatum.getChannelInfo().get(0).getChannel() != null) {
@@ -909,7 +919,7 @@ public class LiveListeningActivity extends BaseActivity {
                             }
                         }
                     }
-                }else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("sprotsTeamSearch")) {
+                } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("sprotsTeamSearch")) {
                     if (getIntent().getSerializableExtra("mTeamSearchDatum") != null) {
                         TeamSearchSportsModel.Datum teamDatum = (TeamSearchSportsModel.Datum) getIntent().getSerializableExtra("mTeamSearchDatum");
                         status = "I'm live on Pundit now listening " + teamDatum.getContestantClubName() + ", come join me.";
@@ -932,114 +942,10 @@ public class LiveListeningActivity extends BaseActivity {
 
     }
 
-
-   /* @OnClick(R.id.iv_twitter_share)
-    public void shareOnTwitter() {
-        shareUrl = ApiConstants.SHARE_BASE_URL + streamName;
-        AppPreferences.init(mContext).putString(AppConstant.User_CURRENT_STATE, "3");
-        if (getIntent().getStringExtra("userComingFrom") != null) {
-            if ((getIntent().getStringExtra("userComingFrom")).equalsIgnoreCase("matchList")) {
-                if (getIntent().getSerializableExtra("mMatchDatum") != null) {
-                    MatchListListnerModel.ListenMatchList matchDatum = (MatchListListnerModel.ListenMatchList) getIntent().getSerializableExtra("mMatchDatum");
-                    status = "I'm live on Pundit now listening the game between " + matchDatum.getTeam1Name() + " Vs " + matchDatum.getTeam2Name() + ", come join me.";
-                    twitterShare(shareUrl, status);
-                }
-            } else if ((getIntent().getStringExtra("userComingFrom")).equalsIgnoreCase("matchStandingListenList")) {
-                if (getIntent().getSerializableExtra("mMatchDatum") != null) {
-                    StandingListeningModel.Datum matchDatum = (StandingListeningModel.Datum) getIntent().getSerializableExtra("mMatchDatum");
-                    status = "I'm live on Pundit now listening the game between " + matchDatum.getContestantClubName() + ", come join me.";
-                    twitterShare(shareUrl, status);
-                }
-            } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("pundits")) {
-                if (getIntent().getSerializableExtra("mUserDatum") != null) {
-                    UserDetailsAndMatchDetailsModel.UsersList userDatum = (UserDetailsAndMatchDetailsModel.UsersList) getIntent().getSerializableExtra("mUserDatum");
-                    if (userDatum.getChannelInfo().get(0).getChannel() != null) {
-                        if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("match")) {
-                            status = "I'm live on Pundit now listening " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + " Vs " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name() + ", come join me.";
-                            twitterShare(shareUrl, status);
-                        } else if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
-                            status = "I'm live on Pundit now listening " + userDatum.getChannelInfo().get(0).getTeamInfo().getContestantClubName() + ", come join me.";
-                            twitterShare(shareUrl, status);
-                        }
-                    }
-                }
-            } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("sprotsUserSearch")) {
-                if (getIntent().getSerializableExtra("mUserDatum") != null) {
-                    UserSearchSportsModel.UserDatum userDatum = (UserSearchSportsModel.UserDatum) getIntent().getSerializableExtra("mUserDatum");
-                    if (userDatum.getChannelInfo().get(0).getChannel() != null) {
-                        if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("match")) {
-                            status = "I'm live on Pundit now listening " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + " Vs " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name() + ", come join me.";
-                            twitterShare(shareUrl, status);
-                        } else if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
-                            status = "I'm live on Pundit now listening " + userDatum.getChannelInfo().get(0).getTeamInfo().getContestantClubName() + ", come join me.";
-                            twitterShare(shareUrl, status);
-                        }
-                    }
-                }
-            }
-            else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("leaguesUserSearch")) {
-                if (getIntent().getSerializableExtra("mUserDatum") != null) {
-                    UserSearchLeagueModel.Datum userDatum = ( UserSearchLeagueModel.Datum) getIntent().getSerializableExtra("mUserDatum");
-                    if (userDatum.getChannelInfo().get(0).getChannel() != null) {
-                        if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("match")) {
-                            status = "I'm live on Pundit now listening " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + " Vs " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name() + ", come join me.";
-                            twitterShare(shareUrl, status);
-                        } else if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
-                            status = "I'm live on Pundit now listening " + userDatum.getChannelInfo().get(0).getTeamInfo().getContestantClubName() + ", come join me.";
-                            twitterShare(shareUrl, status);
-                        }
-                    }
-                }
-            }
-            else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("sprotsTeamSearch")) {
-                if(getIntent().getSerializableExtra("mTeamSearchDatum")!=null){
-                    TeamSearchSportsModel.Datum teamDatum=(  TeamSearchSportsModel.Datum) getIntent().getSerializableExtra("mTeamSearchDatum");
-                    status = "I'm live on Pundit now listening " + teamDatum.getContestantClubName() + ", come join me.";
-                    twitterShare(shareUrl, status);
-                }
-            }
-            else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("leaguesTeamSearch")) {
-                if(getIntent().getSerializableExtra("mTeamSearchDatum")!=null){
-                    TeamSearchSportsModel.Datum teamDatum=(  TeamSearchSportsModel.Datum) getIntent().getSerializableExtra("mTeamSearchDatum");
-                    status = "I'm live on Pundit now listening " + teamDatum.getContestantClubName() + ", come join me.";
-                    twitterShare(shareUrl, status);
-                }
-            }
-        }
-    }
-
-    public void twitterShare(String shareUrl, String status) {
-        if (ConnectivityReceivers.isConnected()) {
-            TweetComposer.Builder builder = null;
-            try {
-                builder = new TweetComposer.Builder(this)
-                        .text(status).url(new URL(shareUrl));
-                builder.show();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-        } else {
-            SnackbarUtil.showWarningLongSnackbar(mContext, getResources().getString(R.string.internet_not_connected_text));
-        }
-
-    }*/
-
-  /*  @OnClick(R.id.btn_redirct_broadcasters_profile)
-    public void redirectToBroadcasterProfile() {
-        AppPreferences.init(mContext).putString(AppConstant.User_CURRENT_STATE, "3");
-        getOpenFacebookIntent();
-    }
-
-    @OnClick(R.id.btn_redirct_broadcasters_profile_bg)
-    public void redirectToBroadcasterProfileBg() {
-        AppPreferences.init(mContext).putString(AppConstant.User_CURRENT_STATE, "3");
-        getOpenFacebookIntent();
-    }*/
-
     @OnClick(R.id.btn_follow_unfollow)
     public void buttonFollowUnfollow() {
-        if(AppPreferences.init(mContext).getString(AppConstant.USER_ID)==broadcasterId){
-            SnackbarUtil.showWarningShortSnackbar(mContext,getString(R.string.self_follow_text));
+        if (AppPreferences.init(mContext).getString(AppConstant.USER_ID) == broadcasterId) {
+            SnackbarUtil.showWarningShortSnackbar(mContext, getString(R.string.self_follow_text));
             btnFollowUnfollow.setClickable(false);
         } else {
             if (followStatus == 0) {
@@ -1080,7 +986,7 @@ public class LiveListeningActivity extends BaseActivity {
         AppPreferences.init(mContext).putString(AppConstant.User_CURRENT_STATE, "2");
     }
 
-    private void getLiveFeedsFromServer(final String matchId) {
+   /* private void getLiveFeedsFromServer(final String matchId) {
         Timer t = new Timer();
         t.scheduleAtFixedRate(new TimerTask() {
 
@@ -1091,51 +997,78 @@ public class LiveListeningActivity extends BaseActivity {
                     public void run() {
                         if (ConnectivityReceivers.isConnected()) {
 
-                            App.getApiHelper().getLiveFeeds(matchId, new ApiCallBack<LiveFeedsModel>() {
+                            App.getApiHelper().getLiveFeedsData(matchId, new ApiCallBack<LiveFeedsNewModel>() {
                                 @Override
-                                public void onSuccess(LiveFeedsModel liveFeedsModel) {
+                                public void onSuccess(LiveFeedsNewModel liveFeedsNewModel) {
                                     progressBarLiveListen.setVisibility(View.GONE);
                                     enableUserIntraction();
-                                    if (liveFeedsModel != null) {
-                                        List<LiveFeedsModel.Feed> liveFeedsList;
-                                        liveFeedsList = liveFeedsModel.getFeeds();
-                                        liveFeedsAdapter = new LiveFeedsAdapter(mContext, liveFeedsList);
-                                        GridLayoutManager glm = new GridLayoutManager(getApplicationContext(), 1);
-                                        rvLivefeedsContainer.setLayoutManager(glm);
-                                        rvLivefeedsContainer.setAdapter(liveFeedsAdapter);
-                                        liveFeedsAdapter.notifyDataSetChanged();
-                                        if (liveFeedsModel.getMatchinfo().getMatchStatus() != null) {
-                                            if (liveFeedsModel.getMatchinfo().getMatchStatus().equalsIgnoreCase("Fixture")) {
-                                                txtMatchTimeTop.setText(liveFeedsModel.getMatchinfo().getMatchStatus());
-                                            } else if (liveFeedsModel.getMatchinfo().getMatchStatus().equalsIgnoreCase("Played")) {
+                                    if (liveFeedsNewModel != null) {
+                                        if (liveFeedsNewModel.getMatch() != null) {
+                                            if (liveFeedsNewModel.getMatch().getStatus().contains("Kick off")) {
+                                                txtMatchTimeTop.setText(getString(R.string.fixture_string));
+                                            } else if (liveFeedsNewModel.getMatch().getStatus().equalsIgnoreCase("Full Time")) {
                                                 txtMatchTimeTop.setText(getString(R.string.ft_string));
-                                            } else if (liveFeedsModel.getMatchinfo().getMatchStatus().equalsIgnoreCase("Playing")) {
-                                                txtMatchTimeTop.setText(liveFeedsModel.getMatchinfo().getMatchLengthMin() + ":" + liveFeedsModel.getMatchinfo().getMatchLengthSec());
+                                            } else if (liveFeedsNewModel.getMatch().getStatus().contains("First Half") || liveFeedsNewModel.getMatch().getStatus().contains("Second Half")) {
+                                                txtMatchTimeTop.setText(getString(R.string.playing_String));
+                                            } else {
+                                                txtMatchTimeTop.setText("-");
                                             }
-                                            if (liveFeedsModel.getMatchinfo().getTeam1Score() == null || liveFeedsModel.getMatchinfo().getTeam1Score().equalsIgnoreCase(""))
+                                            if (liveFeedsNewModel.getMatch().getTeams().get(0).getScore() == null)
                                                 team1Score = "N/A";
                                             else
-                                                team1Score = liveFeedsModel.getMatchinfo().getTeam1Score();
+                                                team1Score = liveFeedsNewModel.getMatch().getTeams().get(0).getScore();
                                             tvTeam1Score.setText(team1Score);
-                                            if (liveFeedsModel.getMatchinfo().getTeam2Score() == null || liveFeedsModel.getMatchinfo().getTeam2Score().equalsIgnoreCase(""))
+                                            if (liveFeedsNewModel.getMatch().getTeams().get(1).getScore() == null)
                                                 team2Score = "N/A";
                                             else
-                                                team2Score = liveFeedsModel.getMatchinfo().getTeam2Score();
+                                                team2Score = liveFeedsNewModel.getMatch().getTeams().get(1).getScore();
                                             tvTeam2Score.setText(team2Score);
-                                            if (liveFeedsList.size() > 0) {
+                                            List<PlayerDataModel> playerDataModelsList = new ArrayList<PlayerDataModel>();
+                                            List<LiveFeedsNewModel.Match.Team> liveFeedsList = liveFeedsNewModel.getMatch().getTeams();
+                                            for (int i = 0; i < liveFeedsList.size(); i++) {
+                                                if (liveFeedsList.get(i).getGoals() != null) {
+                                                    if (liveFeedsList.get(i).getGoals().size() > 0) {
+                                                        for (int j = 0; j < liveFeedsList.get(i).getGoals().size(); j++) {
+                                                            PlayerDataModel mPlyerListData = new PlayerDataModel();
+                                                            mPlyerListData.setGoal(liveFeedsList.get(i).getGoals().get(j).getGoal());
+                                                            mPlyerListData.setType("Goal");
+                                                            playerDataModelsList.add(mPlyerListData);
+                                                        }
+                                                    }
+                                                }
+                                                if (liveFeedsList.get(i).getPlayers() != null) {
+                                                    if (liveFeedsList.get(i).getPlayers().size() > 0) {
+                                                        for (int j = 0; j < liveFeedsList.get(i).getPlayers().size(); j++) {
+                                                            if (liveFeedsList.get(i).getPlayers().get(j).getSubstitution() != null) {
+                                                                PlayerDataModel mPlyerListData = new PlayerDataModel();
+                                                                mPlyerListData.setName(liveFeedsList.get(i).getPlayers().get(j).getName());
+                                                                mPlyerListData.setType("Substitute");
+                                                                mPlyerListData.setReplacedby(liveFeedsList.get(i).getPlayers().get(j).getSubstitution().getReplacedBy());
+                                                                mPlyerListData.setMinute(liveFeedsList.get(i).getPlayers().get(j).getSubstitution().getMinute());
+                                                                playerDataModelsList.add(mPlyerListData);
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                            }
+                                            if (playerDataModelsList.size() > 0) {
                                                 tvNoData.setVisibility(View.GONE);
-                                                liveFeedsAdapter.notifyDataSetChanged();
-                                            } else
+                                                liveFeedsAdapter = new LiveFeedsAdapter(mContext, playerDataModelsList);
+                                                rvLivefeedsContainer.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
+                                                rvLivefeedsContainer.setAdapter(liveFeedsAdapter);
+                                            } else {
                                                 tvNoData.setVisibility(View.VISIBLE);
-                                            tvNoData.setText(R.string.no_live_feeds);
+                                                tvNoData.setText(R.string.no_live_feeds);
+                                            }
                                         }
                                     }
+
                                 }
 
                                 @Override
                                 public void onFailure(String message) {
-//                                    progressBarLiveListen.setVisibility(View.GONE);
-//                                    enableUserIntraction();
+
                                 }
 
 
@@ -1144,15 +1077,14 @@ public class LiveListeningActivity extends BaseActivity {
                             progressBarLiveListen.setVisibility(View.GONE);
                             enableUserIntraction();
                             SnackbarUtil.showWarningLongSnackbar(mContext, getResources().getString(R.string.internet_not_connected_text));
-                            SnackbarUtil.showWarningLongSnackbar(mContext, getResources().getString(R.string.internet_not_connected_text));
                         }
                     }
                 });
             }
-        }, 0, 10000);
-    }
+        }, 0, 20000);
+    }*/
 
-    private void configRedPro(String media,String serverAddress) {
+    private void configRedPro(String media, String serverAddress) {
         R5Configuration configuration = new R5Configuration(R5StreamProtocol.RTSP, serverAddress, AppConstant.RED5PRO_SERVER_PORT, AppConstant.RED5PRO_SERVER_APP_NAME, AppConstant.RED5PRO_SERVER_CASHE);
         configuration.setLicenseKey(AppConstant.RED5PRO_LICENSE_KEY);
         configuration.setBundleID(mContext.getPackageName());
@@ -1176,30 +1108,7 @@ public class LiveListeningActivity extends BaseActivity {
                     enableUserIntraction();
                     if (userProfileResponseModel != null) {
                         tvBroadcastersName.setText(userProfileResponseModel.getMessage().getFirstName());
-                        //  userFbId = userProfileResponseModel.getMessage().getFbId();
                         Picasso.with(mContext).load(ApiConstants.PROFILE_IMAGE_BASE_URL + userProfileResponseModel.getMessage().getAvatar()).into(ivProfileImg);
-                       /* new AsyncTask<Void, Void, Bitmap>() {
-                            @Override
-                            protected void onPostExecute(Bitmap image) {
-                                super.onPostExecute(image);
-                                if (image != null) {
-                                    enableUserIntraction();
-                                    Bitmap resultedBitmap = CustomBlurImage.blur(mContext, image);
-                                    rlBlurBackground.setBackground(new BitmapDrawable(mContext.getResources(), resultedBitmap));
-                                }
-                            }
-
-                            @Override
-                            protected Bitmap doInBackground(Void... voids) {
-                                Bitmap bitmap = null;
-                                try {
-                                    bitmap = Picasso.with(mContext).load(ApiConstants.PROFILE_IMAGE_BASE_URL + userProfileResponseModel.getMessage().getAvatar()).resize(250, 250).get();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                return bitmap;
-                            }
-                        }.execute();*/
                     }
                 }
 
@@ -1314,7 +1223,7 @@ public class LiveListeningActivity extends BaseActivity {
                         } else if (followStatus == 1) {
                             btnFollowUnfollow.setText(R.string.unfollow);
                         }
-                        if(followCheckModel.getListenerId()!=null) {
+                        if (followCheckModel.getListenerId() != null) {
                             listenerId = followCheckModel.getListenerId().toString();
                             tvPunditsFollowerCount.setText(followCheckModel.getInfo().getFollowing_count().toString());
                             tvPunditsFollowingCount.setText(followCheckModel.getInfo().getFollowerCount().toString());
@@ -1335,6 +1244,7 @@ public class LiveListeningActivity extends BaseActivity {
             SnackbarUtil.showWarningLongSnackbar(mContext, getResources().getString(R.string.internet_not_connected_text));
         }
     }
+
     private void getBroadcastersDetails(final String matchcontestentId) {
         t.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -1453,8 +1363,8 @@ public class LiveListeningActivity extends BaseActivity {
     }
 
     @OnClick(R.id.rl_chat_tile)
-    public void onClickChatListen(){
-        SnackbarUtil.showWarningShortSnackbar(mContext,getString(R.string.under_development_message));
+    public void onClickChatListen() {
+        SnackbarUtil.showWarningShortSnackbar(mContext, getString(R.string.under_development_message));
     }
     /*private void onIncommingCallListen() {
         PhoneStateListener phoneStateListener1 = new PhoneStateListener() {

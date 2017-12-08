@@ -34,4 +34,6 @@ public class AppConstant {
     public static final String RED5PRO_LICENSE_KEY = "KWAU-2V3K-VFOJ-JXIN";
     public static final int RED5PRO_BIT_RATE = 32;
 
+
+
 }

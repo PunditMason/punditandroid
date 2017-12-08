@@ -2,6 +2,7 @@ package com.softuvo.ipundit.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -65,8 +66,11 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,7 +88,7 @@ public class DashboardActivity extends BaseActivity {
     private Activity mContext;
     TextView termsAndServicesHeading, termsAndServicesContent;
     Button accept, decline;
-    String userId = "", userEmail, userFirstName = "", userLastName = "", userName, regId;
+    String userId = "", userEmail, userFirstName = "", userLastName = "", userName, regId, formattedDate;
     private ViewPager mPager;
     private static int currentPage = 0;
     private static int NUM_PAGES = 0;
@@ -155,18 +159,6 @@ public class DashboardActivity extends BaseActivity {
     @BindView(R.id.ed_password_signin)
     EditText edPasswordSignIn;
 
-    @BindView(R.id.tv_sign_in)
-    TextView tvSignIn;
-
-    @BindView(R.id.tv_forgot_password)
-    TextView tvForgotPassword;
-
-    @BindView(R.id.tv_create_account)
-    TextView tvCreateAccount;
-
-    @BindView(R.id.tv_facebook_login)
-    TextView tvFacebookLogin;
-
     @BindView(R.id.ll_signup_background)
     CustomRelativeLayout llSignupBackground;
 
@@ -182,10 +174,6 @@ public class DashboardActivity extends BaseActivity {
     @BindView(R.id.ed_confirm_password)
     EditText edConfirmPassword;
 
-    @BindView(R.id.tv_sign_up)
-    TextView tvSignUp;
-
-
     private CallbackManager callbackManager;
 
     @Override
@@ -197,7 +185,12 @@ public class DashboardActivity extends BaseActivity {
         checkForPermission();
         callbackManager = CallbackManager.Factory.create();
         setUIBackGrounds();
-        getNewsFromServer();
+        Date date = new Date();  // to get the date
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd"); // getting date in this format
+        formattedDate = df.format(date.getTime());
+        Log.e("cureent date:",formattedDate);
+        getNewsFromServer(formattedDate);
         displayFirebaseRegId();
     }
 
@@ -268,11 +261,7 @@ public class DashboardActivity extends BaseActivity {
     }
 
     public boolean isLoggedIn() {
-        if (AppPreferences.init(mContext).getString(AppConstant.LOGGED_IN_ID).equalsIgnoreCase("")) {
-            return false;
-        } else {
-            return true;
-        }
+        return !AppPreferences.init(mContext).getString(AppConstant.LOGGED_IN_ID).equalsIgnoreCase("");
 //        AccessToken accessToken = AccessToken.getCurrentAccessToken();
 //        return accessToken != null;
     }
@@ -347,6 +336,7 @@ public class DashboardActivity extends BaseActivity {
         hideKeyboard();
 
     }
+
     private void loginNewUser(Map map) {
         if (ConnectivityReceivers.isConnected()) {
             App.getApiHelper().loginUser(map, new ApiCallBack<LoginUserModel>() {
@@ -368,7 +358,7 @@ public class DashboardActivity extends BaseActivity {
                             rlBackgroundSignin.animate()
                                     .translationYBy(rlBackgroundSignin.getHeight())
                                     .translationY(0)
-                                    .setDuration(10000)
+                                    .setDuration(20000)
                                     .setListener(new AnimatorListenerAdapter() {
                                         @Override
                                         public void onAnimationEnd(Animator animation) {
@@ -409,13 +399,12 @@ public class DashboardActivity extends BaseActivity {
         View forgotPasswordView = layoutInflater.inflate(R.layout.forgot_password_alert_dialog, null);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(DashboardActivity.this);
         alertDialogBuilder.setView(forgotPasswordView);
-        final EditText emailForgotPassword = (EditText) forgotPasswordView.findViewById(R.id.ed_email_forgot_pssword);
-        // setup a dialog window
+        final EditText emailForgotPassword = forgotPasswordView.findViewById(R.id.ed_email_forgot_pssword);
         alertDialogBuilder.setCancelable(false)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, int id) {
                         if (emailForgotPassword.getText().toString().equalsIgnoreCase("")) {
-                            SnackbarUtil.showWarningShortSnackbar(mContext,getResources().getString(R.string.fields_error_message));
+                            SnackbarUtil.showWarningShortSnackbar(mContext, getResources().getString(R.string.fields_error_message));
                         } else {
                             Map<String, String> forgotpasswordMap = new HashMap<>();
                             forgotpasswordMap.put(ApiConstants.USER_EMAIL, emailForgotPassword.getText().toString());
@@ -535,7 +524,6 @@ public class DashboardActivity extends BaseActivity {
     }
 
 
-
     @OnClick(R.id.tv_facebook_login)
     public void onClickLogIn() {
         if (ConnectivityReceivers.isConnected()) {
@@ -560,10 +548,10 @@ public class DashboardActivity extends BaseActivity {
             } else {
                 final Dialog dialog = new Dialog(mContext);
                 dialog.setContentView(R.layout.custom_alertdialogbox);
-                termsAndServicesHeading = (TextView) dialog.findViewById(R.id.tv_terms_and_condition_heading);
-                termsAndServicesContent = (TextView) dialog.findViewById(R.id.tv_terms_and_condition_content);
-                accept = (Button) dialog.findViewById(R.id.btn_accept);
-                decline = (Button) dialog.findViewById(R.id.btn_decline);
+                termsAndServicesHeading =  dialog.findViewById(R.id.tv_terms_and_condition_heading);
+                termsAndServicesContent =  dialog.findViewById(R.id.tv_terms_and_condition_content);
+                accept =  dialog.findViewById(R.id.btn_accept);
+                decline =  dialog.findViewById(R.id.btn_decline);
                 getTermsAndConditionContent();
                 accept.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -687,19 +675,20 @@ public class DashboardActivity extends BaseActivity {
                 @Override
                 public void onCompleted(JSONObject object, GraphResponse response) {
                     try {
-                        if (object.has("id"))
-                            userId = object.getString("id");
-                        if (object.has("first_name"))
-                            userFirstName = (object.getString("first_name"));
-                        if (object.has("last_name"))
-                            userLastName = (object.getString("last_name"));
-                        if (object.has("email"))
-                            userEmail = (object.getString("email"));
-                        else
-                            userEmail = ("");
-
-                        userName = userFirstName + " " + userLastName;
-                        new CallAsncTask().execute("https://graph.facebook.com/" + userId + "/picture?type=large");
+                        if(object!=null) {
+                            if (object.has("id"))
+                                userId = object.getString("id");
+                            if (object.has("first_name"))
+                                userFirstName = (object.getString("first_name"));
+                            if (object.has("last_name"))
+                                userLastName = (object.getString("last_name"));
+                            if (object.has("email"))
+                                userEmail = (object.getString("email"));
+                            else
+                                userEmail = ("");
+                            userName = userFirstName + " " + userLastName;
+                            new CallAsncTask().execute("https://graph.facebook.com/" + userId + "/picture?type=large");
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -763,9 +752,9 @@ public class DashboardActivity extends BaseActivity {
     }
 
     // Getting News From Servr Every 20 sec.
-    private void getNewsFromServer() {
+    private void getNewsFromServer(final String date) {
         if (ConnectivityReceivers.isConnected()) {
-            int apiHitTimeInterval = 30000;
+            int apiHitTimeInterval = 40000;
             Timer t = new Timer();
             t.scheduleAtFixedRate(new TimerTask() {
                 @Override
@@ -773,7 +762,7 @@ public class DashboardActivity extends BaseActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            App.getApiHelper().getBreakingNews(new ApiCallBack<BreakingNewsParentModel>() {
+                           /* App.getApiHelper().getBreakingNews(new ApiCallBack<BreakingNewsParentModel>() {
                                 @Override
                                 public void onSuccess(BreakingNewsParentModel breakingNewsParentModel) {
                                     if (breakingNewsParentModel != null) {
@@ -792,6 +781,27 @@ public class DashboardActivity extends BaseActivity {
                                 @Override
                                 public void onFailure(String message) {
                                     SnackbarUtil.showErrorLongSnackbar(mContext, message);
+                                }
+                            });*/
+                            App.getApiHelper().getBreakingNewsList("null/"+date, new ApiCallBack<BreakingNewsParentModel>() {
+                                @Override
+                                public void onSuccess(BreakingNewsParentModel breakingNewsParentModel) {
+                                    if (breakingNewsParentModel != null) {
+                                        ArrayList<BreakingNewsDatum> breakingNewsResponse = (ArrayList<BreakingNewsDatum>) breakingNewsParentModel.getData();
+                                        List<String> breakingNews = new ArrayList<>();
+                                        for (int i = 0; i < breakingNewsResponse.size(); i++) {
+                                            if (breakingNewsResponse.get(i).getTitle() != null)
+                                                breakingNews.add(breakingNewsResponse.get(i).getTitle());
+                                        }
+                                        String SubTitle = (breakingNews.toString().replace("[", "").replace("]", "").trim()).replaceAll(",", ". ||   ");
+                                        tvBreakingNews.setText(SubTitle);
+                                        tvBreakingNews.setSelected(true);
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(String message) {
+
                                 }
                             });
                         }
@@ -834,6 +844,7 @@ public class DashboardActivity extends BaseActivity {
 
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class CallAsncTask extends AsyncTask<String, Void, Bitmap> {
         @Override
         protected void onPreExecute() {
