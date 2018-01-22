@@ -4,6 +4,11 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+
+/*
+ * Created by Neha Kalia on 15-06-2017.
+ */
+
 public class SaveUserProfileModel implements Serializable {
 
     private String userFirstName;

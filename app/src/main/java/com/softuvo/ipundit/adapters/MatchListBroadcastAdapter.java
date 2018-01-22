@@ -7,12 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.softuvo.ipundit.R;
 import com.softuvo.ipundit.models.BroadcastMatchlistModel;
-
 import java.util.List;
 
+/*
+ * Created by softuvo on 29-06-2017.
+ */
 public class MatchListBroadcastAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     Context context;
     List<BroadcastMatchlistModel.Datum> gameItemList;

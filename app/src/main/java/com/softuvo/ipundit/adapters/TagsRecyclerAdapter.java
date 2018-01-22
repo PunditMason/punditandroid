@@ -11,6 +11,9 @@ import android.widget.TextView;
 import com.softuvo.ipundit.R;
 import java.util.List;
 
+/*
+ * Created by softuvo on 02-08-2017.
+ */
 
 public class TagsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     Context context;

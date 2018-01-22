@@ -127,6 +127,9 @@ public class MatchListListnerModel implements Serializable{
         @SerializedName("season_name")
         @Expose
         private String seasonName;
+        @SerializedName("chatChannelid")
+        @Expose
+        private String chatChannelid;
         @SerializedName("channel")
         @Expose
         private List<Channel> channel = null;
@@ -161,6 +164,14 @@ public class MatchListListnerModel implements Serializable{
 
         public void setStageId(String stageId) {
             this.stageId = stageId;
+        }
+
+        public String getChatChannelid() {
+            return chatChannelid;
+        }
+
+        public void setChatChannelid(String chatChannelid) {
+            this.chatChannelid = chatChannelid;
         }
 
         public String getSportId() {

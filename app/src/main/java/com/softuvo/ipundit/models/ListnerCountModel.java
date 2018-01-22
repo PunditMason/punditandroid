@@ -3,7 +3,7 @@ package com.softuvo.ipundit.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-/**
+/*
  * Created by Nikhil Guleria on 7/3/2017.
  */
 

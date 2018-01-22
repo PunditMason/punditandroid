@@ -23,4 +23,18 @@
         <item name="android:windowExitAnimation">@anim/popup_hide</item>
     </style>
 
+    <style name="ApplozicThemeNew" parent="Theme.AppCompat.Light.NoActionBar">
+
+        <!--To change the toolbar color change the colorPrimary  -->
+        <item name="colorPrimary">@color/colorBlack</item>
+
+        <!-- To change the status bar  color change the color of colorPrimaryDark -->
+        <item name="colorPrimaryDark">@color/colorBlack</item>
+
+        <!-- colorAccent is used as the default value for colorControlActivated which is used to tint widgets -->
+        <item name="colorAccent">@color/colorBlack</item>
+
+        <item name="windowActionModeOverlay">true</item>
+    </style>
+
 </resources>

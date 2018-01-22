@@ -10,6 +10,8 @@ import com.softuvo.ipundit.models.BroadcastMatchlistModel;
 import com.softuvo.ipundit.models.DataModelBgImg;
 import com.softuvo.ipundit.models.FollowCheckModel;
 import com.softuvo.ipundit.models.FollowUnfollowModel;
+import com.softuvo.ipundit.models.FollowerListModel;
+import com.softuvo.ipundit.models.FollowingListModel;
 import com.softuvo.ipundit.models.LiveFeedsNewModel;
 import com.softuvo.ipundit.models.ListnerCountModel;
 import com.softuvo.ipundit.models.LiveBroacastersListModel;
@@ -18,6 +20,7 @@ import com.softuvo.ipundit.models.LiveFeedsModel;
 import com.softuvo.ipundit.models.LoginUserModel;
 import com.softuvo.ipundit.models.MatchListListnerModel;
 import com.softuvo.ipundit.models.MatchStandingListModel;
+import com.softuvo.ipundit.models.PodcastDetailsModel;
 import com.softuvo.ipundit.models.RedFiveProGroupIdModel;
 import com.softuvo.ipundit.models.ServerAddressModel;
 import com.softuvo.ipundit.models.ServerListenerAddressModel;
@@ -42,6 +45,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+/*
+ * Created by Neha Kalia on 15-06-2017.
+ */
 
 public class ApiHelper {
     private static ApiHelper apiHelper;
@@ -337,6 +344,20 @@ public class ApiHelper {
 
             @Override
             public void onFailure(Call<BroadcastMatchlistModel> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+    public void updateChatId(Map map, final ApiCallBack<Map> apiCallBack) {
+        apiservice.updateChatId(map).enqueue(new Callback<Map>() {
+            @Override
+            public void onResponse(Call<Map> call, Response<Map> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<Map> call, Throwable t) {
                 apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
             }
         });
@@ -679,6 +700,104 @@ public class ApiHelper {
             @Override
             public void onFailure(Call<List<RedFiveProGroupIdModel>> call, Throwable t) {
                 apiCallback.onFailure(t.getMessage());
+            }
+        });
+    }
+
+    public void getPodcastDetalis(String stringPath, final ApiCallBack<PodcastDetailsModel> apiCallBack) {
+        apiservice.getPodcastDetalis(stringPath).enqueue(new Callback<PodcastDetailsModel>() {
+            @Override
+            public void onResponse(Call<PodcastDetailsModel> call, Response<PodcastDetailsModel> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<PodcastDetailsModel> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+    public void deletePodcast(Map map, final ApiCallBack<Map> apiCallback) {
+        apiservice.deletePodcast(map).enqueue(new Callback<Map>() {
+            @Override
+            public void onResponse(Call<Map> call, Response<Map> response) {
+                apiCallback.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<Map> call, Throwable t) {
+                apiCallback.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+    public void getFollowersList(String stringPath, final ApiCallBack<FollowerListModel> apiCallBack) {
+        apiservice.getFollowersList(stringPath).enqueue(new Callback<FollowerListModel>() {
+            @Override
+            public void onResponse(Call<FollowerListModel> call, Response<FollowerListModel> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<FollowerListModel> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+    public void pauseStream(String stringPath, final ApiCallBack<Map> apiCallBack) {
+        apiservice.pauseStream(stringPath).enqueue(new Callback<Map>() {
+            @Override
+            public void onResponse(Call<Map> call, Response<Map> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<Map> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+    public void getFollowingList(String stringPath, final ApiCallBack<FollowingListModel> apiCallBack) {
+        apiservice.getFollowingList(stringPath).enqueue(new Callback<FollowingListModel>() {
+            @Override
+            public void onResponse(Call<FollowingListModel> call, Response<FollowingListModel> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<FollowingListModel> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+    public void getConnectFollowerList(String stringPath, final ApiCallBack<FollowerListModel> apiCallBack) {
+        apiservice.getConnectFollowerList(stringPath).enqueue(new Callback<FollowerListModel>() {
+            @Override
+            public void onResponse(Call<FollowerListModel> call, Response<FollowerListModel> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<FollowerListModel> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+    public void getConnectFollowingList(String stringPath, final ApiCallBack<FollowingListModel> apiCallBack) {
+        apiservice.getConnectFollowingList(stringPath).enqueue(new Callback<FollowingListModel>() {
+            @Override
+            public void onResponse(Call<FollowingListModel> call, Response<FollowingListModel> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<FollowingListModel> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
             }
         });
     }

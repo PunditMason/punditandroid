@@ -6,6 +6,9 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.List;
 
+/*
+ * Created by Neha Kalia on 15-06-2017.
+ */
 
 public class UserDetailsAndMatchDetailsModel implements Serializable {
     @SerializedName("users_list")
@@ -19,7 +22,8 @@ public class UserDetailsAndMatchDetailsModel implements Serializable {
     public void setUsersList(List<UsersList> usersList) {
         this.usersList = usersList;
     }
-    public class UsersList implements Serializable{
+
+    public class UsersList implements Serializable {
 
         @SerializedName("id")
         @Expose
@@ -50,31 +54,46 @@ public class UserDetailsAndMatchDetailsModel implements Serializable {
         private String userBio;
         @SerializedName("country_id")
         @Expose
-        private String countryId;
+        private Object countryId;
         @SerializedName("facebook")
         @Expose
-        private String facebook;
+        private Object facebook;
         @SerializedName("twitter")
         @Expose
-        private String twitter;
+        private Object twitter;
         @SerializedName("youtube")
         @Expose
-        private String youtube;
+        private Object youtube;
         @SerializedName("datecreated")
         @Expose
         private String datecreated;
         @SerializedName("UUID")
         @Expose
         private String uUID;
-        @SerializedName("live")
-        @Expose
-        private Integer live;
         @SerializedName("deviceToken")
         @Expose
         private String deviceToken;
         @SerializedName("deviceType")
         @Expose
         private String deviceType;
+        @SerializedName("loginType")
+        @Expose
+        private String loginType;
+        @SerializedName("allow_score")
+        @Expose
+        private String allowScore;
+        @SerializedName("email_verified")
+        @Expose
+        private String emailVerified;
+        @SerializedName("userToken")
+        @Expose
+        private String userToken;
+        @SerializedName("official_broadcaster")
+        @Expose
+        private String officialBroadcaster;
+        @SerializedName("live")
+        @Expose
+        private Integer live;
         @SerializedName("followCount")
         @Expose
         private Integer followCount;
@@ -160,35 +179,35 @@ public class UserDetailsAndMatchDetailsModel implements Serializable {
             this.userBio = userBio;
         }
 
-        public String getCountryId() {
+        public Object getCountryId() {
             return countryId;
         }
 
-        public void setCountryId(String countryId) {
+        public void setCountryId(Object countryId) {
             this.countryId = countryId;
         }
 
-        public String getFacebook() {
+        public Object getFacebook() {
             return facebook;
         }
 
-        public void setFacebook(String facebook) {
+        public void setFacebook(Object facebook) {
             this.facebook = facebook;
         }
 
-        public String getTwitter() {
+        public Object getTwitter() {
             return twitter;
         }
 
-        public void setTwitter(String twitter) {
+        public void setTwitter(Object twitter) {
             this.twitter = twitter;
         }
 
-        public String getYoutube() {
+        public Object getYoutube() {
             return youtube;
         }
 
-        public void setYoutube(String youtube) {
+        public void setYoutube(Object youtube) {
             this.youtube = youtube;
         }
 
@@ -208,18 +227,6 @@ public class UserDetailsAndMatchDetailsModel implements Serializable {
             this.uUID = uUID;
         }
 
-        public Integer getLive() {
-            return live;
-        }
-
-        public String getuUID() {
-            return uUID;
-        }
-
-        public void setuUID(String uUID) {
-            this.uUID = uUID;
-        }
-
         public String getDeviceToken() {
             return deviceToken;
         }
@@ -234,6 +241,54 @@ public class UserDetailsAndMatchDetailsModel implements Serializable {
 
         public void setDeviceType(String deviceType) {
             this.deviceType = deviceType;
+        }
+
+        public String getLoginType() {
+            return loginType;
+        }
+
+        public void setLoginType(String loginType) {
+            this.loginType = loginType;
+        }
+
+        public String getAllowScore() {
+            return allowScore;
+        }
+
+        public void setAllowScore(String allowScore) {
+            this.allowScore = allowScore;
+        }
+
+        public String getEmailVerified() {
+            return emailVerified;
+        }
+
+        public void setEmailVerified(String emailVerified) {
+            this.emailVerified = emailVerified;
+        }
+
+        public String getUserToken() {
+            return userToken;
+        }
+
+        public void setUserToken(String userToken) {
+            this.userToken = userToken;
+        }
+
+        public String getOfficialBroadcaster() {
+            return officialBroadcaster;
+        }
+
+        public void setOfficialBroadcaster(String officialBroadcaster) {
+            this.officialBroadcaster = officialBroadcaster;
+        }
+
+        public Integer getLive() {
+            return live;
+        }
+
+        public void setLive(Integer live) {
+            this.live = live;
         }
 
         public Integer getFollowCount() {
@@ -260,10 +315,6 @@ public class UserDetailsAndMatchDetailsModel implements Serializable {
             this.followCheck = followCheck;
         }
 
-        public void setLive(Integer live) {
-            this.live = live;
-        }
-
         public List<ChannelInfo> getChannelInfo() {
             return channelInfo;
         }
@@ -271,7 +322,8 @@ public class UserDetailsAndMatchDetailsModel implements Serializable {
         public void setChannelInfo(List<ChannelInfo> channelInfo) {
             this.channelInfo = channelInfo;
         }
-        public class ChannelInfo  implements Serializable{
+
+        public class ChannelInfo implements Serializable {
 
             @SerializedName("channel")
             @Expose
@@ -306,7 +358,8 @@ public class UserDetailsAndMatchDetailsModel implements Serializable {
             public void setMatchInfo(MatchInfo matchInfo) {
                 this.matchInfo = matchInfo;
             }
-            public class Channel  implements Serializable{
+
+            public class Channel implements Serializable {
 
                 @SerializedName("id")
                 @Expose
@@ -497,7 +550,8 @@ public class UserDetailsAndMatchDetailsModel implements Serializable {
                 }
 
             }
-            public class MatchInfo  implements Serializable{
+
+            public class MatchInfo implements Serializable {
 
                 @SerializedName("id")
                 @Expose
@@ -534,7 +588,7 @@ public class UserDetailsAndMatchDetailsModel implements Serializable {
                 private String periodId;
                 @SerializedName("winner")
                 @Expose
-                private Object winner;
+                private String winner;
                 @SerializedName("ft_lengthMin")
                 @Expose
                 private String ftLengthMin;
@@ -549,10 +603,10 @@ public class UserDetailsAndMatchDetailsModel implements Serializable {
                 private String stLengthSec;
                 @SerializedName("matchLengthMin")
                 @Expose
-                private Object matchLengthMin;
+                private String matchLengthMin;
                 @SerializedName("matchLengthSec")
                 @Expose
-                private Object matchLengthSec;
+                private String matchLengthSec;
                 @SerializedName("team1_id")
                 @Expose
                 private String team1Id;
@@ -561,10 +615,10 @@ public class UserDetailsAndMatchDetailsModel implements Serializable {
                 private String team2Id;
                 @SerializedName("team1_score")
                 @Expose
-                private Object team1Score;
+                private String team1Score;
                 @SerializedName("team2_score")
                 @Expose
-                private Object team2Score;
+                private String team2Score;
                 @SerializedName("time_now")
                 @Expose
                 private String timeNow;
@@ -598,12 +652,21 @@ public class UserDetailsAndMatchDetailsModel implements Serializable {
                 @SerializedName("match_date")
                 @Expose
                 private String matchDate;
+                @SerializedName("chatChannelid")
+                @Expose
+                private String chatChannelid;
                 @SerializedName("team1_name")
                 @Expose
                 private String team1Name;
                 @SerializedName("team2_name")
                 @Expose
                 private String team2Name;
+                @SerializedName("team1_icon")
+                @Expose
+                private String team1Icon;
+                @SerializedName("team2_icon")
+                @Expose
+                private String team2Icon;
 
                 public String getId() {
                     return id;
@@ -693,11 +756,11 @@ public class UserDetailsAndMatchDetailsModel implements Serializable {
                     this.periodId = periodId;
                 }
 
-                public Object getWinner() {
+                public String getWinner() {
                     return winner;
                 }
 
-                public void setWinner(Object winner) {
+                public void setWinner(String winner) {
                     this.winner = winner;
                 }
 
@@ -733,19 +796,19 @@ public class UserDetailsAndMatchDetailsModel implements Serializable {
                     this.stLengthSec = stLengthSec;
                 }
 
-                public Object getMatchLengthMin() {
+                public String getMatchLengthMin() {
                     return matchLengthMin;
                 }
 
-                public void setMatchLengthMin(Object matchLengthMin) {
+                public void setMatchLengthMin(String matchLengthMin) {
                     this.matchLengthMin = matchLengthMin;
                 }
 
-                public Object getMatchLengthSec() {
+                public String getMatchLengthSec() {
                     return matchLengthSec;
                 }
 
-                public void setMatchLengthSec(Object matchLengthSec) {
+                public void setMatchLengthSec(String matchLengthSec) {
                     this.matchLengthSec = matchLengthSec;
                 }
 
@@ -765,19 +828,19 @@ public class UserDetailsAndMatchDetailsModel implements Serializable {
                     this.team2Id = team2Id;
                 }
 
-                public Object getTeam1Score() {
+                public String getTeam1Score() {
                     return team1Score;
                 }
 
-                public void setTeam1Score(Object team1Score) {
+                public void setTeam1Score(String team1Score) {
                     this.team1Score = team1Score;
                 }
 
-                public Object getTeam2Score() {
+                public String getTeam2Score() {
                     return team2Score;
                 }
 
-                public void setTeam2Score(Object team2Score) {
+                public void setTeam2Score(String team2Score) {
                     this.team2Score = team2Score;
                 }
 
@@ -869,6 +932,14 @@ public class UserDetailsAndMatchDetailsModel implements Serializable {
                     this.matchDate = matchDate;
                 }
 
+                public String getChatChannelid() {
+                    return chatChannelid;
+                }
+
+                public void setChatChannelid(String chatChannelid) {
+                    this.chatChannelid = chatChannelid;
+                }
+
                 public String getTeam1Name() {
                     return team1Name;
                 }
@@ -885,8 +956,24 @@ public class UserDetailsAndMatchDetailsModel implements Serializable {
                     this.team2Name = team2Name;
                 }
 
+                public String getTeam1Icon() {
+                    return team1Icon;
+                }
+
+                public void setTeam1Icon(String team1Icon) {
+                    this.team1Icon = team1Icon;
+                }
+
+                public String getTeam2Icon() {
+                    return team2Icon;
+                }
+
+                public void setTeam2Icon(String team2Icon) {
+                    this.team2Icon = team2Icon;
+                }
             }
-            public class TeamInfo  implements Serializable{
+
+            public class TeamInfo implements Serializable {
 
                 @SerializedName("id")
                 @Expose
@@ -915,12 +1002,18 @@ public class UserDetailsAndMatchDetailsModel implements Serializable {
                 @SerializedName("last_update")
                 @Expose
                 private String lastUpdate;
+                @SerializedName("chatChannelid")
+                @Expose
+                private String chatChannelid;
+                @SerializedName("max_listeners")
+                @Expose
+                private String maxListeners;
                 @SerializedName("rank")
                 @Expose
                 private String rank;
                 @SerializedName("rankStatus")
                 @Expose
-                private Object rankStatus;
+                private String rankStatus;
                 @SerializedName("lastRank")
                 @Expose
                 private String lastRank;
@@ -1036,6 +1129,22 @@ public class UserDetailsAndMatchDetailsModel implements Serializable {
                     this.lastUpdate = lastUpdate;
                 }
 
+                public String getChatChannelid() {
+                    return chatChannelid;
+                }
+
+                public void setChatChannelid(String chatChannelid) {
+                    this.chatChannelid = chatChannelid;
+                }
+
+                public String getMaxListeners() {
+                    return maxListeners;
+                }
+
+                public void setMaxListeners(String maxListeners) {
+                    this.maxListeners = maxListeners;
+                }
+
                 public String getRank() {
                     return rank;
                 }
@@ -1044,11 +1153,11 @@ public class UserDetailsAndMatchDetailsModel implements Serializable {
                     this.rank = rank;
                 }
 
-                public Object getRankStatus() {
+                public String getRankStatus() {
                     return rankStatus;
                 }
 
-                public void setRankStatus(Object rankStatus) {
+                public void setRankStatus(String rankStatus) {
                     this.rankStatus = rankStatus;
                 }
 
@@ -1165,7 +1274,6 @@ public class UserDetailsAndMatchDetailsModel implements Serializable {
                 }
 
             }
-
 
         }
 

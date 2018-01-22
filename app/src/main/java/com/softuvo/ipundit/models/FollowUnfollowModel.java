@@ -3,8 +3,8 @@ package com.softuvo.ipundit.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Created by softuvo on 30-06-2017.
+/*
+ * Created by Neha Kalia on 30-06-2017.
  */
 
 public class FollowUnfollowModel {

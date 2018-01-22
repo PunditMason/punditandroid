@@ -8,6 +8,8 @@ import com.softuvo.ipundit.models.BroadcastMatchlistModel;
 import com.softuvo.ipundit.models.DataModelBgImg;
 import com.softuvo.ipundit.models.FollowCheckModel;
 import com.softuvo.ipundit.models.FollowUnfollowModel;
+import com.softuvo.ipundit.models.FollowerListModel;
+import com.softuvo.ipundit.models.FollowingListModel;
 import com.softuvo.ipundit.models.LiveFeedsNewModel;
 import com.softuvo.ipundit.models.ListnerCountModel;
 import com.softuvo.ipundit.models.LiveBroacastersListModel;
@@ -16,6 +18,7 @@ import com.softuvo.ipundit.models.LiveFeedsModel;
 import com.softuvo.ipundit.models.LoginUserModel;
 import com.softuvo.ipundit.models.MatchListListnerModel;
 import com.softuvo.ipundit.models.MatchStandingListModel;
+import com.softuvo.ipundit.models.PodcastDetailsModel;
 import com.softuvo.ipundit.models.RedFiveProGroupIdModel;
 import com.softuvo.ipundit.models.ServerAddressModel;
 import com.softuvo.ipundit.models.ServerListenerAddressModel;
@@ -38,6 +41,10 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+
+/*
+ * Created by Neha Kalia on 15-06-2017.
+ */
 
 interface ApiService {
 
@@ -92,7 +99,10 @@ interface ApiService {
     @POST("Game/getProfiles/{path}")
     Call<UserDetailsAndMatchDetailsModel> getUserDetailsAndBroadacstDetails(@Path(value = "path", encoded = true) String stringPath);
 
-    @POST("Game/getmatch/{path}")
+   /* @POST("Game/getmatch/{path}")
+    Call<MatchListListnerModel> getListnerMatchList(@Path(value = "path", encoded = true) String stringPath);
+*/
+    @POST("Game/get_match_channel_list/{path}")
     Call<MatchListListnerModel> getListnerMatchList(@Path(value = "path", encoded = true) String stringPath);
 
     @POST(ApiConstants.MOUNT_CHANNEL_URL)
@@ -140,7 +150,7 @@ interface ApiService {
     @POST(ApiConstants.LISTERNER_MAIN_COUNT)
     Call<ListnerCountModel> getListnerBroadcastersMainCount();
 
-    @POST("Game/channellistener_count/{path}")
+    @POST("Game/ChannelListener_count/{path}")
     Call<ListnerCountModel> getListnerCount(@Path(value = "path", encoded = true) String stringPath);
 
     @POST("Game/listeners_unmount/{path}")
@@ -157,5 +167,30 @@ interface ApiService {
 
     @GET(ApiConstants.GROUP_ID_URL)
     Call<List<RedFiveProGroupIdModel>> getRedFiveProGroupId();
+
+    @POST("game/getChannelCount/{path}")
+    Call<PodcastDetailsModel> getPodcastDetalis(@Path(value = "path", encoded = true) String stringPath);
+
+    @POST(ApiConstants.DELETE_PODCAST)
+    Call<Map> deletePodcast(@Body Map map);
+
+    @POST("Game/getFollowerList/{path}")
+    Call<FollowerListModel> getFollowersList(@Path(value = "path", encoded = true) String stringPath);
+
+    @POST("Game/pauseStream/{path}")
+    Call<Map> pauseStream(@Path(value = "path", encoded = true) String stringPath);
+
+    @POST("Game/getFollowingList/{path}")
+    Call<FollowingListModel> getFollowingList(@Path(value = "path", encoded = true) String stringPath);
+
+    @POST("Game/connectFollowers/{path}")
+    Call<FollowerListModel> getConnectFollowerList(@Path(value = "path", encoded = true) String stringPath);
+
+    @POST("Game/connectFollowings/{path}")
+    Call<FollowingListModel> getConnectFollowingList(@Path(value = "path", encoded = true) String stringPath);
+
+    //Applogic Chat integartion
+    @POST(ApiConstants.UPDATE_CHAT_ID)
+    Call<Map> updateChatId(@Body Map map);
 
 }

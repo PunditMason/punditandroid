@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/pading_small">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cv_container_match"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="vertical"
+        app:cardBackgroundColor="@color/colorWhite"
+        app:cardCornerRadius="2dp"
+        app:cardUseCompatPadding="true"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="@dimen/margin_small"
+                android:layout_weight="0.47">
+
+                <TextView
+                    android:id="@+id/tv_team1_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toStartOf="@+id/iv_team1_icon"
+                    android:padding="@dimen/pading_3dp"
+                    android:text="@string/lancaster_city_fc"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/text_size_14sp" />
+
+                <ImageView
+                    android:id="@+id/iv_team1_icon"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/subsititute" />
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0.06"
+                android:gravity="center"
+                android:text="@string/v"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/text_size_large" />
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/margin_small"
+                android:layout_weight="0.47">
+
+                <ImageView
+                    android:id="@+id/iv_team2_icon"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/subsititute" />
+
+                <TextView
+                    android:id="@+id/tv_team2_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/iv_team2_icon"
+                    android:padding="@dimen/pading_3dp"
+                    android:text="@string/lancaster_city_fc"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/text_size_14sp" />
+
+            </RelativeLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_broadcaster_name_match"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:textSize="@dimen/text_size_11sp"
+            android:paddingBottom="@dimen/pading_3dp"
+            android:text="@string/gareth_nobel"
+            android:textColor="@color/colorBlack" />
+
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cv_container_team"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="vertical"
+        app:cardBackgroundColor="@color/colorWhite"
+        app:cardCornerRadius="2dp"
+        app:cardUseCompatPadding="true"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:baselineAligned="false"
+            android:layout_gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+
+            <TextView
+                android:id="@+id/tv_broadcaster_name_team"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="end"
+                android:layout_weight="0.5"
+                android:padding="@dimen/pading_small"
+                android:text="@string/lancaster_city_fc"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/text_size_14sp" />
+
+            <ImageView
+                android:id="@+id/iv_contestent_icon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/subsititute" />
+
+            <TextView
+                android:id="@+id/tv_contestent_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0.5"
+                android:padding="@dimen/pading_small"
+                android:text="@string/lancaster_city_fc"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/text_size_14sp" />
+
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+</RelativeLayout>

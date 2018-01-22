@@ -1,7 +1,7 @@
 package com.softuvo.ipundit.utils;
 
-/**
- * Created by softuvo on 6/14/2017.
+/*
+ * Created by Neha Kalia on 6/14/2017.
  */
 
 public class StringUtil {

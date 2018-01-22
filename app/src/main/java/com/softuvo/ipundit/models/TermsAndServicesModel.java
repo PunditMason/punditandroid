@@ -1,6 +1,11 @@
 package com.softuvo.ipundit.models;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+/*
+ * Created by Neha Kalia on 15-06-2017.
+ */
 
 public class TermsAndServicesModel {
     @SerializedName("data")

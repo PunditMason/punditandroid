@@ -1,7 +1,13 @@
 package com.softuvo.ipundit.activities;
 
+/*
+ * Created by Neha Kalia on 12/08/2017.
+ */
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
@@ -10,11 +16,17 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+
+import com.applozic.mobicomkit.api.people.ChannelInfo;
+import com.applozic.mobicomkit.channel.service.ChannelService;
+import com.applozic.mobicomkit.uiwidgets.async.ApplozicChannelAddMemberTask;
+import com.applozic.mobicommons.people.channel.Channel;
 import com.softuvo.ipundit.R;
 import com.softuvo.ipundit.adapters.AllLeagueAdapter;
 import com.softuvo.ipundit.adapters.SearchTeamSportsAdapter;
@@ -34,7 +46,10 @@ import com.softuvo.ipundit.utils.SnackbarUtil;
 import com.softuvo.ipundit.views.CustomRelativeLayout;
 import com.softuvo.ipundit.views.CustomTextView;
 import com.squareup.picasso.Picasso;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +59,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import static com.softuvo.ipundit.config.AppConstant.APP_BACKGROUND;
+import static com.softuvo.ipundit.config.AppConstant.FB_ID;
 
 public class SubCategotyActivity extends BaseActivity {
     private Activity mContext;
@@ -55,11 +71,13 @@ public class SubCategotyActivity extends BaseActivity {
     private List<UserSearchLeagueModel.Datum> searchUserDetailsList;
     private List<TeamSearchSportsModel.Datum> searchTeamDetailsList;
     private SearchTeamSportsAdapter searchTeamSportsAdapter;
+    private String chatChannelId, chatChannelName, matchid;
 
     private int position;
     String selectedSearchType = "leagues";
     String text = null;
     private Timer timer;
+    String formattedDate;
 
     @BindView(R.id.iv_user_profile_image)
     ImageView ivUserProfileImage;
@@ -103,12 +121,18 @@ public class SubCategotyActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sub_categoty);
         mContext = SubCategotyActivity.this;
+        Date date = new Date();  // to get the date
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd"); // getting date in this format
+        formattedDate = df.format(date.getTime());
+        Log.e("cureent date:",formattedDate);
+
         ButterKnife.bind(mContext);
     }
 
     private void checkConnection() {
         if (ConnectivityReceivers.isConnected()) {
-               getNewsFromServer();
+            getNewsFromServer(formattedDate);
             setData();
         } else {
             SnackbarUtil.showWarningLongSnackbar(mContext, getResources().getString(R.string.internet_not_connected_text));
@@ -238,7 +262,7 @@ public class SubCategotyActivity extends BaseActivity {
     }
 
     // Getting News From Servr Every 20 sec.
-    private void getNewsFromServer() {
+    private void getNewsFromServer(final String date) {
         int apiHitTimeInterval = 40000;
         Timer t = new Timer();
         t.scheduleAtFixedRate(new TimerTask() {
@@ -268,7 +292,7 @@ public class SubCategotyActivity extends BaseActivity {
                                 SnackbarUtil.showErrorLongSnackbar(mContext, message);
                             }
                         });*/
-                        App.getApiHelper().getBreakingNewsList("null" , new ApiCallBack<BreakingNewsParentModel>() {
+                        App.getApiHelper().getBreakingNewsList("null/"+date , new ApiCallBack<BreakingNewsParentModel>() {
                             @Override
                             public void onSuccess(BreakingNewsParentModel breakingNewsParentModel) {
                                 if (breakingNewsParentModel != null) {
@@ -299,7 +323,7 @@ public class SubCategotyActivity extends BaseActivity {
     public void onNetworkConnectionChanged(boolean isConnected) {
         if (isConnected) {
             SnackbarUtil.showSuccessLongSnackbar(mContext, getResources().getString(R.string.internet_connected_text));
-            getNewsFromServer();
+            getNewsFromServer(formattedDate);
             setData();
         } else {
             SnackbarUtil.showSuccessLongSnackbar(mContext, getResources().getString(R.string.internet_not_connected_text));
@@ -583,9 +607,31 @@ public class SubCategotyActivity extends BaseActivity {
                         searchTeamSportsAdapter = new SearchTeamSportsAdapter(mContext, searchTeamDetailsList, new SearchTeamSportsAdapter.ItemClickListener() {
                             @Override
                             public void onClick(int position) {
+                                matchid=searchTeamDetailsList.get(position).getContestantId();
+                                chatChannelId=searchTeamDetailsList.get(position).getChatChannelid();
+                                chatChannelName=searchTeamDetailsList.get(position).getContestantName();
+                                if(chatChannelId.equalsIgnoreCase("0")){
+                                   getChannelId();
+                                }
+                                else{
+                                    ApplozicChannelAddMemberTask.ChannelAddMemberListener channelAddMemberListener =  new ApplozicChannelAddMemberTask.ChannelAddMemberListener() {
+                                        @Override
+                                        public void onSuccess(String response, Context context) {
+                                            Log.i("ApplozicChannelMember","Add Response:" + response);
+                                        }
+                                        @Override
+                                        public void onFailure(String response, Exception e, Context context) {
+
+                                        }
+                                    };
+                                    ApplozicChannelAddMemberTask applozicChannelAddMemberTask =  new ApplozicChannelAddMemberTask(mContext,Integer.parseInt(chatChannelId),AppPreferences.init(mContext).getString(FB_ID),channelAddMemberListener);//pass channel key and userId whom you want to add to channel
+                                    applozicChannelAddMemberTask.execute((Void)null);
+                                }
+
                                 Intent intent = new Intent(mContext, LiveBroadcastersListActivity.class);
                                 intent.putExtra("userComingFrom", "leaguesTeamSearch");
                                 intent.putExtra("mTeamSearchDatum", searchTeamDetailsList.get(position));
+                                intent.putExtra("chatChannelKey",chatChannelId);
                                 startActivity(intent);
                             }
                         });
@@ -602,6 +648,82 @@ public class SubCategotyActivity extends BaseActivity {
         } else
             SnackbarUtil.showWarningLongSnackbar(mContext, getResources().getString(R.string.internet_not_connected_text));
     }
+
+    private void getChannelId() {
+        try{
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    List<String> channelMembersList = new ArrayList<>();
+                    channelMembersList.add(AppPreferences.init(mContext).getString(FB_ID));
+                    ChannelInfo channelInfo = new ChannelInfo(chatChannelName, channelMembersList);
+                    channelInfo.setType(Channel.GroupType.PUBLIC.getValue().intValue());
+                    ChannelService service = ChannelService.getInstance(mContext);
+                    Channel channel = service.createChannel(channelInfo);
+                    Log.i("Channel", "Channel respone is:" + channel);
+                    if (channel!=null && channel.getKey() != null) {
+                        chatChannelId = String.valueOf(channel.getKey());
+                        updateChatChannelId();
+                    }
+                }
+            }).start();
+        }catch (Exception e){e.printStackTrace();}
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private class createChannel extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+        @Override
+        protected Void doInBackground(Void... params) {
+//            ChannelMetadata channelMetadata = new ChannelMetadata();
+//            channelMetadata.setCreateGroupMessage(ChannelMetadata.ADMIN_NAME + " created " + chatChannelName);
+//            channelMetadata.setAddMemberMessage(ChannelMetadata.ADMIN_NAME + " added " + ChannelMetadata.USER_NAME);
+//            channelMetadata.setRemoveMemberMessage(ChannelMetadata.ADMIN_NAME + " removed " + ChannelMetadata.USER_NAME);
+//            channelMetadata.setGroupNameChangeMessage(ChannelMetadata.USER_NAME + " changed group name " + ChannelMetadata.GROUP_NAME);
+//            channelMetadata.setJoinMemberMessage(ChannelMetadata.USER_NAME + " joined");
+//            channelMetadata.setGroupLeftMessage(ChannelMetadata.USER_NAME + " left group " + ChannelMetadata.GROUP_NAME);
+//            channelMetadata.setGroupIconChangeMessage(ChannelMetadata.USER_NAME + " changed icon");
+//            channelMetadata.setDeletedGroupMessage(ChannelMetadata.ADMIN_NAME + " deleted group " + ChannelMetadata.GROUP_NAME);
+            List<String> channelMembersList =  new ArrayList<>();
+            channelMembersList.add(AppPreferences.init(mContext).getString(FB_ID));
+            ChannelInfo channelInfo  = new ChannelInfo(chatChannelName,channelMembersList);
+            channelInfo.setType(Channel.GroupType.PUBLIC.getValue().intValue());
+            ChannelService service=ChannelService.getInstance(mContext);
+            Channel channel = service.createChannel(channelInfo);
+            Log.i("Channel","Channel respone is:"+channel);
+            chatChannelId= String.valueOf(channel.getKey());
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            updateChatChannelId();
+        }
+
+
+
+    }
+    private void updateChatChannelId(){
+        Map<String, String> mountMap = new HashMap<>();
+        mountMap.put("match_id", matchid);
+        mountMap.put("channeltype", "team");
+        mountMap.put("chatChannelid", chatChannelId);
+        App.getApiHelper().updateChatId(mountMap, new ApiCallBack<Map>() {
+            @Override
+            public void onSuccess(Map map) {
+
+            }
+
+            @Override
+            public void onFailure(String message) {
+
+            }
+        });
+    }
+
 }
 
 

@@ -1,21 +1,11 @@
 package com.softuvo.ipundit.models;
 
+/*
+ * Created by Neha Kalia on 15-06-2017.
+ */
 
 public class PlayerDataModel {
-    String Goal;
-    String name;
-    String replacedby;
-    String minute;
-    String type;
-    String leftName;
-    String rightName;
-    String leftShirtNumber;
-    String rightShirtNumber;
-    String leftReplacedBy;
-    String rightReplacedBy;
-    String leftMinute;
-    String rightMinute;
-
+    private String Goal,name,replacedby,minute,type,leftName,rightName,leftShirtNumber,rightShirtNumber,leftReplacedBy,rightReplacedBy,leftMinute,rightMinute;
 
     public String getType() {
         return type;

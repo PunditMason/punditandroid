@@ -1,5 +1,9 @@
 package com.softuvo.ipundit.activities;
 
+/*
+ * Created by Neha Kalia on 02/09/2017.
+ */
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -31,6 +35,7 @@ public class PunditsScreen extends BaseActivity {
 
     @BindView(R.id.rv_user_details)
     RecyclerView rvUserDetails;
+
     @BindView(R.id.progress_bar_pundits)
     ProgressBar progressBarPundits;
 
@@ -91,6 +96,8 @@ public class PunditsScreen extends BaseActivity {
             });
         }
         else{
+            progressBarPundits.setVisibility(View.GONE);
+            enableUserIntraction();
             SnackbarUtil.showWarningLongSnackbar(mContext,getResources().getString(R.string.internet_not_connected_text));
         }
 

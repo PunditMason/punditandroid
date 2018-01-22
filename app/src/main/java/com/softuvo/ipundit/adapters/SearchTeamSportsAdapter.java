@@ -14,8 +14,8 @@ import com.softuvo.ipundit.models.TeamSearchSportsModel;
 
 import java.util.List;
 
-/**
- * Created by softuvo on 02-08-2017.
+/*
+ * Created by Neha Kalia on 02-08-2017.
  */
 
 public class SearchTeamSportsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener {

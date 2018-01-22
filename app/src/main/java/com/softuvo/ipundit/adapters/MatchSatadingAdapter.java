@@ -10,6 +10,10 @@ import com.softuvo.ipundit.R;
 import com.softuvo.ipundit.models.MatchStandingListModel;
 import java.util.List;
 
+/*
+ * Created by softuvo on 29-06-2017.
+ */
+
 public class MatchSatadingAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     Context context;
     List<MatchStandingListModel.Datum> matchStandingList;

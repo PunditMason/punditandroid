@@ -1,7 +1,7 @@
 package com.softuvo.ipundit.config;
 
-/**
- * Created by softuvo on 22-08-2017.
+/*
+ * Created by Neha Kalia on 22-08-2017.
  */
 
 public class NotificationConstants {

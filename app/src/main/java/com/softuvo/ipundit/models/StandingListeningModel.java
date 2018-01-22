@@ -6,8 +6,8 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * Created by softuvo on 30-06-2017.
+/*
+ * Created by Neha Kalia on 30-06-2017.
  */
 
 public class StandingListeningModel implements Serializable {
@@ -329,6 +329,9 @@ public class StandingListeningModel implements Serializable {
             @SerializedName("last_update")
             @Expose
             private String lastUpdate;
+            @SerializedName("chatChannelid")
+            @Expose
+            private String chatChannelid;
 
             public String getId() {
                 return id;
@@ -348,6 +351,14 @@ public class StandingListeningModel implements Serializable {
 
             public String getMatchId() {
                 return matchId;
+            }
+
+            public String getChatChannelid() {
+                return chatChannelid;
+            }
+
+            public void setChatChannelid(String chatChannelid) {
+                this.chatChannelid = chatChannelid;
             }
 
             public void setMatchId(String matchId) {

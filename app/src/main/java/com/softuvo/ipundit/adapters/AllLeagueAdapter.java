@@ -1,5 +1,9 @@
 package com.softuvo.ipundit.adapters;
 
+/*
+ * Created by Neha Kalia on 12/07/2017.
+ */
+
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

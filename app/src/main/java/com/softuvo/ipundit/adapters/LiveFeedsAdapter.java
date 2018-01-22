@@ -7,17 +7,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.softuvo.ipundit.R;
-import com.softuvo.ipundit.models.LiveFeedsModel;
-import com.softuvo.ipundit.models.LiveFeedsNewModel;
 import com.softuvo.ipundit.models.PlayerDataModel;
-
 import java.util.List;
+
+/*
+ * Created by softuvo on 29-06-2017.
+ */
 
 public class LiveFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     Context context;
-    List<PlayerDataModel> liveFeedsList;
+    private List<PlayerDataModel> liveFeedsList;
 
 
     public LiveFeedsAdapter(Context context, List<PlayerDataModel> liveFeedsList) {

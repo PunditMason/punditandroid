@@ -1,6 +1,11 @@
 package com.softuvo.ipundit.activities;
 
+/*
+ * Created by Neha Kalia on 12/12/2017.
+ */
+
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,6 +15,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -17,7 +23,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-
+import com.applozic.mobicomkit.api.people.ChannelInfo;
+import com.applozic.mobicomkit.channel.service.ChannelService;
+import com.applozic.mobicomkit.uiwidgets.async.ApplozicChannelAddMemberTask;
+import com.applozic.mobicommons.people.channel.Channel;
 import com.softuvo.ipundit.R;
 import com.softuvo.ipundit.adapters.AllSportsAdapter;
 import com.softuvo.ipundit.adapters.SearchTeamSportsAdapter;
@@ -33,19 +42,17 @@ import com.softuvo.ipundit.receivers.ConnectivityReceivers;
 import com.softuvo.ipundit.utils.SnackbarUtil;
 import com.softuvo.ipundit.views.CustomLinearLayout;
 import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
 import static com.softuvo.ipundit.config.AppConstant.APP_BACKGROUND;
+import static com.softuvo.ipundit.config.AppConstant.FB_ID;
 
 public class BroadcastListenerMainActivity extends BaseActivity {
     private Activity mContext;
@@ -56,6 +63,7 @@ public class BroadcastListenerMainActivity extends BaseActivity {
     private SearchUserSportsAdapter searchUserSportsAdapter;
     private SearchTeamSportsAdapter searchTeamSportsAdapter;
     String selectedSearchType = "sports";
+    private String chatChannelId, chatChannelName, matchid;
     private Timer timer;
     String text = null;
 
@@ -99,7 +107,7 @@ public class BroadcastListenerMainActivity extends BaseActivity {
         setContentView(R.layout.activity_broadcast_listner_main);
         mContext = BroadcastListenerMainActivity.this;
         ButterKnife.bind(mContext);
-        swipeDownRefresh =  findViewById(R.id.swiperefresh);
+        swipeDownRefresh = findViewById(R.id.swiperefresh);
         swipeDownRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -138,7 +146,7 @@ public class BroadcastListenerMainActivity extends BaseActivity {
                     enableUserIntraction();
                     if (sportsNameModel.getData() != null)
                         swipeDownRefresh.setEnabled(true);
-                    sportsItemList=new ArrayList<>();
+                    sportsItemList = new ArrayList<>();
                     sportsItemList = sportsNameModel.getData();
                     rvGameItems.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
                     allsportsadapter = new AllSportsAdapter(mContext, sportsItemList, new AllSportsAdapter.ItemClickListener() {
@@ -197,10 +205,10 @@ public class BroadcastListenerMainActivity extends BaseActivity {
                             text = edSearchGame.getText().toString();
                             allsportsadapter.filter(text);
                             if (AppPreferences.init(mContext).getString(AppConstant.USER_SELECTION).equalsIgnoreCase(AppConstant.SELECTED_BROADCAST)) {
-                                    text = edSearchGame.getText().toString();
-                                    allsportsadapter.filter(text);
+                                text = edSearchGame.getText().toString();
+                                allsportsadapter.filter(text);
                             } else if (AppPreferences.init(mContext).getString(AppConstant.USER_SELECTION).equalsIgnoreCase(AppConstant.SELECTED_LISTNER)) {
-                                if(selectedSearchType.equalsIgnoreCase("sports")) {
+                                if (selectedSearchType.equalsIgnoreCase("sports")) {
                                     text = edSearchGame.getText().toString();
                                     allsportsadapter.filter(text);
                                 }
@@ -213,14 +221,14 @@ public class BroadcastListenerMainActivity extends BaseActivity {
                                             mountMap.put("search_type", "user");
                                             mountMap.put("search_text", edSearchGame.getText().toString());
                                             mountMap.put("live", "1");
-                                            mountMap.put("user_id",AppPreferences.init(mContext).getString(AppConstant.USER_ID));
+                                            mountMap.put("user_id", AppPreferences.init(mContext).getString(AppConstant.USER_ID));
                                             getUserSearchDetailsList(mountMap);
                                         } else if (selectedSearchType.equalsIgnoreCase("team")) {
                                             Map<String, String> mountMap = new HashMap<>();
                                             mountMap.put("search_type", "team");
                                             mountMap.put("search_text", edSearchGame.getText().toString());
                                             mountMap.put("live", "1");
-                                            mountMap.put("user_id",AppPreferences.init(mContext).getString(AppConstant.USER_ID));
+                                            mountMap.put("user_id", AppPreferences.init(mContext).getString(AppConstant.USER_ID));
                                             getTeamSearchDetailsList(mountMap);
                                         }
                                     }
@@ -234,11 +242,11 @@ public class BroadcastListenerMainActivity extends BaseActivity {
                             edSearchGame.setText("");
                             selectedSearchType = "sports";
                             rlSearchTypeContainer.setVisibility(View.GONE);
-                            if(searchTeamDetailsList!=null){
+                            if (searchTeamDetailsList != null) {
                                 searchTeamDetailsList.clear();
                                 searchTeamSportsAdapter.notifyDataSetChanged();
                             }
-                            if(searchUserDetailsList!=null){
+                            if (searchUserDetailsList != null) {
                                 searchUserDetailsList.clear();
                                 searchUserSportsAdapter.notifyDataSetChanged();
                             }
@@ -269,13 +277,13 @@ public class BroadcastListenerMainActivity extends BaseActivity {
     public void onClickBtn(View view) {
         if (view.getId() == R.id.btn_user) {
             selectedSearchType = "user";
-            if(sportsItemList!=null) {
+            if (sportsItemList != null) {
                 sportsItemList.clear();
             }
-            if(searchTeamDetailsList != null){
+            if (searchTeamDetailsList != null) {
                 searchTeamDetailsList.clear();
             }
-            if(edSearchGame.getText()!=null)
+            if (edSearchGame.getText() != null)
                 edSearchGame.getText().clear();
             rvGameItems.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
             btnUser.setTextColor(ContextCompat.getColor(mContext, R.color.colorPurple));
@@ -285,13 +293,13 @@ public class BroadcastListenerMainActivity extends BaseActivity {
         }
         if (view.getId() == R.id.btn_team) {
             selectedSearchType = "team";
-            if(sportsItemList!=null) {
+            if (sportsItemList != null) {
                 sportsItemList.clear();
             }
-            if(searchUserDetailsList!=null){
+            if (searchUserDetailsList != null) {
                 searchUserDetailsList.clear();
             }
-            if(edSearchGame.getText()!=null)
+            if (edSearchGame.getText() != null)
                 edSearchGame.getText().clear();
             rvGameItems.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
             btnUser.setTextColor(ContextCompat.getColor(mContext, R.color.colorWhite));
@@ -301,14 +309,14 @@ public class BroadcastListenerMainActivity extends BaseActivity {
         }
         if (view.getId() == R.id.btn_sports) {
             selectedSearchType = "sports";
-            if(searchTeamDetailsList!=null){
+            if (searchTeamDetailsList != null) {
                 searchTeamDetailsList.clear();
             }
-            if(searchUserDetailsList!=null){
+            if (searchUserDetailsList != null) {
                 searchUserDetailsList.clear();
             }
             checkConnection();
-            if(edSearchGame.getText()!=null)
+            if (edSearchGame.getText() != null)
                 edSearchGame.getText().clear();
             btnUser.setTextColor(ContextCompat.getColor(mContext, R.color.colorWhite));
             btnSports.setTextColor(ContextCompat.getColor(mContext, R.color.colorPurple));
@@ -323,14 +331,14 @@ public class BroadcastListenerMainActivity extends BaseActivity {
                 public void onSuccess(UserSearchSportsModel userSearchSportsModel) {
                     if (userSearchSportsModel != null) {
                         rvGameItems.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
-                        searchUserDetailsList=new ArrayList<>();
+                        searchUserDetailsList = new ArrayList<>();
                         searchUserDetailsList = userSearchSportsModel.getData();
                         searchUserSportsAdapter = new SearchUserSportsAdapter(mContext, searchUserDetailsList, new SearchUserSportsAdapter.ItemClickListener() {
                             @Override
                             public void onClick(int position) {
                                 Intent intent = new Intent(mContext, PunditsProfileActivity.class);
                                 intent.putExtra("userComingFrom", "sprotsUserSearch");
-                                intent.putExtra("switch","no");
+                                intent.putExtra("switch", "no");
                                 intent.putExtra("mUserDatum", searchUserDetailsList.get(position));
                                 startActivity(intent);
                             }
@@ -357,14 +365,36 @@ public class BroadcastListenerMainActivity extends BaseActivity {
                 public void onSuccess(TeamSearchSportsModel teamSearchSportsModel) {
                     if (teamSearchSportsModel != null) {
                         rvGameItems.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
-                        searchTeamDetailsList=new ArrayList<>();
+                        searchTeamDetailsList = new ArrayList<>();
                         searchTeamDetailsList = teamSearchSportsModel.getData();
                         searchTeamSportsAdapter = new SearchTeamSportsAdapter(mContext, searchTeamDetailsList, new SearchTeamSportsAdapter.ItemClickListener() {
                             @Override
                             public void onClick(int position) {
+                                matchid = searchTeamDetailsList.get(position).getContestantId();
+                                chatChannelId = searchTeamDetailsList.get(position).getChatChannelid();
+                                chatChannelName = searchTeamDetailsList.get(position).getContestantName();
+                                if (chatChannelId.equalsIgnoreCase("0")) {
+                                    getChannelId();
+                                } else {
+                                    ApplozicChannelAddMemberTask.ChannelAddMemberListener channelAddMemberListener = new ApplozicChannelAddMemberTask.ChannelAddMemberListener() {
+                                        @Override
+                                        public void onSuccess(String response, Context context) {
+                                            Log.i("ApplozicChannelMember", "Add Response:" + response);
+                                        }
+
+                                        @Override
+                                        public void onFailure(String response, Exception e, Context context) {
+
+                                        }
+                                    };
+                                    ApplozicChannelAddMemberTask applozicChannelAddMemberTask = new ApplozicChannelAddMemberTask(mContext, Integer.parseInt(chatChannelId), AppPreferences.init(mContext).getString(FB_ID), channelAddMemberListener);//pass channel key and userId whom you want to add to channel
+                                    applozicChannelAddMemberTask.execute((Void) null);
+                                }
+
                                 Intent intent = new Intent(mContext, LiveBroadcastersListActivity.class);
                                 intent.putExtra("userComingFrom", "sprotsTeamSearch");
                                 intent.putExtra("mTeamSearchDatum", searchTeamDetailsList.get(position));
+                                intent.putExtra("chatChannelKey", chatChannelId);
                                 startActivity(intent);
                             }
                         });
@@ -382,6 +412,47 @@ public class BroadcastListenerMainActivity extends BaseActivity {
             SnackbarUtil.showWarningLongSnackbar(mContext, getResources().getString(R.string.internet_not_connected_text));
     }
 
+    private void getChannelId() {
+        try{
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    List<String> channelMembersList = new ArrayList<>();
+                    channelMembersList.add(AppPreferences.init(mContext).getString(FB_ID));
+                    ChannelInfo channelInfo = new ChannelInfo(chatChannelName, channelMembersList);
+                    channelInfo.setType(Channel.GroupType.PUBLIC.getValue().intValue());
+                    ChannelService service = ChannelService.getInstance(mContext);
+                    Channel channel = service.createChannel(channelInfo);
+                    Log.i("Channel", "Channel respone is:" + channel);
+                    if (channel!=null && channel.getKey() != null) {
+                        chatChannelId = String.valueOf(channel.getKey());
+                        updateChatChannelId();
+                    }
+                }
+            }).start();
+        }catch (Exception e){e.printStackTrace();}
+    }
+    private void updateChatChannelId() {
+        Map<String, String> mountMap = new HashMap<>();
+        mountMap.put("match_id", matchid);
+        mountMap.put("channeltype", "team");
+        mountMap.put("chatChannelid", chatChannelId);
+        App.getApiHelper().updateChatId(mountMap, new ApiCallBack<Map>() {
+            @Override
+            public void onSuccess(Map map) {
+
+            }
+
+            @Override
+            public void onFailure(String message) {
+
+            }
+        });
+    }
+
+
+
+
     @Override
     protected void onPause() {
 //        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
@@ -391,7 +462,9 @@ public class BroadcastListenerMainActivity extends BaseActivity {
     @Override
     public void onResume() {
         super.onResume();
-        hideKeyboard();
+//        if (mContext != null) {
+//            hideKeyboard();
+//        }
         selectedSearchType = "sports";
         rlSearchTypeContainer.setVisibility(View.GONE);
         edSearchGame.setText("");

@@ -1,5 +1,9 @@
 package com.softuvo.ipundit.activities;
 
+/*
+ * Created by Neha Kalia on 12/08/2017.
+ */
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Handler;
@@ -119,6 +123,14 @@ public class LiveBroadcastersListActivity extends AppCompatActivity {
                         matchOrcontestentId = mMatchDatum.getChannelInfo().get(0).getMatchId();
                     }
                 }
+                else if(getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("followerList")){
+                    userselection = (getIntent().getStringExtra("userComingFrom"));
+                    matchOrcontestentId=getIntent().getStringExtra("matchidcontestentid");
+                }
+                else if(getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("followingList")){
+                    userselection = (getIntent().getStringExtra("userComingFrom"));
+                    matchOrcontestentId=getIntent().getStringExtra("matchidcontestentid");
+                }
                 getLiveBroadcastersListData(matchOrcontestentId);
             } else
                 getLiveBroadcastersListData(matchOrcontestentId);
@@ -148,18 +160,21 @@ public class LiveBroadcastersListActivity extends AppCompatActivity {
                                         intent.putExtra("userComingFrom", "matchList");
                                         intent.putExtra("mMatchDatum", getIntent().getSerializableExtra("mMatchDatum"));
                                         intent.putExtra("mBrListDatum", liveBroadcastersList.get(position));
+                                        intent.putExtra("chatChannelKey",getIntent().getStringExtra("chatChannelKey"));
                                         startActivity(intent);
                                     } else if (userselection.equalsIgnoreCase("matchStandingListenList")) {
                                         Intent intent = new Intent(mContext, LiveListeningActivity.class);
                                         intent.putExtra("userComingFrom", "matchStandingListenList");
                                         intent.putExtra("mMatchDatum", getIntent().getSerializableExtra("mMatchDatum"));
                                         intent.putExtra("mBrListDatum", liveBroadcastersList.get(position));
+                                        intent.putExtra("chatChannelKey",getIntent().getStringExtra("chatChannelKey"));
                                         startActivity(intent);
                                     } else if (userselection.equalsIgnoreCase("pundits")) {
                                         Intent intent = new Intent(mContext, LiveListeningActivity.class);
                                         intent.putExtra("userComingFrom", "punditsSwitch");
                                         intent.putExtra("mUserDatum", getIntent().getSerializableExtra("mUserDatum"));
                                         intent.putExtra("mBrListDatum", liveBroadcastersList.get(position));
+                                        intent.putExtra("chatChannelKey",getIntent().getStringExtra("chatChannelKey"));
                                         startActivity(intent);
                                         finish();
                                     }
@@ -168,6 +183,7 @@ public class LiveBroadcastersListActivity extends AppCompatActivity {
                                         intent.putExtra("userComingFrom", "punditsSwitch");
                                         intent.putExtra("mUserDatum", getIntent().getSerializableExtra("mUserDatum"));
                                         intent.putExtra("mBrListDatum", liveBroadcastersList.get(position));
+                                        intent.putExtra("chatChannelKey",getIntent().getStringExtra("chatChannelKey"));
                                         startActivity(intent);
                                         finish();
                                     }
@@ -176,6 +192,7 @@ public class LiveBroadcastersListActivity extends AppCompatActivity {
                                         intent.putExtra("userComingFrom", "sprotsUserSearchSwitch");
                                         intent.putExtra("mUserDatum", getIntent().getSerializableExtra("mUserDatum"));
                                         intent.putExtra("mBrListDatum", liveBroadcastersList.get(position));
+                                        intent.putExtra("chatChannelKey",getIntent().getStringExtra("chatChannelKey"));
                                         startActivity(intent);
                                         finish();
                                     }
@@ -184,6 +201,7 @@ public class LiveBroadcastersListActivity extends AppCompatActivity {
                                         intent.putExtra("userComingFrom", "sprotsUserSearchSwitch");
                                         intent.putExtra("mUserDatum", getIntent().getSerializableExtra("mUserDatum"));
                                         intent.putExtra("mBrListDatum", liveBroadcastersList.get(position));
+                                        intent.putExtra("chatChannelKey",getIntent().getStringExtra("chatChannelKey"));
                                         startActivity(intent);
                                         finish();
                                     } else if (userselection.equalsIgnoreCase("leaguesUserSearch")) {
@@ -191,6 +209,7 @@ public class LiveBroadcastersListActivity extends AppCompatActivity {
                                         intent.putExtra("userComingFrom", "leaguesUserSearchSwitch");
                                         intent.putExtra("mUserDatum", getIntent().getSerializableExtra("mUserDatum"));
                                         intent.putExtra("mBrListDatum", liveBroadcastersList.get(position));
+                                        intent.putExtra("chatChannelKey",getIntent().getStringExtra("chatChannelKey"));
                                         startActivity(intent);
                                         finish();
                                     } else if (userselection.equalsIgnoreCase("leaguesUserSearchSwitch")) {
@@ -198,6 +217,7 @@ public class LiveBroadcastersListActivity extends AppCompatActivity {
                                         intent.putExtra("userComingFrom", "leaguesUserSearchSwitch");
                                         intent.putExtra("mUserDatum", getIntent().getSerializableExtra("mUserDatum"));
                                         intent.putExtra("mBrListDatum", liveBroadcastersList.get(position));
+                                        intent.putExtra("chatChannelKey",getIntent().getStringExtra("chatChannelKey"));
                                         startActivity(intent);
                                         finish();
                                     }else if(userselection.equalsIgnoreCase("sprotsTeamSearch")){
@@ -205,6 +225,7 @@ public class LiveBroadcastersListActivity extends AppCompatActivity {
                                         intent.putExtra("userComingFrom", "sprotsTeamSearch");
                                         intent.putExtra("mTeamSearchDatum", getIntent().getSerializableExtra("mTeamSearchDatum"));
                                         intent.putExtra("mBrListDatum", liveBroadcastersList.get(position));
+                                        intent.putExtra("chatChannelKey",getIntent().getStringExtra("chatChannelKey"));
                                         startActivity(intent);
                                         finish();
                                     }
@@ -213,9 +234,43 @@ public class LiveBroadcastersListActivity extends AppCompatActivity {
                                         intent.putExtra("userComingFrom", "leaguesTeamSearch");
                                         intent.putExtra("mTeamSearchDatum", getIntent().getSerializableExtra("mTeamSearchDatum"));
                                         intent.putExtra("mBrListDatum", liveBroadcastersList.get(position));
+                                        intent.putExtra("chatChannelKey",getIntent().getStringExtra("chatChannelKey"));
+                                        startActivity(intent);
+                                        finish();
+                                    } else if (userselection.equalsIgnoreCase("followerList")) {
+                                        Intent intent = new Intent(mContext, LiveListeningActivity.class);
+                                        intent.putExtra("userComingFrom", "followerListSwitch");
+                                        intent.putExtra("mUserDatum", getIntent().getSerializableExtra("mUserDatum"));
+                                        intent.putExtra("mBrListDatum", liveBroadcastersList.get(position));
+                                        intent.putExtra("chatChannelKey",getIntent().getStringExtra("chatChannelKey"));
+                                        startActivity(intent);
+                                        finish();
+                                    } else if (userselection.equalsIgnoreCase("followerListSwitch")) {
+                                        Intent intent = new Intent(mContext, LiveListeningActivity.class);
+                                        intent.putExtra("userComingFrom", "followerListSwitch");
+                                        intent.putExtra("mUserDatum", getIntent().getSerializableExtra("mUserDatum"));
+                                        intent.putExtra("mBrListDatum", liveBroadcastersList.get(position));
+                                        intent.putExtra("chatChannelKey",getIntent().getStringExtra("chatChannelKey"));
+                                        startActivity(intent);
+                                        finish();
+                                    }else if (userselection.equalsIgnoreCase("followingList")) {
+                                        Intent intent = new Intent(mContext, LiveListeningActivity.class);
+                                        intent.putExtra("userComingFrom", "followingListSwitch");
+                                        intent.putExtra("mUserDatum", getIntent().getSerializableExtra("mUserDatum"));
+                                        intent.putExtra("mBrListDatum", liveBroadcastersList.get(position));
+                                        intent.putExtra("chatChannelKey",getIntent().getStringExtra("chatChannelKey"));
+                                        startActivity(intent);
+                                        finish();
+                                    } else if (userselection.equalsIgnoreCase("followingListSwitch")) {
+                                        Intent intent = new Intent(mContext, LiveListeningActivity.class);
+                                        intent.putExtra("userComingFrom", "followingListSwitch");
+                                        intent.putExtra("mUserDatum", getIntent().getSerializableExtra("mUserDatum"));
+                                        intent.putExtra("mBrListDatum", liveBroadcastersList.get(position));
+                                        intent.putExtra("chatChannelKey",getIntent().getStringExtra("chatChannelKey"));
                                         startActivity(intent);
                                         finish();
                                     }
+
                                 }
                             }
                         });

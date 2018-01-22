@@ -6,6 +6,9 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.List;
 
+/*
+ * Created by Neha Kalia on 15-06-2017.
+ */
 
 public class BroadcastMatchlistModel implements Serializable{
     @SerializedName("data")
@@ -109,6 +112,9 @@ public class BroadcastMatchlistModel implements Serializable{
         @SerializedName("match_date")
         @Expose
         private String matchDate;
+        @SerializedName("chatChannelid")
+        @Expose
+        private String chatChannelid;
         @SerializedName("data_id")
         @Expose
         private String dataId;
@@ -176,6 +182,14 @@ public class BroadcastMatchlistModel implements Serializable{
 
         public void setMatchStatus(String matchStatus) {
             this.matchStatus = matchStatus;
+        }
+
+        public String getChatChannelid() {
+            return chatChannelid;
+        }
+
+        public void setChatChannelid(String chatChannelid) {
+            this.chatChannelid = chatChannelid;
         }
 
         public String getVenue() {

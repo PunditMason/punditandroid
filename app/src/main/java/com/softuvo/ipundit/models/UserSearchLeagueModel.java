@@ -6,8 +6,8 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * Created by softuvo on 03-08-2017.
+/*
+ * Created by Neha Kalia on 03-08-2017.
  */
 
 public class UserSearchLeagueModel implements Serializable {
@@ -595,6 +595,17 @@ public class UserSearchLeagueModel implements Serializable {
                 @SerializedName("team2_name")
                 @Expose
                 private String team2Name;
+                @SerializedName("chatChannelid")
+                @Expose
+                private String chatChannelid;
+
+                public String getChatChannelid() {
+                    return chatChannelid;
+                }
+
+                public void setChatChannelid(String chatChannelid) {
+                    this.chatChannelid = chatChannelid;
+                }
 
                 public String getId() {
                     return id;
@@ -953,6 +964,17 @@ public class UserSearchLeagueModel implements Serializable {
                 @SerializedName("goaldifference")
                 @Expose
                 private String goaldifference;
+                @SerializedName("chatChannelid")
+                @Expose
+                private String chatChannelid;
+
+                public String getChatChannelid() {
+                    return chatChannelid;
+                }
+
+                public void setChatChannelid(String chatChannelid) {
+                    this.chatChannelid = chatChannelid;
+                }
 
                 public String getId() {
                     return id;

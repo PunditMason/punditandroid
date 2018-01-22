@@ -6,6 +6,10 @@ import android.support.v4.content.ContextCompat;
 import com.softuvo.ipundit.R;
 import com.softuvo.ipundit.config.App;
 
+/*
+ * Created by Neha Kalia on 7-11-2017.
+ */
+
 public class SnackbarUtil {
     public static void showSuccessLongSnackbar(Activity activity, String message) {
         Snackbar snackbar = Snackbar.make(activity.findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG);

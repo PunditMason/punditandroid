@@ -5,6 +5,10 @@ import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
+/*
+ * Created by Neha Kalia on 15-06-2017.
+ */
+
 
 public class CommanUtil {
 

@@ -1,11 +1,18 @@
 package com.softuvo.ipundit.activities;
 
+/*
+ * Created by Neha Kalia on 12/08/2017.
+ */
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
@@ -21,7 +28,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
+import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
+import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 import com.red5pro.streaming.R5Connection;
 import com.red5pro.streaming.R5Stream;
 import com.red5pro.streaming.R5StreamProtocol;
@@ -39,6 +51,8 @@ import com.softuvo.ipundit.fragments.LiveFeedsPlayerFragment;
 import com.softuvo.ipundit.models.BroadacstersDetailsModel;
 import com.softuvo.ipundit.models.FollowCheckModel;
 import com.softuvo.ipundit.models.FollowUnfollowModel;
+import com.softuvo.ipundit.models.FollowerListModel;
+import com.softuvo.ipundit.models.FollowingListModel;
 import com.softuvo.ipundit.models.ListnerCountModel;
 import com.softuvo.ipundit.models.LiveBroacastersListModel;
 import com.softuvo.ipundit.models.LiveFeedsModel;
@@ -74,12 +88,11 @@ import static com.softuvo.ipundit.config.AppConstant.APP_BACKGROUND;
 
 public class LiveListeningActivity extends BaseActivity {
     private static Activity mContext;
-    private LiveFeedsAdapter liveFeedsAdapter;
     public static R5Stream subscribe;
     private Timer t;
     private static String listenerId;
-    private String shareUrl, team1Score, team2Score, matchContenstentId, followUnfoloowPath,
-            getfollowunfollowpath, status, broadcasterId, broadcasterName, channelId, streamName, serverAddress,groupID;
+    private String shareUrl, matchContenstentId, followUnfoloowPath,
+            getfollowunfollowpath, status, broadcasterId, broadcasterName, channelId, streamName, serverAddress, groupID, chatChannelId;
     private int followStatus, strMin = 0, strSec = 0, visible = 0;
 
     @BindView(R.id.rl_live_listening_main)
@@ -111,6 +124,16 @@ public class LiveListeningActivity extends BaseActivity {
 
     @BindView(R.id.iv_league_logo)
     ImageView ivLeagueLogo;
+
+    @BindView(R.id.rl_switch_tile)
+    RelativeLayout rlSwitchTile;
+
+    @BindView(R.id.rl_share_tile)
+    RelativeLayout rlShareTile;
+
+    @BindView(R.id.rl_pundit_tile)
+    RelativeLayout rlPunditTile;
+
 
     /* @BindView(R.id.rv_livefeeds_container1)
      RecyclerView rvLivefeedsContainer;
@@ -163,7 +186,8 @@ public class LiveListeningActivity extends BaseActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         t = new Timer();
         Picasso.with(mContext).load(AppPreferences.init(mContext).getString(APP_BACKGROUND)).into(rlLiveListeningMain);
-        AppPreferences.init(mContext).putString(AppConstant.User_CURRENT_STATE, "2");
+//        AppPreferences.init(mContext).putString(AppConstant.User_CURRENT_STATE, "2");
+        chatChannelId = getIntent().getStringExtra("chatChannelKey");
 //        streamingGif.setGifImageResource(R.drawable.listning_gif);
         LiveBroacastersListModel.Channel channel;
         if (ConnectivityReceivers.isConnected()) {
@@ -207,6 +231,7 @@ public class LiveListeningActivity extends BaseActivity {
                     broadcasterId = channel.getBroadcasterId();
                     channelId = channel.getId();
                     streamName = channel.getStreamName();
+                    mTabLayout.setVisibility(View.GONE);
                     getRed5ProGroupId();
 //                    configRedPro(streamName);
                 }
@@ -249,6 +274,7 @@ public class LiveListeningActivity extends BaseActivity {
                             tvNoData.setVisibility(View.VISIBLE);
                             tvNoData.setText(R.string.team_talk);
                             streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
+                            mTabLayout.setVisibility(View.GONE);
                             getRed5ProGroupId();
 //                            configRedPro(streamName);
                         }
@@ -292,6 +318,7 @@ public class LiveListeningActivity extends BaseActivity {
                             tvNoData.setVisibility(View.VISIBLE);
                             tvNoData.setText(R.string.team_talk);
                             streamName = channel.getStreamName();
+                            mTabLayout.setVisibility(View.GONE);
                             getRed5ProGroupId();
 //                            configRedPro(streamName);
                         }
@@ -335,7 +362,9 @@ public class LiveListeningActivity extends BaseActivity {
                             tvNoData.setVisibility(View.VISIBLE);
                             tvNoData.setText(R.string.team_talk);
                             streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
+                            mTabLayout.setVisibility(View.GONE);
                             getRed5ProGroupId();
+
 //                            configRedPro(streamName);
                         }
                     }
@@ -378,6 +407,7 @@ public class LiveListeningActivity extends BaseActivity {
                             tvNoData.setText(R.string.team_talk);
                             streamName = channel.getStreamName();
                             getRed5ProGroupId();
+                            mTabLayout.setVisibility(View.GONE);
 //                            configRedPro(streamName);
                         }
                     }
@@ -403,6 +433,7 @@ public class LiveListeningActivity extends BaseActivity {
                             tvNoData.setText(R.string.team_talk);
                             streamName = channel.getStreamName();
                             getRed5ProGroupId();
+                            mTabLayout.setVisibility(View.GONE);
 //                            configRedPro(streamName);
                         }
                     }
@@ -446,11 +477,188 @@ public class LiveListeningActivity extends BaseActivity {
                             tvNoData.setText(R.string.team_talk);
                             streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
                             getRed5ProGroupId();
+                            mTabLayout.setVisibility(View.GONE);
 //                            configRedPro(streamName);
                         }
                     }
                 }
-            } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("leaguesUserSearchSwitch")) {
+            } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("followerList")) {
+                if (getIntent().getSerializableExtra("mUserDatum") != null) {
+                    FollowerListModel.Follwer channell;
+                    FollowerListModel.Follwer userDatum = (FollowerListModel.Follwer) getIntent().getSerializableExtra("mUserDatum");
+                    if (userDatum.getChannelInfo().get(0).getChannel().getMarkImage() != null)
+                        Picasso.with(mContext).load(ApiConstants.LEAGUE_IMAGE_BASE_URL + userDatum.getChannelInfo().get(0).getChannel().getMarkImage()).into(ivLeagueLogo);
+                    if (userDatum.getChannelInfo().get(0).getChannel() != null) {
+                        if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("match")) {
+                            channell = (FollowerListModel.Follwer) getIntent().getSerializableExtra("mUserDatum");
+                            matchContenstentId = userDatum.getChannelInfo().get(0).getChannel().getMatchId();
+                            tvTeam1Name.setText(userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + ":");
+                            tvTeam2Name.setText(userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name() + ":");
+                            txtMatchNameTop.setText(userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + " Vs " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name());
+                            broadcasterName = channell.getChannelInfo().get(0).getChannel().getBroadcasterName();
+                            txtBroadcasterName.setText("BroadCasting this Game:" + broadcasterName);
+                            broadcasterId = channell.getChannelInfo().get(0).getChannel().getBroadcasterId();
+                            channelId = channell.getChannelInfo().get(0).getChannel().getId();
+                            streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
+                            getRed5ProGroupId();
+//                            configRedPro(streamName);
+//                            getLiveFeedsFromServer(matchContenstentId);
+                            setupViewPager(mViewPager, matchContenstentId);
+                            mViewPager.setOffscreenPageLimit(0);
+                            mTabLayout.setupWithViewPager(mViewPager);
+                        } else if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
+                            channell = (FollowerListModel.Follwer) getIntent().getSerializableExtra("mUserDatum");
+                            matchContenstentId = userDatum.getChannelInfo().get(0).getChannel().getMatchId();
+                            txtMatchNameTop.setText(userDatum.getChannelInfo().get(0).getTeamInfo().getContestantName());
+                            txtMatchTimeTop.setText("Rank:" + userDatum.getChannelInfo().get(0).getTeamInfo().getRank());
+                            broadcasterName = userDatum.getChannelInfo().get(0).getChannel().getBroadcasterName();
+                            txtBroadcasterName.setText("BroadCasting this Game:" + broadcasterName);
+                            tvTeam1Name.setText(userDatum.getChannelInfo().get(0).getTeamInfo().getContestantClubName());
+                            tvTeam2Name.setText("Points: " + userDatum.getChannelInfo().get(0).getTeamInfo().getPoints());
+                            broadcasterId = channell.getChannelInfo().get(0).getChannel().getBroadcasterId();
+                            channelId = channell.getChannelInfo().get(0).getChannel().getId();
+                            tvNoData.setVisibility(View.VISIBLE);
+                            tvNoData.setText(R.string.team_talk);
+                            streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
+                            getRed5ProGroupId();
+                            mTabLayout.setVisibility(View.GONE);
+//                            configRedPro(streamName);
+                        }
+                    }
+                }
+            }else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("followerListSwitch")) {
+                if (getIntent().getSerializableExtra("mUserDatum") != null) {
+                    FollowerListModel.Follwer channell;
+                    FollowerListModel.Follwer userDatum = (FollowerListModel.Follwer) getIntent().getSerializableExtra("mUserDatum");
+                    if (userDatum.getChannelInfo().get(0).getChannel().getMarkImage() != null)
+                        Picasso.with(mContext).load(ApiConstants.LEAGUE_IMAGE_BASE_URL + userDatum.getChannelInfo().get(0).getChannel().getMarkImage()).into(ivLeagueLogo);
+                    if (userDatum.getChannelInfo().get(0).getChannel() != null) {
+                        if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("match")) {
+                            channell = (FollowerListModel.Follwer) getIntent().getSerializableExtra("mUserDatum");
+                            matchContenstentId = userDatum.getChannelInfo().get(0).getChannel().getMatchId();
+                            tvTeam1Name.setText(userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + ":");
+                            tvTeam2Name.setText(userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name() + ":");
+                            txtMatchNameTop.setText(userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + " Vs " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name());
+                            broadcasterName = channell.getChannelInfo().get(0).getChannel().getBroadcasterName();
+                            txtBroadcasterName.setText("BroadCasting this Game:" + broadcasterName);
+                            broadcasterId = channell.getChannelInfo().get(0).getChannel().getBroadcasterId();
+                            channelId = channell.getChannelInfo().get(0).getChannel().getId();
+                            streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
+                            getRed5ProGroupId();
+//                            configRedPro(streamName);
+//                            getLiveFeedsFromServer(matchContenstentId);
+                            setupViewPager(mViewPager, matchContenstentId);
+                            mViewPager.setOffscreenPageLimit(0);
+                            mTabLayout.setupWithViewPager(mViewPager);
+                        } else if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
+                            channell = (FollowerListModel.Follwer) getIntent().getSerializableExtra("mUserDatum");
+                            matchContenstentId = userDatum.getChannelInfo().get(0).getChannel().getMatchId();
+                            txtMatchNameTop.setText(userDatum.getChannelInfo().get(0).getTeamInfo().getContestantName());
+                            txtMatchTimeTop.setText("Rank:" + userDatum.getChannelInfo().get(0).getTeamInfo().getRank());
+                            broadcasterName = userDatum.getChannelInfo().get(0).getChannel().getBroadcasterName();
+                            txtBroadcasterName.setText("BroadCasting this Game:" + broadcasterName);
+                            tvTeam1Name.setText(userDatum.getChannelInfo().get(0).getTeamInfo().getContestantClubName());
+                            tvTeam2Name.setText("Points: " + userDatum.getChannelInfo().get(0).getTeamInfo().getPoints());
+                            broadcasterId = channell.getChannelInfo().get(0).getChannel().getBroadcasterId();
+                            channelId = channell.getChannelInfo().get(0).getChannel().getId();
+                            tvNoData.setVisibility(View.VISIBLE);
+                            tvNoData.setText(R.string.team_talk);
+                            streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
+                            getRed5ProGroupId();
+                            mTabLayout.setVisibility(View.GONE);
+//                            configRedPro(streamName);
+                        }
+                    }
+                }
+            }else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("followingList")) {
+                if (getIntent().getSerializableExtra("mUserDatum") != null) {
+                    FollowingListModel.Following channell;
+                    FollowingListModel.Following userDatum = (FollowingListModel.Following) getIntent().getSerializableExtra("mUserDatum");
+                    if (userDatum.getChannelInfo().get(0).getChannel().getMarkImage() != null)
+                        Picasso.with(mContext).load(ApiConstants.LEAGUE_IMAGE_BASE_URL + userDatum.getChannelInfo().get(0).getChannel().getMarkImage()).into(ivLeagueLogo);
+                    if (userDatum.getChannelInfo().get(0).getChannel() != null) {
+                        if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("match")) {
+                            channell = (FollowingListModel.Following) getIntent().getSerializableExtra("mUserDatum");
+                            matchContenstentId = userDatum.getChannelInfo().get(0).getChannel().getMatchId();
+                            tvTeam1Name.setText(userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + ":");
+                            tvTeam2Name.setText(userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name() + ":");
+                            txtMatchNameTop.setText(userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + " Vs " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name());
+                            broadcasterName = channell.getChannelInfo().get(0).getChannel().getBroadcasterName();
+                            txtBroadcasterName.setText("BroadCasting this Game:" + broadcasterName);
+                            broadcasterId = channell.getChannelInfo().get(0).getChannel().getBroadcasterId();
+                            channelId = channell.getChannelInfo().get(0).getChannel().getId();
+                            streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
+                            getRed5ProGroupId();
+//                            configRedPro(streamName);
+//                            getLiveFeedsFromServer(matchContenstentId);
+                            setupViewPager(mViewPager, matchContenstentId);
+                            mViewPager.setOffscreenPageLimit(0);
+                            mTabLayout.setupWithViewPager(mViewPager);
+                        } else if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
+                            channell = (FollowingListModel.Following) getIntent().getSerializableExtra("mUserDatum");
+                            matchContenstentId = userDatum.getChannelInfo().get(0).getChannel().getMatchId();
+                            txtMatchNameTop.setText(userDatum.getChannelInfo().get(0).getTeamInfo().getContestantName());
+                            txtMatchTimeTop.setText("Rank:" + userDatum.getChannelInfo().get(0).getTeamInfo().getRank());
+                            broadcasterName = userDatum.getChannelInfo().get(0).getChannel().getBroadcasterName();
+                            txtBroadcasterName.setText("BroadCasting this Game:" + broadcasterName);
+                            tvTeam1Name.setText(userDatum.getChannelInfo().get(0).getTeamInfo().getContestantClubName());
+                            tvTeam2Name.setText("Points: " + userDatum.getChannelInfo().get(0).getTeamInfo().getPoints());
+                            broadcasterId = channell.getChannelInfo().get(0).getChannel().getBroadcasterId();
+                            channelId = channell.getChannelInfo().get(0).getChannel().getId();
+                            tvNoData.setVisibility(View.VISIBLE);
+                            tvNoData.setText(R.string.team_talk);
+                            streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
+                            getRed5ProGroupId();
+                            mTabLayout.setVisibility(View.GONE);
+//                            configRedPro(streamName);
+                        }
+                    }
+                }
+            }else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("followingListSwitch")) {
+                if (getIntent().getSerializableExtra("mUserDatum") != null) {
+                    FollowingListModel.Following channell;
+                    FollowingListModel.Following userDatum = (FollowingListModel.Following) getIntent().getSerializableExtra("mUserDatum");
+                    if (userDatum.getChannelInfo().get(0).getChannel().getMarkImage() != null)
+                        Picasso.with(mContext).load(ApiConstants.LEAGUE_IMAGE_BASE_URL + userDatum.getChannelInfo().get(0).getChannel().getMarkImage()).into(ivLeagueLogo);
+                    if (userDatum.getChannelInfo().get(0).getChannel() != null) {
+                        if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("match")) {
+                            channell = (FollowingListModel.Following) getIntent().getSerializableExtra("mUserDatum");
+                            matchContenstentId = userDatum.getChannelInfo().get(0).getChannel().getMatchId();
+                            tvTeam1Name.setText(userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + ":");
+                            tvTeam2Name.setText(userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name() + ":");
+                            txtMatchNameTop.setText(userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + " Vs " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name());
+                            broadcasterName = channell.getChannelInfo().get(0).getChannel().getBroadcasterName();
+                            txtBroadcasterName.setText("BroadCasting this Game:" + broadcasterName);
+                            broadcasterId = channell.getChannelInfo().get(0).getChannel().getBroadcasterId();
+                            channelId = channell.getChannelInfo().get(0).getChannel().getId();
+                            streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
+                            getRed5ProGroupId();
+//                            configRedPro(streamName);
+//                            getLiveFeedsFromServer(matchContenstentId);
+                            setupViewPager(mViewPager, matchContenstentId);
+                            mViewPager.setOffscreenPageLimit(0);
+                            mTabLayout.setupWithViewPager(mViewPager);
+                        } else if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
+                            channell = (FollowingListModel.Following) getIntent().getSerializableExtra("mUserDatum");
+                            matchContenstentId = userDatum.getChannelInfo().get(0).getChannel().getMatchId();
+                            txtMatchNameTop.setText(userDatum.getChannelInfo().get(0).getTeamInfo().getContestantName());
+                            txtMatchTimeTop.setText("Rank:" + userDatum.getChannelInfo().get(0).getTeamInfo().getRank());
+                            broadcasterName = userDatum.getChannelInfo().get(0).getChannel().getBroadcasterName();
+                            txtBroadcasterName.setText("BroadCasting this Game:" + broadcasterName);
+                            tvTeam1Name.setText(userDatum.getChannelInfo().get(0).getTeamInfo().getContestantClubName());
+                            tvTeam2Name.setText("Points: " + userDatum.getChannelInfo().get(0).getTeamInfo().getPoints());
+                            broadcasterId = channell.getChannelInfo().get(0).getChannel().getBroadcasterId();
+                            channelId = channell.getChannelInfo().get(0).getChannel().getId();
+                            tvNoData.setVisibility(View.VISIBLE);
+                            tvNoData.setText(R.string.team_talk);
+                            streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
+                            getRed5ProGroupId();
+                            mTabLayout.setVisibility(View.GONE);
+//                            configRedPro(streamName);
+                        }
+                    }
+                }
+            }else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("leaguesUserSearchSwitch")) {
                 if (getIntent().getSerializableExtra("mUserDatum") != null) {
                     UserSearchLeagueModel.Datum userDatum = (UserSearchLeagueModel.Datum) getIntent().getSerializableExtra("mUserDatum");
                     if (userDatum.getChannelInfo().get(0).getChannel().getMarkImage() != null)
@@ -512,18 +720,42 @@ public class LiveListeningActivity extends BaseActivity {
                             tvNoData.setVisibility(View.VISIBLE);
                             tvNoData.setText(R.string.team_talk);
                             streamName = channel.getStreamName();
+                            mTabLayout.setVisibility(View.GONE);
                             getRed5ProGroupId();
 //                            configRedPro(streamName);
                         }
                     }
-
                 }
-
+            } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("matchListNoBroadcast")) {
+                if (getIntent().getSerializableExtra("mMatchDatum") != null) {
+                    if (AppPreferences.init(mContext).getString(AppConstant.LEAGUE_IMAGE_URL) != null)
+                        Picasso.with(mContext).load(AppPreferences.init(mContext).getString(AppConstant.LEAGUE_IMAGE_URL)).into(ivLeagueLogo);
+                    MatchListListnerModel.ListenMatchList matchDatum = (MatchListListnerModel.ListenMatchList) getIntent().getSerializableExtra("mMatchDatum");
+                    matchContenstentId = matchDatum.getMatchId();
+                    tvTeam1Name.setText(matchDatum.getTeam1Name() + ":");
+                    tvTeam2Name.setText(matchDatum.getTeam2Name() + ":");
+                    txtMatchNameTop.setText(matchDatum.getTeam1Name() + " Vs " + matchDatum.getTeam2Name());
+                    txtBroadcasterName.setVisibility(View.GONE);
+                    rlSwitchTile.setClickable(false);
+                    rlShareTile.setClickable(false);
+                    rlPunditTile.setClickable(false);
+                   /* broadcasterId = channel.getBroadcasterId();
+                    channelId = channel.getId();
+                    streamName = channel.getStreamName();*/
+                    //getRed5ProGroupId();
+//                    configRedPro(streamName);
+//                    getLiveFeedsFromServer(matchContenstentId);
+                    setupViewPager(mViewPager, matchContenstentId);
+                    mViewPager.setOffscreenPageLimit(0);
+                    mTabLayout.setupWithViewPager(mViewPager);
+                }
+            }
+            if (!(getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("matchListNoBroadcast"))) {
+                getBroadcastersDetails(matchContenstentId);
             }
             getfollowunfollowpath = broadcasterId + "/" + AppPreferences.init(mContext).getString(AppConstant.USER_ID) + "/" + channelId;
             getUserFollowCount(getfollowunfollowpath);
             getBroadcastersProfile(broadcasterId);
-            getBroadcastersDetails(matchContenstentId);
         } else {
             SnackbarUtil.showWarningLongSnackbar(mContext, getResources().getString(R.string.internet_not_connected_text));
         }
@@ -537,26 +769,26 @@ public class LiveListeningActivity extends BaseActivity {
         viewPager.setAdapter(adapter);
     }
 
-    public void getRed5ProGroupId(){
+    public void getRed5ProGroupId() {
         App.getApiHelper().getRedFiveProGroupId(new ApiCallBack<List<RedFiveProGroupIdModel>>() {
             @Override
             public void onSuccess(List<RedFiveProGroupIdModel> redFiveProGroupIdModels) {
-                if(redFiveProGroupIdModels.get(0).getName()!=null){
-                    groupID=redFiveProGroupIdModels.get(0).getName();
+                if (redFiveProGroupIdModels.get(0).getName() != null) {
+                    groupID = redFiveProGroupIdModels.get(0).getName();
                     getServerAddress(groupID);
                 }
             }
 
             @Override
             public void onFailure(String message) {
-                Log.e("hello",message);
+                Log.e("hello", message);
             }
         });
 
     }
 
     public void getServerAddress(String groupID) {
-        App.getApiHelper().getListeningServerAddress(groupID,new ApiCallBack<List<ServerListenerAddressModel>>() {
+        App.getApiHelper().getListeningServerAddress(groupID, new ApiCallBack<List<ServerListenerAddressModel>>() {
             @Override
             public void onSuccess(List<ServerListenerAddressModel> serverListenerAddressModel) {
                 for (int i = 0; i < serverListenerAddressModel.size(); i++)
@@ -575,110 +807,135 @@ public class LiveListeningActivity extends BaseActivity {
 
             @Override
             public void onFailure(String message) {
-                Log.e("getserver",message);
+                Log.e("getserver", message);
             }
         });
     }
 
     @OnClick(R.id.rl_switch_tile)
     public void switchBroacaster() {
-        if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("pundits")) {
-            if (subscribe != null) {
-                subscribe.stop();
-            }
-            unmountListner(listenerId);
-            Intent intent = new Intent(mContext, LiveBroadcastersListActivity.class);
-            intent.putExtra("userComingFrom", "pundits");
-            intent.putExtra("matchidcontestentid", matchContenstentId);
-            intent.putExtra("mUserDatum", getIntent().getSerializableExtra("mUserDatum"));
-            startActivity(intent);
-            finish();
-        }
-        if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("punditsSwitch")) {
-            if (subscribe != null) {
-                subscribe.stop();
-            }
-            unmountListner(listenerId);
-            Intent intent = new Intent(mContext, LiveBroadcastersListActivity.class);
-            intent.putExtra("userComingFrom", "punditsSwitch");
-            intent.putExtra("matchidcontestentid", matchContenstentId);
-            intent.putExtra("mUserDatum", getIntent().getSerializableExtra("mUserDatum"));
-            startActivity(intent);
-            finish();
-        } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("sprotsUserSearch")) {
-            if (subscribe != null) {
-                subscribe.stop();
-            }
-            unmountListner(listenerId);
-            Intent intent = new Intent(mContext, LiveBroadcastersListActivity.class);
-            intent.putExtra("userComingFrom", "sprotsUserSearch");
-            intent.putExtra("matchidcontestentid", matchContenstentId);
-            intent.putExtra("mUserDatum", getIntent().getSerializableExtra("mUserDatum"));
-            startActivity(intent);
-            finish();
-        } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("sprotsUserSearchSwitch")) {
-            if (subscribe != null) {
-                subscribe.stop();
-            }
-            unmountListner(listenerId);
-            Intent intent = new Intent(mContext, LiveBroadcastersListActivity.class);
-            intent.putExtra("userComingFrom", "sprotsUserSearchSwitch");
-            intent.putExtra("matchidcontestentid", matchContenstentId);
-            intent.putExtra("mUserDatum", getIntent().getSerializableExtra("mUserDatum"));
-            startActivity(intent);
-            finish();
-        } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("leaguesUserSearch")) {
-            if (subscribe != null) {
-                subscribe.stop();
-            }
-            unmountListner(listenerId);
-            Intent intent = new Intent(mContext, LiveBroadcastersListActivity.class);
-            intent.putExtra("userComingFrom", "leaguesUserSearch");
-            intent.putExtra("matchidcontestentid", matchContenstentId);
-            intent.putExtra("mUserDatum", getIntent().getSerializableExtra("mUserDatum"));
-            startActivity(intent);
-            finish();
-        } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("sprotsUserSearchSwitch")) {
-            if (subscribe != null) {
-                subscribe.stop();
-            }
-            unmountListner(listenerId);
-            Intent intent = new Intent(mContext, LiveBroadcastersListActivity.class);
-            intent.putExtra("userComingFrom", "sprotsUserSearchSwitch");
-            intent.putExtra("matchidcontestentid", matchContenstentId);
-            intent.putExtra("mUserDatum", getIntent().getSerializableExtra("mUserDatum"));
-            startActivity(intent);
-            finish();
-        } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("sprotsTeamSearch")) {
-            if (subscribe != null) {
-                subscribe.stop();
-            }
-            unmountListner(listenerId);
-            Intent intent = new Intent(mContext, LiveBroadcastersListActivity.class);
-            intent.putExtra("userComingFrom", "sprotsTeamSearch");
-            intent.putExtra("matchidcontestentid", matchContenstentId);
-            intent.putExtra("mTeamSearchDatum", getIntent().getSerializableExtra("mTeamSearchDatum"));
-            startActivity(intent);
-            finish();
-        } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("leaguesTeamSearch")) {
-            if (subscribe != null) {
-                subscribe.stop();
-            }
-            unmountListner(listenerId);
-            Intent intent = new Intent(mContext, LiveBroadcastersListActivity.class);
-            intent.putExtra("userComingFrom", "leaguesTeamSearch");
-            intent.putExtra("matchidcontestentid", matchContenstentId);
-            intent.putExtra("mTeamSearchDatum", getIntent().getSerializableExtra("mTeamSearchDatum"));
-            startActivity(intent);
-            finish();
-        } else {
-            if (subscribe != null) {
-                subscribe.stop();
-            }
-            unmountListner(listenerId);
-            finish();
-        }
+        showAlert();
+    }
 
+    public void showAlert(){
+        new AlertDialog.Builder(mContext)
+                .setTitle(getString(R.string.switch_listen_title))
+                .setMessage(getString(R.string.switch_listen_message))
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (subscribe != null) {
+                            subscribe.stop();
+                        }
+                        unmountListner(listenerId);
+                        if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("pundits")) {
+                            Intent intent = new Intent(mContext, LiveBroadcastersListActivity.class);
+                            intent.putExtra("userComingFrom", "pundits");
+                            intent.putExtra("matchidcontestentid", matchContenstentId);
+                            intent.putExtra("chatChannelKey", getIntent().getStringExtra("chatChannelKey"));
+                            intent.putExtra("mUserDatum", getIntent().getSerializableExtra("mUserDatum"));
+                            startActivity(intent);
+                            finish();
+                        }
+                        else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("punditsSwitch")) {
+                            Intent intent = new Intent(mContext, LiveBroadcastersListActivity.class);
+                            intent.putExtra("userComingFrom", "punditsSwitch");
+                            intent.putExtra("matchidcontestentid", matchContenstentId);
+                            intent.putExtra("mUserDatum", getIntent().getSerializableExtra("mUserDatum"));
+                            intent.putExtra("chatChannelKey", getIntent().getStringExtra("chatChannelKey"));
+                            startActivity(intent);
+                            finish();
+                        } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("sprotsUserSearch")) {
+                            Intent intent = new Intent(mContext, LiveBroadcastersListActivity.class);
+                            intent.putExtra("userComingFrom", "sprotsUserSearch");
+                            intent.putExtra("matchidcontestentid", matchContenstentId);
+                            intent.putExtra("mUserDatum", getIntent().getSerializableExtra("mUserDatum"));
+                            intent.putExtra("chatChannelKey", getIntent().getStringExtra("chatChannelKey"));
+                            startActivity(intent);
+                            finish();
+                        } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("sprotsUserSearchSwitch")) {
+                            Intent intent = new Intent(mContext, LiveBroadcastersListActivity.class);
+                            intent.putExtra("userComingFrom", "sprotsUserSearchSwitch");
+                            intent.putExtra("matchidcontestentid", matchContenstentId);
+                            intent.putExtra("mUserDatum", getIntent().getSerializableExtra("mUserDatum"));
+                            intent.putExtra("chatChannelKey", getIntent().getStringExtra("chatChannelKey"));
+                            startActivity(intent);
+                            finish();
+                        } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("leaguesUserSearch")) {
+                            Intent intent = new Intent(mContext, LiveBroadcastersListActivity.class);
+                            intent.putExtra("userComingFrom", "leaguesUserSearch");
+                            intent.putExtra("matchidcontestentid", matchContenstentId);
+                            intent.putExtra("mUserDatum", getIntent().getSerializableExtra("mUserDatum"));
+                            intent.putExtra("chatChannelKey", getIntent().getStringExtra("chatChannelKey"));
+                            startActivity(intent);
+                            finish();
+                        } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("leaguesUserSearchSwitch")) {
+                            Intent intent = new Intent(mContext, LiveBroadcastersListActivity.class);
+                            intent.putExtra("userComingFrom", "leaguesUserSearchSwitch");
+                            intent.putExtra("matchidcontestentid", matchContenstentId);
+                            intent.putExtra("mUserDatum", getIntent().getSerializableExtra("mUserDatum"));
+                            intent.putExtra("chatChannelKey", getIntent().getStringExtra("chatChannelKey"));
+                            startActivity(intent);
+                            finish();
+                        } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("sprotsTeamSearch")) {
+                            Intent intent = new Intent(mContext, LiveBroadcastersListActivity.class);
+                            intent.putExtra("userComingFrom", "sprotsTeamSearch");
+                            intent.putExtra("matchidcontestentid", matchContenstentId);
+                            intent.putExtra("mTeamSearchDatum", getIntent().getSerializableExtra("mTeamSearchDatum"));
+                            intent.putExtra("chatChannelKey", getIntent().getStringExtra("chatChannelKey"));
+                            startActivity(intent);
+                            finish();
+                        } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("leaguesTeamSearch")) {
+                            Intent intent = new Intent(mContext, LiveBroadcastersListActivity.class);
+                            intent.putExtra("userComingFrom", "leaguesTeamSearch");
+                            intent.putExtra("matchidcontestentid", matchContenstentId);
+                            intent.putExtra("mTeamSearchDatum", getIntent().getSerializableExtra("mTeamSearchDatum"));
+                            intent.putExtra("chatChannelKey", getIntent().getStringExtra("chatChannelKey"));
+                            startActivity(intent);
+                            finish();
+                        } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("followerList")) {
+                            Intent intent = new Intent(mContext, LiveBroadcastersListActivity.class);
+                            intent.putExtra("userComingFrom", "followerList");
+                            intent.putExtra("matchidcontestentid", matchContenstentId);
+                            intent.putExtra("chatChannelKey", getIntent().getStringExtra("chatChannelKey"));
+                            intent.putExtra("mUserDatum", getIntent().getSerializableExtra("mUserDatum"));
+                            startActivity(intent);
+                            finish();
+                        }else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("followingList")) {
+                            Intent intent = new Intent(mContext, LiveBroadcastersListActivity.class);
+                            intent.putExtra("userComingFrom", "followingList");
+                            intent.putExtra("matchidcontestentid", matchContenstentId);
+                            intent.putExtra("chatChannelKey", getIntent().getStringExtra("chatChannelKey"));
+                            intent.putExtra("mUserDatum", getIntent().getSerializableExtra("mUserDatum"));
+                            startActivity(intent);
+                            finish();
+                        }
+                        else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("followingListSwitch")) {
+                            Intent intent = new Intent(mContext, LiveBroadcastersListActivity.class);
+                            intent.putExtra("userComingFrom", "followingListSwitch");
+                            intent.putExtra("matchidcontestentid", matchContenstentId);
+                            intent.putExtra("mUserDatum", getIntent().getSerializableExtra("mUserDatum"));
+                            intent.putExtra("chatChannelKey", getIntent().getStringExtra("chatChannelKey"));
+                            startActivity(intent);
+                            finish();
+                        }
+                        else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("followerListSwitch")) {
+                            Intent intent = new Intent(mContext, LiveBroadcastersListActivity.class);
+                            intent.putExtra("userComingFrom", "followerListSwitch");
+                            intent.putExtra("matchidcontestentid", matchContenstentId);
+                            intent.putExtra("mUserDatum", getIntent().getSerializableExtra("mUserDatum"));
+                            intent.putExtra("chatChannelKey", getIntent().getStringExtra("chatChannelKey"));
+                            startActivity(intent);
+                            finish();
+                        }
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
     /*@OnClick(R.id.iv_play_pause)
@@ -831,6 +1088,7 @@ public class LiveListeningActivity extends BaseActivity {
             String encodedBroadcastersId = Base64.encodeToString(broadcasterId.getBytes(), Base64.NO_WRAP);
             String username = broadcasterName.replace(" ", "");
             shareUrl = ApiConstants.SHARE_BASE_URL + username + "-" + encodedBroadcastersId;
+//            AppPreferences.init(mContext).putString(AppConstant.User_CURRENT_STATE, "3");
             if (getIntent().getStringExtra("userComingFrom") != null) {
                 if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("matchList")) {
                     if (getIntent().getSerializableExtra("mMatchDatum") != null) {
@@ -935,16 +1193,35 @@ public class LiveListeningActivity extends BaseActivity {
             }
             Intent i = new Intent(Intent.ACTION_SEND);
             i.setType("text/plain");
-            i.putExtra(Intent.EXTRA_SUBJECT, "Pundit");
+          /*  i.putExtra(Intent.EXTRA_SUBJECT, "Pundit");
             i.putExtra(Intent.EXTRA_TEXT, shareUrl + "\n" + status);
-            startActivity(Intent.createChooser(i, "Share Via...."));
+            startActivity(Intent.createChooser(i, "Share Via...."));*/
+            PackageManager pm = getApplication().getPackageManager();
+            List<ResolveInfo> activityList = pm.queryIntentActivities(i, 0);
+            for(final ResolveInfo app : activityList) {
+                if("com.facebook.katana.ShareLinkActivity".equals(app.activityInfo.name)) {
+                    ShareDialog shareDialog;
+                    shareDialog = new ShareDialog(mContext);
+                    ShareLinkContent content = new ShareLinkContent.Builder()
+                            .setContentUrl(Uri.parse(shareUrl))
+                            .setQuote(status)
+                            .build();
+                    shareDialog.show(content);
+                    break;
+                } else {
+                    i.putExtra(Intent.EXTRA_SUBJECT, "Pundit");
+                    i.putExtra(Intent.EXTRA_TEXT, status + "\n" + shareUrl);
+                    startActivity(Intent.createChooser(i, "Share"));
+                    break;
+                }
+            }
         }
 
     }
 
     @OnClick(R.id.btn_follow_unfollow)
     public void buttonFollowUnfollow() {
-        if (AppPreferences.init(mContext).getString(AppConstant.USER_ID) == broadcasterId) {
+        if (AppPreferences.init(mContext).getString(AppConstant.USER_ID).equalsIgnoreCase(broadcasterId)) {
             SnackbarUtil.showWarningShortSnackbar(mContext, getString(R.string.self_follow_text));
             btnFollowUnfollow.setClickable(false);
         } else {
@@ -969,21 +1246,21 @@ public class LiveListeningActivity extends BaseActivity {
     @Override
     public void onStop() {
         super.onStop();
-        if (AppPreferences.init(mContext).getString(AppConstant.User_CURRENT_STATE).equalsIgnoreCase("3")) {
+     /*   if (AppPreferences.init(mContext).getString(AppConstant.User_CURRENT_STATE).equalsIgnoreCase("3")) {
 //            Do Nothing
         } else {
             if (subscribe != null) {
                 subscribe.stop();
             }
             unmountListner(listenerId);
-        }
+        }*/
     }
 
 
     @Override
     protected void onResume() {
         super.onResume();
-        AppPreferences.init(mContext).putString(AppConstant.User_CURRENT_STATE, "2");
+//        AppPreferences.init(mContext).putString(AppConstant.User_CURRENT_STATE, "2");
     }
 
    /* private void getLiveFeedsFromServer(final String matchId) {
@@ -1337,20 +1614,25 @@ public class LiveListeningActivity extends BaseActivity {
     }
 
     private void broadcasterLeaveDialog() {
-        if (!isFinishing()) {
-            final Dialog dialog = new Dialog(mContext);
-            dialog.setContentView(R.layout.custom_alertdialog_for_listner);
-            dialog.setCancelable(false);
-            Button ok = (Button) dialog.findViewById(R.id.btn_ok_custom);
-            ok.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    t.cancel();
-                    finish();
-                }
-            });
-            dialog.show();
-        }
+        try {
+            if (!isFinishing() && mContext != null) {
+                final Dialog dialog = new Dialog(mContext);
+                dialog.setContentView(R.layout.custom_alertdialog_for_listner);
+                dialog.setCancelable(false);
+                Button ok = dialog.findViewById(R.id.btn_ok_custom);
+                ok.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        t.cancel();
+                        AppPreferences.init(mContext).putString(AppConstant.LIVE, "0");
+                        dialog.dismiss();
+                        finish();
+                    }
+                });
+                dialog.show();
+
+            }
+        }catch (Exception e){e.printStackTrace();}
     }
 
     public static void stopListenAppBackground() {
@@ -1365,6 +1647,11 @@ public class LiveListeningActivity extends BaseActivity {
     @OnClick(R.id.rl_chat_tile)
     public void onClickChatListen() {
         SnackbarUtil.showWarningShortSnackbar(mContext, getString(R.string.under_development_message));
+     /*   AppPreferences.init(mContext).putString(AppConstant.User_CURRENT_STATE, "3");
+        Intent intent = new Intent(this, ConversationActivity.class);
+        intent.putExtra(ConversationUIService.GROUP_ID, Integer.parseInt(chatChannelId));
+        intent.putExtra(ConversationUIService.TAKE_ORDER, true);
+        startActivity(intent);*/
     }
     /*private void onIncommingCallListen() {
         PhoneStateListener phoneStateListener1 = new PhoneStateListener() {

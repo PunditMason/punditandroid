@@ -6,6 +6,10 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.List;
 
+/*
+ * Created by Neha Kalia on 15-06-2017.
+ */
+
 public class MatchStandingListModel implements Serializable{
     @SerializedName("data")
     @Expose
@@ -89,6 +93,9 @@ public class MatchStandingListModel implements Serializable{
         @SerializedName("live_listeners")
         @Expose
         private Integer liveListeners;
+        @SerializedName("chatChannelid")
+        @Expose
+        private String chatChannelid;
 
         public String getId() {
             return id;
@@ -274,5 +281,12 @@ public class MatchStandingListModel implements Serializable{
             this.liveListeners = liveListeners;
         }
 
+        public String getChatChannelid() {
+            return chatChannelid;
+        }
+
+        public void setChatChannelid(String chatChannelid) {
+            this.chatChannelid = chatChannelid;
+        }
     }
 }

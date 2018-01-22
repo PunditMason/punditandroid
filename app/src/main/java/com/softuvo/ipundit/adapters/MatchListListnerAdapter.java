@@ -7,11 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.softuvo.ipundit.R;
 import com.softuvo.ipundit.models.MatchListListnerModel;
-
 import java.util.List;
+
+/*
+ * Created by softuvo on 29-06-2017.
+ */
 
 public class MatchListListnerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     Context context;
@@ -38,33 +40,66 @@ public class MatchListListnerAdapter extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         MatchListListnerAdapter.MatchViewHolder holder1 = (MatchListListnerAdapter.MatchViewHolder) holder;
-        if(gameItemList.get(position).getTeam1Name()!=null)
-            holder1.team1Name.setText(gameItemList.get(position).getTeam1Name());
-        else
-            holder1.team1Name.setText("-");
-        if (gameItemList.get(position).getTeam1Score() == null || gameItemList.get(position).getTeam1Score().equalsIgnoreCase(""))
-            holder1.team1Score.setText("-");
-        else
-            holder1.team1Score.setText(gameItemList.get(position).getTeam1Score());
-        if(gameItemList.get(position).getTeam2Name()!=null)
-            holder1.team2Name.setText(gameItemList.get(position).getTeam2Name());
-        else
-            holder1.team2Name.setText("-");
-        if (gameItemList.get(position).getTeam2Score() == null || gameItemList.get(position).getTeam2Score().equalsIgnoreCase(""))
-            holder1.team2Score.setText("-");
-        else
-            holder1.team2Score.setText(gameItemList.get(position).getTeam2Score());
-        if (gameItemList.get(position).getMatchStatus().contains("Kick off"))
-            holder1.timeInterval.setText(context.getString(R.string.fixture_string));
-        else if (gameItemList.get(position).getMatchStatus().equalsIgnoreCase("Full Time")) {
-            holder1.timeInterval.setText("FT");
-        } else if (gameItemList.get(position).getMatchStatus().contains("First Half")||gameItemList.get(position).getMatchStatus().contains("Second Half")) {
-            holder1.timeInterval.setText(context.getString(R.string.playing_String));
-        } else if (gameItemList.get(position).getMatchStatus().equalsIgnoreCase("Match Postponed")) {
-            holder1.timeInterval.setText(context.getString(R.string.postpone_string));
+        if(gameItemList.get(position).getChannel().size()==0){
+            if(gameItemList.get(position).getTeam1Name()!=null)
+                holder1.team1Name.setText(gameItemList.get(position).getTeam1Name());
+            else
+                holder1.team1Name.setText("-");
+            if (gameItemList.get(position).getTeam1Score() == null || gameItemList.get(position).getTeam1Score().equalsIgnoreCase(""))
+                holder1.team1Score.setText("-");
+            else
+                holder1.team1Score.setText(gameItemList.get(position).getTeam1Score());
+            if(gameItemList.get(position).getTeam2Name()!=null)
+                holder1.team2Name.setText(gameItemList.get(position).getTeam2Name());
+            else
+                holder1.team2Name.setText("-");
+            if (gameItemList.get(position).getTeam2Score() == null || gameItemList.get(position).getTeam2Score().equalsIgnoreCase(""))
+                holder1.team2Score.setText("-");
+            else
+                holder1.team2Score.setText(gameItemList.get(position).getTeam2Score());
+            if (gameItemList.get(position).getMatchStatus().contains("Kick off"))
+                holder1.timeInterval.setText(context.getString(R.string.fixture_string));
+            else if (gameItemList.get(position).getMatchStatus().equalsIgnoreCase("Full Time")) {
+                holder1.timeInterval.setText(R.string.full_time);
+            } else if (gameItemList.get(position).getMatchStatus().contains("First Half")||gameItemList.get(position).getMatchStatus().contains("Second Half")) {
+                holder1.timeInterval.setText(context.getString(R.string.playing_String));
+            } else if (gameItemList.get(position).getMatchStatus().equalsIgnoreCase("Match Postponed")) {
+                holder1.timeInterval.setText(context.getString(R.string.postpone_string));
+            }
+            else {
+                holder1.timeInterval.setText("-");
+            }
         }
         else {
-            holder1.timeInterval.setText("-");
+            holder1.cardViewMatches.setBackgroundResource(R.color.colorBroadcastersListBackground);
+            if (gameItemList.get(position).getTeam1Name() != null)
+                holder1.team1Name.setText(gameItemList.get(position).getTeam1Name());
+            else
+                holder1.team1Name.setText("-");
+            if (gameItemList.get(position).getTeam1Score() == null || gameItemList.get(position).getTeam1Score().equalsIgnoreCase(""))
+                holder1.team1Score.setText("-");
+            else
+                holder1.team1Score.setText(gameItemList.get(position).getTeam1Score());
+            if (gameItemList.get(position).getTeam2Name() != null)
+                holder1.team2Name.setText(gameItemList.get(position).getTeam2Name());
+            else
+                holder1.team2Name.setText("-");
+            if (gameItemList.get(position).getTeam2Score() == null || gameItemList.get(position).getTeam2Score().equalsIgnoreCase(""))
+                holder1.team2Score.setText("-");
+            else
+                holder1.team2Score.setText(gameItemList.get(position).getTeam2Score());
+            if (gameItemList.get(position).getMatchStatus().contains("Kick off"))
+                holder1.timeInterval.setText(context.getString(R.string.fixture_string));
+            else if (gameItemList.get(position).getMatchStatus().equalsIgnoreCase("Full Time")) {
+                holder1.timeInterval.setText(context.getString(R.string.full_time));
+            } else if (gameItemList.get(position).getMatchStatus().contains("First Half")||gameItemList.get(position).getMatchStatus().contains("Second Half")) {
+                holder1.timeInterval.setText(context.getString(R.string.playing_String));
+            } else if (gameItemList.get(position).getMatchStatus().equalsIgnoreCase("Match Postponed")) {
+                holder1.timeInterval.setText(context.getString(R.string.postpone_string));
+            }
+            else {
+                holder1.timeInterval.setText("-");
+            }
         }
 
     }
@@ -80,12 +115,12 @@ public class MatchListListnerAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         private MatchViewHolder(View view) {
             super(view);
-            team1Name = (TextView) view.findViewById(R.id.tv_first_team);
-            team2Name = (TextView) view.findViewById(R.id.tv_second_team);
-            team1Score = (TextView) view.findViewById(R.id.tv_first_team_score);
-            team2Score = (TextView) view.findViewById(R.id.tv_second_team_score);
-            timeInterval = (TextView) view.findViewById(R.id.tv_time_interval);
-            cardViewMatches = (CardView) view.findViewById(R.id.cv_container);
+            team1Name =  view.findViewById(R.id.tv_first_team);
+            team2Name =  view.findViewById(R.id.tv_second_team);
+            team1Score =  view.findViewById(R.id.tv_first_team_score);
+            team2Score =  view.findViewById(R.id.tv_second_team_score);
+            timeInterval =  view.findViewById(R.id.tv_time_interval);
+            cardViewMatches =  view.findViewById(R.id.cv_container);
             cardViewMatches.setOnClickListener(this);
         }
 

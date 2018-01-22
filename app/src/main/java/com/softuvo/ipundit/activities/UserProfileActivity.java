@@ -1,5 +1,9 @@
 package com.softuvo.ipundit.activities;
 
+/*
+ * Created by Neha Kalia on 12/08/2017.
+ */
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -121,6 +125,27 @@ public class UserProfileActivity extends BaseActivity {
         } else {
             SnackbarUtil.showWarningLongSnackbar(mContext, getResources().getString(R.string.internet_not_connected_text));
         }
+    }
+
+    @OnClick(R.id.iv_my_podcasts)
+    public void OnClickMyPodcast(){
+        Intent intent=new Intent(mContext,PodcastActivity.class);
+        intent.putExtra("punditsId",userId);
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.ll_followers)
+    public void OnClickFollowers(){
+        Intent intent=new Intent(mContext,FollowersListActivity.class);
+        intent.putExtra("usercomingfrom","userProfile");
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.ll_followings)
+    public void OnClickFollowings(){
+        Intent intent=new Intent(mContext,FollowingListActivity.class);
+        intent.putExtra("usercomingfrom","userProfile");
+        startActivity(intent);
     }
 
     @OnClick(R.id.iv_delete_profileImage)
@@ -300,7 +325,7 @@ public class UserProfileActivity extends BaseActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode,  String[] permissions,  int[] grantResults) {
         switch (requestCode) {
             case AppConstant.REQUEST_CAMERA_PERMISSION_CODE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -459,4 +484,9 @@ public class UserProfileActivity extends BaseActivity {
         return data.getByteCount();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkConnection();
+    }
 }

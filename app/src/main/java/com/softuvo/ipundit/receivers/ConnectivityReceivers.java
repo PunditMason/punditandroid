@@ -8,6 +8,9 @@ import android.net.NetworkInfo;
 
 import com.softuvo.ipundit.config.App;
 
+/*
+ * Created by Neha Kalia on 15-06-2017.
+ */
 
 public class ConnectivityReceivers extends BroadcastReceiver {
     public static ConnectivityListener connectivityListener;

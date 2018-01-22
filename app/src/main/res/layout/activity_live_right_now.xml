@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.softuvo.ipundit.views.CustomRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/rl_live_main"
+    tools:context="com.softuvo.ipundit.activities.LiveRightNowActivity">
+
+    <TextView
+        android:id="@+id/tv_heading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/live_right_now"
+        android:textColor="@color/colorBlack"
+        android:layout_marginTop="@dimen/margin_xxlarge"
+        android:textSize="@dimen/text_size_large"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"/>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:layout_marginTop="@dimen/margin_xxxlarge"
+        android:layout_below="@+id/tv_heading"
+        android:id="@+id/swiperefresh_live"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/pading_3dp">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_live_list"
+        android:layout_margin="@dimen/margin_small_large"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_bar_live"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="31dp"
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
+    <TextView
+        android:id="@+id/tv_no_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorBlack"
+        android:text="@string/no_live_pundit"
+        android:layout_centerInParent="true"
+        android:textSize="@dimen/text_size_large"
+        android:visibility="gone"/>
+
+
+</com.softuvo.ipundit.views.CustomRelativeLayout>

@@ -1,5 +1,9 @@
 package com.softuvo.ipundit.config;
 
+/*
+ * Created by Neha Kalia on 15-06-2017.
+ */
+
 public class AppConstant {
     public static final  int MY_PERMISSIONS_REQUEST_CAMERA = 123;
     public static final  int MY_PERMISSIONS_REQUEST_MIC = 124;
@@ -9,6 +13,7 @@ public class AppConstant {
 
     public static final String MAP_IMG = "mapImages";
     public static final String APP_BACKGROUND = "appMainBackground";
+    public static final String PUNDITS_PAGE_BACKGROUND = "appPunditBackground";
     public static final String DEVICE_TOKENN = "deviceToken";
     public static final String USER_ID = "userId";
     public static final String PRIVACY_POLICY = "privacyPolicy";
@@ -19,8 +24,11 @@ public class AppConstant {
     public static final String SELECTED_LISTNER = "listner";
     public static final String USER_PROFILE_PIC = "userProfilePic";
     public static final String USER_NAME = "userName";
+    public static final String FB_ID = "facebookID";
     public static final String LEAGUE_IMAGE_URL = "leagueImageUrl";
     public static final String User_CURRENT_STATE = "userCurrentState";
+    public static final String LIVE = "live";
+
     public static final String SPORTS_ID = "sports_id";
     public static final String LEAGUE_ID = "league_id";
     public static final String LOGGED_IN_ID = "login_user_id";

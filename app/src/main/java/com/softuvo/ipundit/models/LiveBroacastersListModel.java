@@ -6,8 +6,8 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * Created by softuvo on 29-06-2017.
+/*
+ * Created by Neha Kalia on 29-06-2017.
  */
 
 public class LiveBroacastersListModel implements Serializable{

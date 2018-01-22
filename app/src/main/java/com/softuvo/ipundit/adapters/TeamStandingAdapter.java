@@ -14,6 +14,9 @@ import com.softuvo.ipundit.models.StandingListeningModel;
 
 import java.util.List;
 
+/*
+ * Created by softuvo on 02-08-2017.
+ */
 public class TeamStandingAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     Context context;
     List<StandingListeningModel.Datum> teamStandingList;

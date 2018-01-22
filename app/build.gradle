@@ -8,7 +8,7 @@ repositories {
 
 android {
     compileSdkVersion 26
-    buildToolsVersion '26.0.2'
+    buildToolsVersion '26.0.3'
     defaultConfig {
         applicationId "com.softuvo.ipundit"
         minSdkVersion 17
@@ -17,6 +17,12 @@ android {
         versionName "2.2"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    dexOptions {
+
+        jumboMode true
+        javaMaxHeapSize "4g"
+
     }
     buildTypes {
         release {
@@ -50,7 +56,7 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
         transitive = true;
     }
-    testCompile 'junit:junit:4.12'
+    //noinspection GradleCompatible
     compile 'com.android.support:appcompat-v7:26.1.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.google.code.gson:gson:2.8.0'
@@ -66,14 +72,23 @@ dependencies {
     compile 'com.jakewharton:butterknife:8.8.1'
     compile 'com.android.support:multidex:1.0.2'
     compile 'de.hdodenhof:circleimageview:2.2.0'
-    compile 'com.facebook.android:facebook-android-sdk:4.28.0'
+    compile 'com.facebook.android:facebook-android-sdk:4.29.0'
     compile 'com.github.citux:datetimepicker:0.1.2'
     compile 'com.android.support:support-v4:26.1.0'
     compile 'com.github.bumptech.glide:glide:4.0.0'
     compile 'joda-time:joda-time:2.9.4'
     compile 'org.apache.mina:mina-core:2.0.7'
-    compile 'com.google.firebase:firebase-messaging:11.6.0'
+
+    //noinspection UseOfBundledGooglePlayServices
+    compile 'com.google.android.gms:play-services:11.6.2'
+    compile 'com.google.android.gms:play-services-maps:11.6.2'
+    compile 'com.google.android.gms:play-services-location:11.6.2'
+    compile 'com.google.firebase:firebase-database:11.6.2'
+    compile 'com.google.firebase:firebase-messaging:11.6.2'
+//    compile 'com.firebase:firebase-jobdispatcher:0.8.4'
+//    compile 'com.applozic.communication.uiwidget:mobicomkitui:4.99'
+    compile project(':mobicomkitui')
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 }
-apply plugin: 'com.google.gms.google-services'
+//apply plugin: 'com.google.gms.google-services'

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -24,17 +25,29 @@
             android:layout_weight="0.4">
 
             <ImageView
+                android:id="@+id/iv_my_podcasts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/my_podcasts"
+                android:padding="5dp"
+                android:contentDescription="@string/app_name"
+                />
+
+            <ImageView
                 android:id="@+id/iv_save_profile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:padding="5dp"
-                android:src="@drawable/save_profile" />
+                android:src="@drawable/save_profile"
+                android:contentDescription="@string/app_name"/>
 
             <FrameLayout
                 android:id="@+id/fl_profileImage"
                 android:layout_width="140dp"
                 android:layout_height="140dp"
+                android:layout_marginTop="@dimen/margin_small"
                 android:layout_centerInParent="true">
 
                 <de.hdodenhof.circleimageview.CircleImageView
@@ -50,40 +63,48 @@
                     android:id="@+id/iv_delete_profileImage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="top|left"
-                    android:src="@drawable/delete_profile" />
+                    android:layout_gravity="top|start"
+                    android:src="@drawable/delete_profile"
+                    android:contentDescription="@string/app_name"/>
 
                 <ImageView
                     android:id="@+id/iv_edit_profileImage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|right"
-                    android:src="@drawable/edit_profile" />
+                    android:layout_gravity="bottom|end"
+                    android:src="@drawable/edit_profile"
+                    android:contentDescription="@string/app_name"/>
             </FrameLayout>
 
             <EditText
+                android:layout_marginTop="@dimen/margin_small"
                 android:id="@+id/ed_userName"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/fl_profileImage"
-                android:layout_centerInParent="true"
-                android:layout_marginTop="5dp"
-                android:background="@android:color/transparent"
-                android:gravity="bottom"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_alignParentBottom="true"
+                android:background="@color/colorBlack"
+                android:hint="@string/user_name"
+                android:gravity="center"
                 android:imeOptions="actionDone"
+                android:layout_marginBottom="@dimen/pading_2dp"
+                android:paddingBottom="@dimen/pading_large"
                 android:textColor="@color/colorWhite"
-                android:textSize="18dp" />
+                android:textSize="@dimen/text_size_medium" />
         </com.softuvo.ipundit.views.CustomRelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.09"
-            android:background="@color/colorGray"
+            android:background="@color/colorBlack"
             android:orientation="horizontal"
             android:weightSum="1">
 
             <LinearLayout
+                android:id="@+id/ll_followers"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
@@ -115,6 +136,7 @@
                 android:background="@color/colorWhite" />
 
             <LinearLayout
+                android:id="@+id/ll_followings"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
@@ -162,7 +184,8 @@
                     android:layout_gravity="center"
                     android:layout_weight=".2"
                     android:text="@string/bio_string"
-                    android:textColor="@color/colorWhite" />
+                    android:textColor="@color/colorWhite"
+                    tools:ignore="NestedWeights" />
 
                 <EditText
                     android:id="@+id/et_userBio"
@@ -171,7 +194,9 @@
                     android:layout_weight=".8"
                     android:background="@color/colorTransparent"
                     android:imeOptions="actionNext"
+                    android:hint=""
                     android:paddingStart="@dimen/margin_small"
+                    android:paddingEnd="@dimen/margin_small"
                     android:textColor="@color/colorWhite" />
             </LinearLayout>
 
@@ -189,7 +214,8 @@
                     android:layout_gravity="center"
                     android:layout_weight=".2"
                     android:text="@string/facebook_string"
-                    android:textColor="@color/colorWhite" />
+                    android:textColor="@color/colorWhite"
+                    tools:ignore="NestedWeights" />
 
                 <EditText
                     android:id="@+id/ed_facebook"
@@ -198,7 +224,9 @@
                     android:layout_weight=".8"
                     android:background="@color/colorTransparent"
                     android:maxLines="1"
+                    android:hint=""
                     android:paddingStart="@dimen/margin_small"
+                    android:paddingEnd="@dimen/margin_small"
                     android:textColor="@color/colorWhite" />
             </LinearLayout>
 
@@ -217,17 +245,20 @@
                     android:layout_gravity="center"
                     android:layout_weight=".2"
                     android:text="@string/twitter_string"
-                    android:textColor="@color/colorWhite" />
+                    android:textColor="@color/colorWhite"
+                    tools:ignore="NestedWeights" />
 
                 <EditText
                     android:id="@+id/ed_twitter"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight=".8"
+                    android:hint=""
                     android:background="@color/colorTransparent"
                     android:imeOptions="actionNext"
                     android:maxLines="1"
                     android:paddingStart="@dimen/margin_small"
+                    android:paddingEnd="@dimen/margin_small"
                     android:textColor="@color/colorWhite" />
             </LinearLayout>
 
@@ -245,7 +276,8 @@
                     android:layout_gravity="center"
                     android:layout_weight=".2"
                     android:text="@string/youtube_string"
-                    android:textColor="@color/colorWhite" />
+                    android:textColor="@color/colorWhite"
+                    tools:ignore="NestedWeights" />
 
                 <EditText
                     android:id="@+id/et_youtube"
@@ -255,7 +287,9 @@
                     android:background="@color/colorTransparent"
                     android:imeOptions="actionDone"
                     android:maxLines="1"
+                    android:hint=""
                     android:paddingStart="@dimen/margin_small"
+                    android:paddingEnd="@dimen/margin_small"
                     android:textColor="@color/colorWhite" />
             </LinearLayout>
         </LinearLayout>

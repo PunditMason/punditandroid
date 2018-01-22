@@ -1,5 +1,9 @@
 package com.softuvo.ipundit.models;
 
+/*
+ * Created by Neha Kalia on 15-06-2017.
+ */
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 

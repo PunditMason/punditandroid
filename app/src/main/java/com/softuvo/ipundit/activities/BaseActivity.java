@@ -1,5 +1,9 @@
 package com.softuvo.ipundit.activities;
 
+/*
+ * Created by Neha Kalia on 12/07/2017.
+ */
+
 import android.Manifest;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
@@ -63,14 +67,16 @@ public class BaseActivity extends AppCompatActivity implements ConnectivityRecei
 
     public void hideKeyboard() {
         try {
-            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+            InputMethodManager imm = (InputMethodManager)this.getSystemService(INPUT_METHOD_SERVICE);
+            if (imm != null && getCurrentFocus()!=null) {
+                imm.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public boolean checkForPermission() {
+    public void checkForPermission() {
         int permissionCAMERA = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
         int storagePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
         int audioRecordPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
@@ -87,10 +93,8 @@ public class BaseActivity extends AppCompatActivity implements ConnectivityRecei
         if (!listPermissionsNeeded.isEmpty()) {
             ActivityCompat.requestPermissions(this,
                     listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), AppConstant.MY_PERMISSIONS_REQUEST_CAMERA);
-            return false;
         }
 
-        return true;
     }
 
     @Override

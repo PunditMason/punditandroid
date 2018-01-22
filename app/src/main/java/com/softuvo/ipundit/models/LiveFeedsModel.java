@@ -5,6 +5,10 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+/*
+ * Created by Neha Kalia on 15-06-2017.
+ */
+
 public class LiveFeedsModel {
 
     @SerializedName("matchinfo")

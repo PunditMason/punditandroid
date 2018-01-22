@@ -5,8 +5,8 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-/**
- * Created by softuvo on 27-09-2017.
+/*
+ * Created by Neha Kalia on 27-09-2017.
  */
 
 public class LoginUserModel {

@@ -23,6 +23,9 @@ import java.util.TimerTask;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/*
+ * Created by Neha Kalia on 15-11-2017.
+ */
 
 public class LiveFeedsPlayerFragment extends Fragment {
     static String userComming, matchId, team1Score, team2Score;
@@ -267,6 +270,16 @@ public class LiveFeedsPlayerFragment extends Fragment {
             }
         }, 0, 20000);
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        try {
+            if (t != null) {
+                t.cancel();
+            }
+        }catch (Exception e){e.printStackTrace();}
     }
 
     @Override

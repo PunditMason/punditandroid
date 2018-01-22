@@ -1,15 +1,21 @@
 package com.softuvo.ipundit.activities;
 
+/*
+ * Created by Neha Kalia on 12/08/2017.
+ */
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
-
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Base64;
@@ -20,7 +26,13 @@ import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
+import com.applozic.mobicomkit.broadcast.ConnectivityReceiver;
+import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
+import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 import com.google.gson.internal.LinkedTreeMap;
 import com.red5pro.streaming.R5Connection;
 import com.red5pro.streaming.R5Stream;
@@ -40,9 +52,7 @@ import com.softuvo.ipundit.fragments.LiveFeedsPlayerFragment;
 import com.softuvo.ipundit.models.BroadcastMatchlistModel;
 import com.softuvo.ipundit.models.ListnerCountModel;
 import com.softuvo.ipundit.models.LiveBroadcstingModel;
-import com.softuvo.ipundit.models.LiveFeedsNewModel;
 import com.softuvo.ipundit.models.MatchStandingListModel;
-import com.softuvo.ipundit.models.PlayerDataModel;
 import com.softuvo.ipundit.models.ServerAddressModel;
 import com.softuvo.ipundit.receivers.ConnectivityReceivers;
 import com.softuvo.ipundit.utils.SnackbarUtil;
@@ -51,16 +61,15 @@ import com.softuvo.ipundit.views.CustomRelativeLayout;
 import com.softuvo.ipundit.views.CustomTextView;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
 import static com.softuvo.ipundit.config.AppConstant.APP_BACKGROUND;
 import static com.softuvo.ipundit.config.AppConstant.USER_ID;
 import static com.softuvo.ipundit.config.AppConstant.USER_NAME;
@@ -68,12 +77,12 @@ import static com.softuvo.ipundit.config.AppConstant.USER_NAME;
 public class LiveBroadCastingActivity extends BaseActivity {
     private static Activity mContext;
     private int minutes = 0, seconds = 0;
-    private String strName, strMatchId, strBroadcastName, strBroadcastId, strStream, strAppName, strChannelType, shareUrl, team1Score, team2Score, status, strFollowMsg, Score_team1, Score_team2, team1_id, team2_id, serverAddress;
+    private String strName, strMatchId, strBroadcastName, strBroadcastId, strAppName, strChannelType, shareUrl,
+             status, strFollowMsg, Score_team1, Score_team2, team1_id, team2_id, serverAddress,chatChannelId,strStream;
     private static R5Stream stream;
-    private LiveFeedsAdapter liveFeedsAdapter;
     private static String channelId;
     private int visible = 0;
-    private R5Configuration configuration;
+    private int isSelected=0;
 
     @BindView(R.id.rl_live_broadcasting_main)
     CustomRelativeLayout rlLiveBroadcastingMain;
@@ -162,6 +171,9 @@ public class LiveBroadCastingActivity extends BaseActivity {
     @BindView(R.id.iv_edit_score)
     ImageView ivEditScore;
 
+    @BindView(R.id.iv_play_pause)
+    ImageView ivPlayPause;
+
     @BindView(R.id.tabs)
     TabLayout mTabLayout;
 
@@ -180,9 +192,13 @@ public class LiveBroadCastingActivity extends BaseActivity {
 
     private void setData() {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        if(isSelected==0)
+            ivPlayPause.setImageResource(R.drawable.play_nw);
+        else if(isSelected==1)
+            ivPlayPause.setImageResource(R.drawable.stop_nw);
         if (AppPreferences.init(mContext).getString(APP_BACKGROUND) != null)
             Picasso.with(mContext).load(AppPreferences.init(mContext).getString(APP_BACKGROUND)).into(rlLiveBroadcastingMain);
-        AppPreferences.init(mContext).putString(AppConstant.User_CURRENT_STATE, "1");
+//        AppPreferences.init(mContext).putString(AppConstant.User_CURRENT_STATE, "1");
         if (getIntent().getStringExtra("userComingFrom") != null) {
             String mUserComingFrom;
             if ((getIntent().getStringExtra("userComingFrom")).equalsIgnoreCase("matchList")) {
@@ -234,10 +250,43 @@ public class LiveBroadCastingActivity extends BaseActivity {
             if (AppPreferences.init(mContext).getString(AppConstant.LEAGUE_IMAGE_URL) != null && !AppPreferences.init(mContext).getString(AppConstant.LEAGUE_IMAGE_URL).equalsIgnoreCase(""))
                 Picasso.with(mContext).load(AppPreferences.init(mContext).getString(AppConstant.LEAGUE_IMAGE_URL)).into(ivLeagueIcon);
             String broadcasterName = "Logged in as " + AppPreferences.init(mContext).getString(USER_NAME);
+            chatChannelId=getIntent().getStringExtra("chatChannelKey");
             gifView.setGifImageResource(R.drawable.broadcast_gif);
             tvBroadcsatersName.setText(broadcasterName);
             publish();
             createMap();
+        }
+    }
+    @OnClick(R.id.iv_play_pause)
+    public void onClickPlaypause(){
+        if(isSelected==0){
+            isSelected=1;
+            ivPlayPause.setImageResource(R.drawable.stop_nw);
+
+        }
+        else if(isSelected==1){
+            isSelected=0;
+            ivPlayPause.setImageResource(R.drawable.play_nw);
+        }
+        String path=channelId+"/"+isSelected+"";
+        pauseStream(path);
+    }
+
+    private void pauseStream(String path) {
+        if (ConnectivityReceivers.isConnected()) {
+            App.getApiHelper().pauseStream(path, new ApiCallBack<Map>() {
+                @Override
+                public void onSuccess(Map map) {
+                    Log.e("Api","Api hit successfully");
+                }
+
+                @Override
+                public void onFailure(String message) {
+                    Log.e("Api","Not successfully");
+                }
+            });
+        }else{
+            SnackbarUtil.showWarningLongSnackbar(mContext, getResources().getString(R.string.internet_not_connected_text));
         }
     }
 
@@ -247,7 +296,6 @@ public class LiveBroadCastingActivity extends BaseActivity {
         adapter.addFragment(LiveFeedsPlayerFragment.newInstance("Broadcasting", strMatchId), "Lineups");
         viewPager.setAdapter(adapter);
     }
-
 
     private void setkickofftime() {
         Timer t = new Timer();
@@ -288,8 +336,6 @@ public class LiveBroadCastingActivity extends BaseActivity {
                         SnackbarUtil.showSuccessLongSnackbar(mContext, getString(R.string.start_broadcast_success_msg));
                         setkickofftime();
                         channelId = map.getChannelid().toString();
-
-
                         getListnerCountData(channelId);
                     } else {
                         progressarLiveBroadcasting.setVisibility(View.GONE);
@@ -338,11 +384,13 @@ public class LiveBroadCastingActivity extends BaseActivity {
     @Override
     public void onStop() {
         super.onStop();
-        if (AppPreferences.init(mContext).getString(AppConstant.User_CURRENT_STATE).equalsIgnoreCase("3")) {
+      /*  if (AppPreferences.init(mContext).getString(AppConstant.User_CURRENT_STATE).equalsIgnoreCase("3")) {
 //            Do Nothing
         } else {
             unmountUser();
-        }
+        }*/
+//        unmountUser();
+
     }
 
     @Override
@@ -543,7 +591,7 @@ public class LiveBroadCastingActivity extends BaseActivity {
     }*/
 
     private void configRedPro(String serverIP) {
-        configuration = new R5Configuration(R5StreamProtocol.RTSP, serverIP, AppConstant.RED5PRO_SERVER_PORT, AppConstant.RED5PRO_SERVER_APP_NAME, AppConstant.RED5PRO_SERVER_CASHE);
+        R5Configuration configuration = new R5Configuration(R5StreamProtocol.RTSP, serverIP, AppConstant.RED5PRO_SERVER_PORT, AppConstant.RED5PRO_SERVER_APP_NAME, AppConstant.RED5PRO_SERVER_CASHE);
         configuration.setLicenseKey(AppConstant.RED5PRO_LICENSE_KEY);
         configuration.setBundleID(mContext.getPackageName());
         stream = new R5Stream(new R5Connection(configuration));
@@ -635,7 +683,7 @@ public class LiveBroadCastingActivity extends BaseActivity {
             String username = AppPreferences.init(mContext).getString(USER_NAME);
             username = username.replace(" ", "");
             shareUrl = ApiConstants.SHARE_BASE_URL + username + "-" + encodedUserId;
-            AppPreferences.init(mContext).putString(AppConstant.User_CURRENT_STATE, "3");
+//            AppPreferences.init(mContext).putString(AppConstant.User_CURRENT_STATE, "3");
             if (getIntent().getStringExtra("userComingFrom") != null) {
                 if ((getIntent().getStringExtra("userComingFrom")).equalsIgnoreCase("matchList")) {
                     if (getIntent().getSerializableExtra("mBrDatum") != null) {
@@ -651,11 +699,34 @@ public class LiveBroadCastingActivity extends BaseActivity {
             }
             Intent i = new Intent(Intent.ACTION_SEND);
             i.setType("text/plain");
-            i.putExtra(Intent.EXTRA_SUBJECT, "Pundit");
-            i.putExtra(Intent.EXTRA_TEXT, shareUrl + "\n" + status);
-            startActivity(Intent.createChooser(i, "Share Via...."));
-        }
+           // i.putExtra(Intent.EXTRA_SUBJECT, "Pundit");
+           // i.putExtra(Intent.EXTRA_TEXT, status + "\n" + shareUrl);
+            //startActivity(Intent.createChooser(i, "Share Via...."));
 
+            PackageManager pm = getApplication().getPackageManager();
+            List<ResolveInfo> activityList = pm.queryIntentActivities(i, 0);
+            for(final ResolveInfo app : activityList) {
+                if("com.facebook.katana.ShareLinkActivity".equals(app.activityInfo.name)) {
+                    ShareDialog shareDialog;
+                    shareDialog = new ShareDialog(mContext);
+                    ShareLinkContent content = new ShareLinkContent.Builder()
+                            .setContentUrl(Uri.parse(shareUrl))
+                            .setQuote(status)
+                            .build();
+                    shareDialog.show(content);
+                    break;
+                } else {
+                    i.putExtra(Intent.EXTRA_SUBJECT, "Pundit");
+                    i.putExtra(Intent.EXTRA_TEXT, status + "\n" + shareUrl);
+                    startActivity(Intent.createChooser(i, "Share"));
+                    break;
+                }
+            }
+
+
+
+
+        }
     }
 
     /*@OnClick(R.id.iv_sharetwitter)
@@ -875,6 +946,11 @@ public class LiveBroadCastingActivity extends BaseActivity {
     @OnClick(R.id.rl_chat_tile)
     public void onClickChatBroadcast() {
         SnackbarUtil.showWarningShortSnackbar(mContext, getString(R.string.under_development_message));
+       /* AppPreferences.init(mContext).putString(AppConstant.User_CURRENT_STATE, "3");
+        Intent intent = new Intent(this, ConversationActivity.class);
+        intent.putExtra(ConversationUIService.GROUP_ID, Integer.parseInt(chatChannelId));
+        intent.putExtra(ConversationUIService.TAKE_ORDER,true);
+        startActivity(intent);*/
     }
 }
 

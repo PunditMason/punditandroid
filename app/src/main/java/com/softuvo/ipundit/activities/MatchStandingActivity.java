@@ -1,16 +1,23 @@
 package com.softuvo.ipundit.activities;
 
+/*
+ * Created by Neha Kalia on 12/08/2017.
+ */
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -24,6 +31,11 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.applozic.mobicomkit.api.people.ChannelInfo;
+import com.applozic.mobicomkit.channel.service.ChannelService;
+import com.applozic.mobicomkit.uiwidgets.async.ApplozicChannelAddMemberTask;
+import com.applozic.mobicommons.people.channel.Channel;
+import com.applozic.mobicommons.people.channel.ChannelMetadata;
 import com.softuvo.ipundit.R;
 import com.softuvo.ipundit.adapters.MatchSatadingAdapter;
 import com.softuvo.ipundit.adapters.TeamStandingAdapter;
@@ -38,18 +50,23 @@ import com.softuvo.ipundit.utils.SnackbarUtil;
 import com.softuvo.ipundit.views.CustomLinearLayout;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.softuvo.ipundit.config.AppConstant.APP_BACKGROUND;
+import static com.softuvo.ipundit.config.AppConstant.FB_ID;
 
 public class MatchStandingActivity extends BaseActivity {
     private Activity mContext;
     private MatchSatadingAdapter matchSatadingAdapter;
     private TeamStandingAdapter teamStandingAdapter;
     private String sportsLeagueId;
+    String chatChannelId, chatChannelName, matchid;
 
     @BindView(R.id.ll_match_stansing_main)
     CustomLinearLayout tvAboutUsContent;
@@ -107,13 +124,33 @@ public class MatchStandingActivity extends BaseActivity {
                             matchSatadingAdapter = new MatchSatadingAdapter(mContext, matchStandingList, new MatchSatadingAdapter.ItemClickListener() {
                                 @Override
                                 public void onClick(int position) {
+                                    chatChannelId = matchStandingList.get(position).getChatChannelid();
+                                    chatChannelName = matchStandingList.get(position).getContestantName();
+                                    matchid = matchStandingList.get(position).getContestantId();
+                                    if (chatChannelId.equalsIgnoreCase("0")) {
+                                        getChannelId();
+                                    } else {
+                                        ApplozicChannelAddMemberTask.ChannelAddMemberListener channelAddMemberListener = new ApplozicChannelAddMemberTask.ChannelAddMemberListener() {
+                                            @Override
+                                            public void onSuccess(String response, Context context) {
+                                                Log.i("ApplozicChannelMember", "Add Response:" + response);
+                                            }
+
+                                            @Override
+                                            public void onFailure(String response, Exception e, Context context) {
+
+                                            }
+                                        };
+                                        ApplozicChannelAddMemberTask applozicChannelAddMemberTask = new ApplozicChannelAddMemberTask(mContext, Integer.parseInt(chatChannelId), AppPreferences.init(mContext).getString(FB_ID), channelAddMemberListener);//pass channel key and userId whom you want to add to channel
+                                        applozicChannelAddMemberTask.execute((Void) null);
+                                    }
                                     openBottomSheet(matchStandingList.get(position));
                                 }
                             });
+                            rvMatchStandingList.setAdapter(matchSatadingAdapter);
+                            matchSatadingAdapter.notifyDataSetChanged();
                         }
 
-                        rvMatchStandingList.setAdapter(matchSatadingAdapter);
-                        matchSatadingAdapter.notifyDataSetChanged();
                     }
                 }
 
@@ -151,10 +188,32 @@ public class MatchStandingActivity extends BaseActivity {
                         teamStandingAdapter = new TeamStandingAdapter(mContext, teamStandingList, new TeamStandingAdapter.ItemClickListener() {
                             @Override
                             public void onClick(int position) {
+                                chatChannelId = teamStandingList.get(position).getChannel().get(0).getChatChannelid();
+                                chatChannelName = teamStandingList.get(position).getContestantName();
+                                matchid = teamStandingList.get(position).getContestantId();
+                                if (chatChannelId.equalsIgnoreCase("0")) {
+                                    getChannelId();
+                                } else {
+                                    ApplozicChannelAddMemberTask.ChannelAddMemberListener channelAddMemberListener = new ApplozicChannelAddMemberTask.ChannelAddMemberListener() {
+                                        @Override
+                                        public void onSuccess(String response, Context context) {
+                                            Log.i("ApplozicChannelMember", "Add Response:" + response);
+                                        }
+
+                                        @Override
+                                        public void onFailure(String response, Exception e, Context context) {
+
+                                        }
+                                    };
+                                    ApplozicChannelAddMemberTask applozicChannelAddMemberTask = new ApplozicChannelAddMemberTask(mContext, Integer.parseInt(chatChannelId), AppPreferences.init(mContext).getString(FB_ID), channelAddMemberListener);//pass channel key and userId whom you want to add to channel
+                                    applozicChannelAddMemberTask.execute((Void) null);
+                                }
                                 Intent intent = new Intent(mContext, LiveBroadcastersListActivity.class);
                                 intent.putExtra("userComingFrom", "matchStandingListenList");
                                 intent.putExtra("mMatchDatum", teamStandingList.get(position));
+                                intent.putExtra("chatChannelKey", chatChannelId);
                                 startActivity(intent);
+
                             }
                         });
                     }
@@ -176,6 +235,81 @@ public class MatchStandingActivity extends BaseActivity {
         }
     }
 
+    private void getChannelId() {
+        try{
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    List<String> channelMembersList = new ArrayList<>();
+                    channelMembersList.add(AppPreferences.init(mContext).getString(FB_ID));
+                    ChannelInfo channelInfo = new ChannelInfo(chatChannelName, channelMembersList);
+                    channelInfo.setType(Channel.GroupType.PUBLIC.getValue().intValue());
+                    ChannelService service = ChannelService.getInstance(mContext);
+                    Channel channel = service.createChannel(channelInfo);
+                    Log.i("Channel", "Channel respone is:" + channel);
+                    if (channel!=null && channel.getKey() != null) {
+                        chatChannelId = String.valueOf(channel.getKey());
+                        updateChatChannelId();
+                    }
+                }
+            }).start();
+        }catch (Exception e){e.printStackTrace();}
+    }
+
+    private void updateChatChannelId() {
+        Map<String, String> mountMap = new HashMap<>();
+        mountMap.put("match_id", matchid);
+        mountMap.put("channeltype", "team");
+        mountMap.put("chatChannelid", chatChannelId);
+        App.getApiHelper().updateChatId(mountMap, new ApiCallBack<Map>() {
+            @Override
+            public void onSuccess(Map map) {
+                Log.e("chat", map.toString());
+            }
+
+            @Override
+            public void onFailure(String message) {
+
+            }
+        });
+    }
+
+    private class createChannel extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+//            ChannelMetadata channelMetadata = new ChannelMetadata();
+//            channelMetadata.setCreateGroupMessage(ChannelMetadata.ADMIN_NAME + " created " + chatChannelName);
+//            channelMetadata.setAddMemberMessage(ChannelMetadata.ADMIN_NAME + " added " + ChannelMetadata.USER_NAME);
+//            channelMetadata.setRemoveMemberMessage(ChannelMetadata.ADMIN_NAME + " removed " + ChannelMetadata.USER_NAME);
+//            channelMetadata.setGroupNameChangeMessage(ChannelMetadata.USER_NAME + " changed group name " + ChannelMetadata.GROUP_NAME);
+//            channelMetadata.setJoinMemberMessage(ChannelMetadata.USER_NAME + " joined");
+//            channelMetadata.setGroupLeftMessage(ChannelMetadata.USER_NAME + " left group " + ChannelMetadata.GROUP_NAME);
+//            channelMetadata.setGroupIconChangeMessage(ChannelMetadata.USER_NAME + " changed icon");
+//            channelMetadata.setDeletedGroupMessage(ChannelMetadata.ADMIN_NAME + " deleted group " + ChannelMetadata.GROUP_NAME);
+            List<String> channelMembersList = new ArrayList<>();
+            channelMembersList.add(AppPreferences.init(mContext).getString(FB_ID));
+            ChannelInfo channelInfo = new ChannelInfo(chatChannelName, channelMembersList);
+            channelInfo.setType(Channel.GroupType.PUBLIC.getValue().intValue());
+            ChannelService service = ChannelService.getInstance(mContext);
+            Channel channel = service.createChannel(channelInfo);
+            Log.i("Channel", "Channel respone is:" + channel);
+            chatChannelId = String.valueOf(channel.getKey());
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            updateChatChannelId();
+        }
+
+    }
+
 
     public void openBottomSheet(final MatchStandingListModel.Datum mBrDatum) {
         @SuppressLint("InflateParams")
@@ -195,6 +329,7 @@ public class MatchStandingActivity extends BaseActivity {
                     Intent intent = new Intent(mContext, LiveBroadCastingActivity.class);
                     intent.putExtra("userComingFrom", "matchStandingList");
                     intent.putExtra("mBrDatum", mBrDatum);
+                    intent.putExtra("chatChannelKey", chatChannelId);
                     startActivity(intent);
                 }
             }
@@ -202,13 +337,11 @@ public class MatchStandingActivity extends BaseActivity {
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public boolean checkPermission()
-    {
+    public boolean checkPermission() {
         int currentAPIVersion = Build.VERSION.SDK_INT;
-        if(currentAPIVersion>=android.os.Build.VERSION_CODES.M)
-        {
+        if (currentAPIVersion >= android.os.Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale( mContext, Manifest.permission.RECORD_AUDIO)) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(mContext, Manifest.permission.RECORD_AUDIO)) {
                     AlertDialog.Builder alertBuilder = new AlertDialog.Builder(mContext);
                     alertBuilder.setCancelable(true);
                     alertBuilder.setTitle("Permission necessary");
@@ -232,14 +365,15 @@ public class MatchStandingActivity extends BaseActivity {
             return true;
         }
     }
+
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case AppConstant.MY_PERMISSIONS_REQUEST_MIC:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.e("permission check","Granted");
+                    Log.e("permission check", "Granted");
                 } else {
-                    Log.e("permission check","Denied");
+                    Log.e("permission check", "Denied");
                 }
                 break;
         }
@@ -264,7 +398,7 @@ public class MatchStandingActivity extends BaseActivity {
                     tvTapClubMatchStanding.setText(getString(R.string.tap_club_listen));
                 }
             }
-            swipeDownRefresh =  findViewById(R.id.swiperefresh_standings);
+            swipeDownRefresh = findViewById(R.id.swiperefresh_standings);
             swipeDownRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {

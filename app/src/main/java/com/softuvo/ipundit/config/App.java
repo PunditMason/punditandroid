@@ -1,9 +1,13 @@
 package com.softuvo.ipundit.config;
 
+/*
+ * Created by Neha Kalia on 15-06-2017.
+ */
 import android.content.ComponentCallbacks2;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 import android.util.Base64;
 import android.util.Log;
@@ -30,6 +34,7 @@ public class App extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        MultiDex.install(this);
         appInstance = this;
         apiHelper = ApiHelper.init();
         appPreferences = AppPreferences.init(appInstance);
@@ -112,22 +117,21 @@ public class App extends MultiDexApplication {
         }
     }
 
-    @Override
+   /* @Override
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
         if (level == ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN) {
             if (AppPreferences.init(appInstance).getString(AppConstant.User_CURRENT_STATE).equalsIgnoreCase("1")) {
-                LiveBroadCastingActivity.stopBroadcastAppBackground();
+               // LiveBroadCastingActivity.stopBroadcastAppBackground();
             }
            else if (AppPreferences.init(appInstance).getString(AppConstant.User_CURRENT_STATE).equalsIgnoreCase("2")) {
-                LiveListeningActivity liveListeningActivity = new LiveListeningActivity();
-                liveListeningActivity.stopListenAppBackground();
+               // LiveListeningActivity.stopListenAppBackground();
             }
             else if (AppPreferences.init(appInstance).getString(AppConstant.User_CURRENT_STATE).equalsIgnoreCase("3")) {
                 //Do Nothing
             }
         }
-    }
+    }*/
 
 //    private void handleUncaughtException (Thread thread, Throwable e) {
 //        LiveListeningActivity liveListeningActivity = new LiveListeningActivity();

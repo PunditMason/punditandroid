@@ -43,6 +43,14 @@
         android:orientation="vertical"
         android:weightSum="1"
         android:layout_margin="@dimen/margin_xxlarge">
+        <ImageView
+            android:id="@+id/iv_listen_live"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="0.07"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/listen_live_gray"
+            android:contentDescription="@string/app_name"/>
 
         <LinearLayout
             android:id="@+id/ll_btn_containers"
@@ -61,11 +69,11 @@
                 android:contentDescription="@string/app_name"/>
 
             <ImageView
-                android:id="@+id/iv_listen_live"
+                android:id="@+id/iv_podcast"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_xlarge"
-                android:background="@drawable/listen_live_gray"
+                android:background="@drawable/podcast"
                 android:contentDescription="@string/app_name"/>
         </LinearLayout>
         <View
@@ -81,6 +89,7 @@
             android:weightSum="1">
 
             <LinearLayout
+                android:id="@+id/ll_following_main"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
@@ -115,6 +124,7 @@
                 android:background="@color/colorGray" />
 
             <LinearLayout
+                android:id="@+id/ll_followers_main"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
@@ -150,7 +160,7 @@
             android:id="@+id/tv_bio"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_weight="0.13"
+            android:layout_weight="0.10"
             android:text="@string/bio_string"
             android:textColor="@color/colorBlack"
             android:gravity="center"
@@ -161,7 +171,7 @@
             android:id="@+id/tv_pundits_bio"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.34"
+            android:layout_weight="0.30"
             Pundit:fonttextview="@string/helvetica_neue_medium"/>
 
     </LinearLayout>

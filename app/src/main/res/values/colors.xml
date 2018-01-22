@@ -8,6 +8,7 @@
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorRed">#E53935</color>
     <color name="colorGreen">#43A047</color>
+    <color name="colorDelete">#044307</color>
     <color name="colorOrange">#EF6C00</color>
     <color name="colorGray"> #cfcfcf</color>
     <color name="colorTransparent">#65FFFFFF</color>

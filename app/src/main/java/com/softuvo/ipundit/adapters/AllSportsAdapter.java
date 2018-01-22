@@ -1,4 +1,7 @@
 package com.softuvo.ipundit.adapters;
+/*
+ * Created by Neha Kalia on 12/07/2017.
+ */
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

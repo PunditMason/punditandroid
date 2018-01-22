@@ -1,5 +1,9 @@
 package com.softuvo.ipundit.activities;
 
+/*
+ * Created by Neha Kalia on 12/07/2017.
+ */
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,6 +17,8 @@ import com.softuvo.ipundit.config.AppConstant;
 import com.softuvo.ipundit.models.DataModelBgImg;
 import com.softuvo.ipundit.receivers.ConnectivityReceivers;
 import com.softuvo.ipundit.utils.SnackbarUtil;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

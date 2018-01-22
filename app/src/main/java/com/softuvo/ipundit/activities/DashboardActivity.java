@@ -1,10 +1,16 @@
 package com.softuvo.ipundit.activities;
 
+/*
+ * Created by Neha Kalia on 12/07/2017.
+ */
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -26,7 +32,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
+import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
+import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
+import com.applozic.mobicomkit.api.account.user.PushNotificationTask;
+import com.applozic.mobicomkit.api.account.user.User;
+import com.applozic.mobicomkit.api.account.user.UserLoginTask;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -50,6 +60,7 @@ import com.softuvo.ipundit.models.ListnerCountModel;
 import com.softuvo.ipundit.models.LoginUserModel;
 import com.softuvo.ipundit.models.TermsAndServicesModel;
 import com.softuvo.ipundit.models.UserProfileResponse;
+import com.softuvo.ipundit.models.UserProfileResponseModel;
 import com.softuvo.ipundit.receivers.ConnectivityReceivers;
 import com.softuvo.ipundit.utils.NotificationUtils;
 import com.softuvo.ipundit.utils.SnackbarUtil;
@@ -59,13 +70,10 @@ import com.softuvo.ipundit.views.CustomLinearLayout;
 import com.softuvo.ipundit.views.CustomRelativeLayout;
 import com.softuvo.ipundit.views.CustomTextView;
 import com.squareup.picasso.Picasso;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -75,13 +83,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
 import static com.softuvo.ipundit.config.AppConstant.APP_BACKGROUND;
 import static com.softuvo.ipundit.config.AppConstant.DEVICE_TOKENN;
+import static com.softuvo.ipundit.config.AppConstant.PUNDITS_PAGE_BACKGROUND;
 
 public class DashboardActivity extends BaseActivity {
     private Activity mContext;
@@ -91,9 +98,6 @@ public class DashboardActivity extends BaseActivity {
     private ViewPager mPager;
     private static int currentPage = 0;
     private static int NUM_PAGES = 0;
-    private static final Integer[] IMAGES = {R.drawable.broadcast_back, R.drawable.listen_back};
-    private ArrayList<Integer> ImagesArray = new ArrayList<Integer>();
-
 
     @BindView(R.id.iv_pundits_icon)
     ImageView ivPunditsIcon;
@@ -125,18 +129,6 @@ public class DashboardActivity extends BaseActivity {
     @BindView(R.id.rl_listen_background)
     CustomRelativeLayout rlListenBackground;
 
-   /* @BindView(R.id.rl_pundits_tile)
-    CustomRelativeLayout rlPunditsTile;
-
-    @BindView(R.id.rl_about_pundit_tile)
-    CustomRelativeLayout rlAboutPunditTile;
-
-    @BindView(R.id.rl_profile_tile)
-    CustomRelativeLayout rlProfileTile;
-
-    @BindView(R.id.rl_fb_tile)
-    CustomRelativeLayout rlFbTile;*/
-
     @BindView(R.id.tv_listner_main_count)
     CustomTextView tvListnerMainCount;
 
@@ -158,18 +150,6 @@ public class DashboardActivity extends BaseActivity {
     @BindView(R.id.ed_password_signin)
     EditText edPasswordSignIn;
 
-    @BindView(R.id.tv_sign_in)
-    TextView tvSignIn;
-
-    @BindView(R.id.tv_forgot_password)
-    TextView tvForgotPassword;
-
-    @BindView(R.id.tv_create_account)
-    TextView tvCreateAccount;
-
-    @BindView(R.id.tv_facebook_login)
-    TextView tvFacebookLogin;
-
     @BindView(R.id.ll_signup_background)
     CustomRelativeLayout llSignupBackground;
 
@@ -185,10 +165,6 @@ public class DashboardActivity extends BaseActivity {
     @BindView(R.id.ed_confirm_password)
     EditText edConfirmPassword;
 
-    @BindView(R.id.tv_sign_up)
-    TextView tvSignUp;
-
-
     private CallbackManager callbackManager;
 
     @Override
@@ -200,7 +176,12 @@ public class DashboardActivity extends BaseActivity {
         checkForPermission();
         callbackManager = CallbackManager.Factory.create();
         setUIBackGrounds();
-        getNewsFromServer();
+        Date date = new Date();  // to get the date
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd"); // getting date in this format
+        String formattedDate = df.format(date.getTime());
+        Log.e("cureent date:",formattedDate);
+        getNewsFromServer(formattedDate);
         displayFirebaseRegId();
     }
 
@@ -223,6 +204,9 @@ public class DashboardActivity extends BaseActivity {
                         AppPreferences.init(mContext).putString(APP_BACKGROUND, ApiConstants.IMAGE_BASE_URL + dataModelBgImg.getData().getBackground());
                         Picasso.with(mContext).load(ApiConstants.IMAGE_BASE_URL + dataModelBgImg.getData().getBackground()).into(llMAinBackground);
                     }
+                    if (dataModelBgImg.getData().getLivematchBackground() != null) {
+                        AppPreferences.init(mContext).putString(PUNDITS_PAGE_BACKGROUND, ApiConstants.IMAGE_BASE_URL + dataModelBgImg.getData().getLivematchBackground());
+                    }
                     if (dataModelBgImg.getData().getBroadcaster() != null)
                         Picasso.with(mContext).load(ApiConstants.IMAGE_BASE_URL + dataModelBgImg.getData().getBroadcaster()).into(rlBroadcastBackground);
                     if (dataModelBgImg.getData().getListeners() != null)
@@ -235,47 +219,73 @@ public class DashboardActivity extends BaseActivity {
                         Picasso.with(mContext).load(ApiConstants.IMAGE_BASE_URL + dataModelBgImg.getData().getProfileicon()).into(ivProfileIcon);
                     if (dataModelBgImg.getData().getLoginicon() != null)
                         Picasso.with(mContext).load(ApiConstants.IMAGE_BASE_URL + dataModelBgImg.getData().getLoginicon()).into(ivFbIcon);
-
-                    if (isLoggedIn())
+                    if (isLoggedIn()) {
                         tvLoginLogout.setText(R.string.fb_logout_text);
-                    else
+                        if (!(MobiComUserPreference.getInstance(this).isLoggedIn())) {
+                            Map<String, String> profileMap = new HashMap<>();
+                            profileMap.put(ApiConstants.USER_ID, AppPreferences.init(mContext).getString(AppConstant.USER_ID));
+                            App.getApiHelper().getUserProfile(profileMap, new ApiCallBack<UserProfileResponseModel>() {
+
+                                @Override
+                                public void onSuccess(UserProfileResponseModel userProfileResponseModel) {
+                                    if (userProfileResponseModel != null) {
+                                        if (userProfileResponseModel.getResponsestatus()) {
+                                            AppPreferences.init(mContext).putString(AppConstant.FB_ID, userProfileResponseModel.getMessage().getFbId());
+                                            AppPreferences.init(mContext).putString(AppConstant.USER_NAME, userProfileResponseModel.getMessage().getFirstName());
+                                            loginChat(userProfileResponseModel.getMessage().getFbId(), userProfileResponseModel.getMessage().getFirstName(), userProfileResponseModel.getMessage().getAvatar());
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(String message) {
+
+                                }
+                            });
+                        }
+
+                    } else
                         tvLoginLogout.setText(R.string.fb_login_text);
                     getListnerCountData();
                 } else {
                     SnackbarUtil.showWarningLongSnackbar(mContext, getResources().getString(R.string.internet_not_connected_text));
                 }
             }
-        }
-        for (int i = 0; i < IMAGES.length; i++)
-            ImagesArray.add(IMAGES[i]);
-        mPager = (ViewPager) findViewById(R.id.pager);
-        mPager.setAdapter(new SlidingImageAdapter(mContext, ImagesArray));
-        NUM_PAGES = IMAGES.length;
-        final Handler handler = new Handler();
-        final Runnable Update = new Runnable() {
-            public void run() {
-                if (currentPage == NUM_PAGES) {
-                    currentPage = 0;
+
+            mPager = findViewById(R.id.pager);
+            List<String> bannerimages = null;
+            if (dataModelBgImg != null) {
+                bannerimages = dataModelBgImg.getBannerImages();
+                if (bannerimages.size() > 0) {
+                    mPager.setAdapter(new SlidingImageAdapter(mContext, bannerimages));
+                    NUM_PAGES = bannerimages.size();
+                    final Handler handler = new Handler();
+                    final Runnable Update = new Runnable() {
+                        public void run() {
+                            if (currentPage == NUM_PAGES) {
+                                currentPage = 0;
+                            }
+                            mPager.setCurrentItem(currentPage++, true);
+                        }
+                    };
+                    Timer swipeTimer = new Timer();
+                    swipeTimer.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            handler.post(Update);
+                        }
+                    }, 4000, 4000);
                 }
-                mPager.setCurrentItem(currentPage++, true);
             }
-        };
-        Timer swipeTimer = new Timer();
-        swipeTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                handler.post(Update);
-            }
-        }, 4000, 4000);
+
+        }else{
+            SnackbarUtil.showWarningLongSnackbar(mContext, getResources().getString(R.string.internet_not_connected_text));
+        }
 
     }
 
     public boolean isLoggedIn() {
-        if (AppPreferences.init(mContext).getString(AppConstant.LOGGED_IN_ID).equalsIgnoreCase("")) {
-            return false;
-        } else {
-            return true;
-        }
+        return !AppPreferences.init(mContext).getString(AppConstant.USER_ID).equalsIgnoreCase("");
 //        AccessToken accessToken = AccessToken.getCurrentAccessToken();
 //        return accessToken != null;
     }
@@ -364,10 +374,12 @@ public class DashboardActivity extends BaseActivity {
                                 AppPreferences.init(mContext).putString(AppConstant.USER_PROFILE_PIC, loginUserModel.getUser().get(0).getAvatar());
                             if ((loginUserModel.getUser().get(0).getFirstName() != null) && (loginUserModel.getUser().get(0).getLastName() != null))
                                 AppPreferences.init(mContext).putString(AppConstant.USER_NAME, loginUserModel.getUser().get(0).getFirstName() + " " + loginUserModel.getUser().get(0).getLastName());
+                            if (loginUserModel.getUser().get(0).getFbId()!=null)
+                                AppPreferences.init(mContext).putString(AppConstant.FB_ID, loginUserModel.getUser().get(0).getFbId());
                             SnackbarUtil.showSuccessLongSnackbar(mContext, loginUserModel.getMessage());
+                            loginChat(loginUserModel.getUser().get(0).getFbId(),loginUserModel.getUser().get(0).getFirstName(),loginUserModel.getUser().get(0).getAvatar());
                             tvLoginLogout.setText(R.string.fb_logout_text);
                             SnackbarUtil.showSuccessLongSnackbar(mContext, getString(R.string.register_successfully_message));
-                            AppPreferences.init(mContext).putString(AppConstant.LOGGED_IN_ID, loginUserModel.getUser().get(0).getId());
                             rlBackgroundSignin.setVisibility(View.GONE);
                             rlBackgroundSignin.animate()
                                     .translationYBy(rlBackgroundSignin.getHeight())
@@ -489,7 +501,10 @@ public class DashboardActivity extends BaseActivity {
             registerMap.put(ApiConstants.USER_EMAIL, edEmail.getText().toString());
             registerMap.put(ApiConstants.USER_NAME, edName.getText().toString());
             registerMap.put(ApiConstants.USER_PROFILE_PIC, encodedImg);
-            registerMap.put(ApiConstants.DEVICE_TOKEN, AppPreferences.init(mContext).getString(DEVICE_TOKENN));
+            if( AppPreferences.init(mContext).getString(DEVICE_TOKENN).equalsIgnoreCase(""))
+                registerMap.put(ApiConstants.DEVICE_TOKEN, "1234");
+            else
+                registerMap.put(ApiConstants.DEVICE_TOKEN, AppPreferences.init(mContext).getString(DEVICE_TOKENN));
             registerMap.put(ApiConstants.DEVICE_TYPE, "ANDROID");
             registerMap.put(ApiConstants.PASSWORD, edPassword.getText().toString());
             registerUser(registerMap);
@@ -505,18 +520,6 @@ public class DashboardActivity extends BaseActivity {
                     if (map != null) {
                         SnackbarUtil.showSuccessShortSnackbar(mContext, map.getMessage().toString());
                         llSignupBackground.setVisibility(View.GONE);
-                        rlBackgroundSignin.setVisibility(View.VISIBLE);
-                        rlBackgroundSignin.animate()
-                                .translationYBy(rlBackgroundSignin.getHeight())
-                                .translationY(0)
-                                .setDuration(10000)
-                                .setListener(new AnimatorListenerAdapter() {
-                                    @Override
-                                    public void onAnimationEnd(Animator animation) {
-                                        super.onAnimationEnd(animation);
-                                        rlBackgroundSignin.animate().setListener(null);
-                                    }
-                                });
                         edEmail.setText("");
                         edName.setText("");
                         edPassword.setText("");
@@ -562,10 +565,10 @@ public class DashboardActivity extends BaseActivity {
             } else {
                 final Dialog dialog = new Dialog(mContext);
                 dialog.setContentView(R.layout.custom_alertdialogbox);
-                termsAndServicesHeading = (TextView) dialog.findViewById(R.id.tv_terms_and_condition_heading);
-                termsAndServicesContent = (TextView) dialog.findViewById(R.id.tv_terms_and_condition_content);
-                accept = (Button) dialog.findViewById(R.id.btn_accept);
-                decline = (Button) dialog.findViewById(R.id.btn_decline);
+                termsAndServicesHeading =  dialog.findViewById(R.id.tv_terms_and_condition_heading);
+                termsAndServicesContent =  dialog.findViewById(R.id.tv_terms_and_condition_content);
+                accept =  dialog.findViewById(R.id.btn_accept);
+                decline =  dialog.findViewById(R.id.btn_decline);
                 getTermsAndConditionContent();
                 accept.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -606,6 +609,46 @@ public class DashboardActivity extends BaseActivity {
         }
     }
 
+    public void loginChat(String userID,String userFullName,String imagePath){
+        UserLoginTask.TaskListener listener = new UserLoginTask.TaskListener() {
+
+            @Override
+            public void onSuccess(RegistrationResponse registrationResponse, Context context) {
+                //After successful registration with Applozic server the callback will come here
+                if(MobiComUserPreference.getInstance(context).isRegistered()) {
+
+                    PushNotificationTask pushNotificationTask ;
+                    PushNotificationTask.TaskListener listener = new PushNotificationTask.TaskListener() {
+                        @Override
+                        public void onSuccess(RegistrationResponse registrationResponse) {
+
+                        }
+                        @Override
+                        public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
+
+                        }
+
+                    };
+
+                    pushNotificationTask = new PushNotificationTask(regId, listener, mContext);
+                    pushNotificationTask.execute((Void) null);
+                }
+            }
+
+            @Override
+            public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
+                //If any failure in registration the callback  will come here
+            }};
+
+        User user = new User();
+        user.setUserId(userID); //userId it can be any unique user identifier
+        user.setDisplayName(userFullName); //displayName is the name of the user which will be shown in chat messages
+        user.setAuthenticationTypeId(User.AuthenticationType.APPLOZIC.getValue());  //User.AuthenticationType.APPLOZIC.getValue() for password verification from Applozic server and User.AuthenticationType.CLIENT.getValue() for access Token verification from your server set access token as password
+        user.setPassword(getResources().getString(R.string.applozic_id)); //optional, leave it blank for testing purpose, read this if you want to add additional security by verifying password from your server https://www.applozic.com/docs/configuration.html#access-token-url
+        user.setImageLink(imagePath);//optional,pass your image link
+        new UserLoginTask(user, listener, this).execute((Void) null);
+    }
+
     @OnClick(R.id.rl_fb_tile)
     public void onClickFbTile() {
         if (!isLoggedIn()) {
@@ -622,7 +665,7 @@ public class DashboardActivity extends BaseActivity {
                         }
                     });
         } else {
-            AppPreferences.init(mContext).putString(AppConstant.LOGGED_IN_ID, "");
+            AppPreferences.init(mContext).putString(AppConstant.USER_ID, "");
             LoginManager.getInstance().logOut();
             tvLoginLogout.setText(R.string.fb_login_text);
             SnackbarUtil.showSuccessLongSnackbar(mContext, getString(R.string.fb_logout_message));
@@ -677,7 +720,7 @@ public class DashboardActivity extends BaseActivity {
         if (!isLoggedIn())
             SnackbarUtil.showWarningLongSnackbar(mContext, getString(R.string.ask_user_for_login));
         else {
-            Intent intent = new Intent(mContext, PunditsScreen.class);
+            Intent intent = new Intent(mContext, LiveRightNowActivity.class);
             startActivity(intent);
         }
     }
@@ -731,9 +774,11 @@ public class DashboardActivity extends BaseActivity {
                             AppPreferences.init(mContext).putString(AppConstant.USER_PROFILE_PIC, map.getUser().get(0).getAvatar());
                         if ((map.getUser().get(0).getFirstName() != null) && (map.getUser().get(0).getLastName() != null))
                             AppPreferences.init(mContext).putString(AppConstant.USER_NAME, map.getUser().get(0).getFirstName() + " " + map.getUser().get(0).getLastName());
+                        if (map.getUser().get(0).getFbId()!=null)
+                            AppPreferences.init(mContext).putString(AppConstant.FB_ID, map.getUser().get(0).getFbId());
                         tvLoginLogout.setText(R.string.fb_logout_text);
                         SnackbarUtil.showSuccessLongSnackbar(mContext, getString(R.string.register_successfully_message));
-                        AppPreferences.init(mContext).putString(AppConstant.LOGGED_IN_ID, map.getUser().get(0).getId());
+                        loginChat(map.getUser().get(0).getFbId(),map.getUser().get(0).getFirstName(),map.getUser().get(0).getAvatar());
                         rlBackgroundSignin.setVisibility(View.GONE);
                         rlBackgroundSignin.animate()
                                 .translationYBy(rlBackgroundSignin.getHeight())
@@ -766,7 +811,7 @@ public class DashboardActivity extends BaseActivity {
     }
 
     // Getting News From Servr Every 20 sec.
-    private void getNewsFromServer() {
+    private void getNewsFromServer(final String date) {
         if (ConnectivityReceivers.isConnected()) {
             int apiHitTimeInterval = 40000;
             Timer t = new Timer();
@@ -797,7 +842,7 @@ public class DashboardActivity extends BaseActivity {
                                     SnackbarUtil.showErrorLongSnackbar(mContext, message);
                                 }
                             });*/
-                            App.getApiHelper().getBreakingNewsList("null", new ApiCallBack<BreakingNewsParentModel>() {
+                            App.getApiHelper().getBreakingNewsList("null/"+date, new ApiCallBack<BreakingNewsParentModel>() {
                                 @Override
                                 public void onSuccess(BreakingNewsParentModel breakingNewsParentModel) {
                                     if (breakingNewsParentModel != null) {

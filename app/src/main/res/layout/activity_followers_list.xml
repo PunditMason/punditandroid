@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.softuvo.ipundit.views.CustomLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/ll_followers_list_main"
+    android:orientation="vertical"
+    android:background="@color/colorTransparentBlack"
+    tools:context="com.softuvo.ipundit.activities.FollowersListActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_xxxlarge"
+        android:text="@string/follower"
+        android:textColor="@color/colorWhite"
+        android:layout_gravity="center_horizontal"
+        android:textSize="@dimen/text_size_large"
+        android:textStyle="bold"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_followers_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</com.softuvo.ipundit.views.CustomLinearLayout>
