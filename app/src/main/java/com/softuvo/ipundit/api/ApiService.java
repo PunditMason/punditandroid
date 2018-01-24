@@ -150,6 +150,9 @@ interface ApiService {
     @POST(ApiConstants.LISTERNER_MAIN_COUNT)
     Call<ListnerCountModel> getListnerBroadcastersMainCount();
 
+    @POST(ApiConstants.GET_PLAYLIST_URL)
+    Call<Map> getPlaylistUrl();
+
     @POST("Game/ChannelListener_count/{path}")
     Call<ListnerCountModel> getListnerCount(@Path(value = "path", encoded = true) String stringPath);
 

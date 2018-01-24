@@ -49,6 +49,8 @@ public class ApiConstants {
     public static final String DELETE_PODCAST = "app/deletePodcast";
     //Applogics Chat Integration
     public static final String UPDATE_CHAT_ID = "app/updateChatId";
+    public static final String GET_PLAYLIST_URL = "Game/playlist";
+
 
     // API CONSTANTS
     public static final String USER_NAME = "name";

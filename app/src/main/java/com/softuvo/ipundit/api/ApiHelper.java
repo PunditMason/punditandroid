@@ -634,6 +634,21 @@ public class ApiHelper {
             }
         });
     }
+
+    public void getPlaylistUrl(final ApiCallBack<Map> apiCallBack) {
+        apiservice.getPlaylistUrl().enqueue(new Callback<Map>() {
+            @Override
+            public void onResponse(Call<Map> call, Response<Map> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<Map> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
     public void getListnerCount(String stringPath, final ApiCallBack<ListnerCountModel> apiCallBack) {
         apiservice.getListnerCount(stringPath).enqueue(new Callback<ListnerCountModel>() {
             @Override
