@@ -7,23 +7,24 @@ package com.softuvo.ipundit.config;
 public class ApiConstants {
     //API URL
 
-    public static final String APP_BASE_URL = "http://52.19.91.90/pundit-ios/v1/";
+   /* public static final String APP_BASE_URL = "http://52.19.91.90/pundit-ios/v1/";
     public static final String STAGING_APP_BASE_URL = "http://52.19.91.90/pundit-ios/v2/";
     public static final String IMAGE_BASE_URL = "http://52.19.91.90/pundit-ios/assets/img/icons/";
     public static final String PROFILE_IMAGE_BASE_URL = "http://52.19.91.90/pundit-ios/profileusrimg/";
     public static final String LEAGUE_IMAGE_BASE_URL = "http://52.19.91.90/pundit-ios/assets/img/league_mark/";
     public static final String SHARE_BASE_URL = "http://52.19.91.90/play/broadcast/";
-    public static final String TEAM_ICON_URL = "http://52.19.91.90/pundit-ios/assets/img/team_mark/";
+    public static final String TEAM_ICON_URL = "http://52.19.91.90/pundit-ios/assets/img/team_mark/";*/
 
 
-   /* public static final String APP_BASE_URL = "http://punditsports.com:81/pundit-ios/v1/";
+    public static final String APP_BASE_URL = "http://punditsports.com:81/pundit-ios/v1/";
     public static final String STAGING_APP_BASE_URL = "http://punditsports.com:81/pundit-ios/v2/";
     public static final String IMAGE_BASE_URL = "http://punditsports.com:81/pundit-ios/assets/img/icons/";
     public static final String PROFILE_IMAGE_BASE_URL = "http://punditsports.com:81/pundit-ios/profileusrimg/";
     public static final String LEAGUE_IMAGE_BASE_URL = "http://punditsports.com:81/pundit-ios/assets/img/league_mark/";
     public static final String SHARE_BASE_URL = "http://punditsports.com:81/play/broadcast/";
     public static final String TEAM_ICON_URL = "http://punditsports.com:81/pundit-ios/assets/img/team_mark/";
-*/
+
+
     public static final String LIVE_FEEDS_BASE_URL="https://www.footballwebpages.co.uk/";
     public static final String RED_FIVE_PRO_URL = "http://54.76.147.237:5080/streammanager/api/2.0/";
     public static final String GROUP_ID_URL= "admin/nodegroup?accessToken=pest8Mmyriad";

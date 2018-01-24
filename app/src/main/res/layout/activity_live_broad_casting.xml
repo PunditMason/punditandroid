@@ -34,7 +34,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end|bottom"
                     android:contentDescription="@string/app_name"
-                    android:src="@drawable/play_nw"/>
+                    android:src="@drawable/play_nw"
+                    android:visibility="gone"/>
 
             </LinearLayout>
 
