@@ -720,7 +720,7 @@ public class DashboardActivity extends BaseActivity {
         if (!isLoggedIn())
             SnackbarUtil.showWarningLongSnackbar(mContext, getString(R.string.ask_user_for_login));
         else {
-            Intent intent = new Intent(mContext, PunditsScreen.class);
+            Intent intent = new Intent(mContext, LiveRightNowActivity.class);
             startActivity(intent);
         }
     }

@@ -36,20 +36,6 @@ import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
-import com.google.android.exoplayer2.ExoPlayerFactory;
-import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.source.ExtractorMediaSource;
-import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
-import com.google.android.exoplayer2.trackselection.TrackSelection;
-import com.google.android.exoplayer2.trackselection.TrackSelector;
-import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
-import com.google.android.exoplayer2.upstream.BandwidthMeter;
-import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
-import com.google.android.exoplayer2.util.Util;
 import com.red5pro.streaming.R5Connection;
 import com.red5pro.streaming.R5Stream;
 import com.red5pro.streaming.R5StreamProtocol;
@@ -64,6 +50,7 @@ import com.softuvo.ipundit.config.AppConstant;
 import com.softuvo.ipundit.config.AppPreferences;
 import com.softuvo.ipundit.fragments.LiveFeedsFragment;
 import com.softuvo.ipundit.fragments.LiveFeedsPlayerFragment;
+import com.softuvo.ipundit.models.AddsModel;
 import com.softuvo.ipundit.models.BroadacstersDetailsModel;
 import com.softuvo.ipundit.models.FollowCheckModel;
 import com.softuvo.ipundit.models.FollowUnfollowModel;
@@ -107,7 +94,14 @@ public class LiveListeningActivity extends BaseActivity {
     private static Activity mContext;
     public static R5Stream subscribe;
     private Timer t;
+    Timer timer, tm;
+    MediaPlayer mp;
+    int i = 0;
+    int mediatime = 0;
+    private boolean mckeckbool=false;
+    private boolean mPlayPauseCheckbool = false;
     private static String listenerId;
+    List<AddsModel.AdsDetail.Playlist> playlists;
     private String shareUrl, matchContenstentId, followUnfoloowPath,
             getfollowunfollowpath, status, broadcasterId, broadcasterName, channelId, streamName, serverAddress, groupID, chatChannelId;
     private int followStatus, strMin = 0, strSec = 0, visible = 0;
@@ -544,7 +538,7 @@ public class LiveListeningActivity extends BaseActivity {
                         }
                     }
                 }
-            }else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("followerListSwitch")) {
+            } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("followerListSwitch")) {
                 if (getIntent().getSerializableExtra("mUserDatum") != null) {
                     FollowerListModel.Follwer channell;
                     FollowerListModel.Follwer userDatum = (FollowerListModel.Follwer) getIntent().getSerializableExtra("mUserDatum");
@@ -588,7 +582,7 @@ public class LiveListeningActivity extends BaseActivity {
                         }
                     }
                 }
-            }else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("followingList")) {
+            } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("followingList")) {
                 if (getIntent().getSerializableExtra("mUserDatum") != null) {
                     FollowingListModel.Following channell;
                     FollowingListModel.Following userDatum = (FollowingListModel.Following) getIntent().getSerializableExtra("mUserDatum");
@@ -632,7 +626,7 @@ public class LiveListeningActivity extends BaseActivity {
                         }
                     }
                 }
-            }else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("followingListSwitch")) {
+            } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("followingListSwitch")) {
                 if (getIntent().getSerializableExtra("mUserDatum") != null) {
                     FollowingListModel.Following channell;
                     FollowingListModel.Following userDatum = (FollowingListModel.Following) getIntent().getSerializableExtra("mUserDatum");
@@ -676,7 +670,7 @@ public class LiveListeningActivity extends BaseActivity {
                         }
                     }
                 }
-            }else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("leaguesUserSearchSwitch")) {
+            } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("leaguesUserSearchSwitch")) {
                 if (getIntent().getSerializableExtra("mUserDatum") != null) {
                     UserSearchLeagueModel.Datum userDatum = (UserSearchLeagueModel.Datum) getIntent().getSerializableExtra("mUserDatum");
                     if (userDatum.getChannelInfo().get(0).getChannel().getMarkImage() != null)
@@ -815,6 +809,7 @@ public class LiveListeningActivity extends BaseActivity {
                             if (serverListenerAddressModel.get(i).getAddress() != null)
                                 serverAddress = serverListenerAddressModel.get(i).getAddress();
                             if (streamName != null) {
+                                    setkickofftime();
                                 configRedPro(streamName, serverAddress);
                             } else {
                                 SnackbarUtil.showWarningShortSnackbar(mContext, getResources().getString(R.string.fb_error_message));
@@ -830,12 +825,13 @@ public class LiveListeningActivity extends BaseActivity {
         });
     }
 
+
     @OnClick(R.id.rl_switch_tile)
     public void switchBroacaster() {
         showAlert();
     }
 
-    public void showAlert(){
+    public void showAlert() {
         new AlertDialog.Builder(mContext)
                 .setTitle(getString(R.string.switch_listen_title))
                 .setMessage(getString(R.string.switch_listen_message))
@@ -853,8 +849,7 @@ public class LiveListeningActivity extends BaseActivity {
                             intent.putExtra("mUserDatum", getIntent().getSerializableExtra("mUserDatum"));
                             startActivity(intent);
                             finish();
-                        }
-                        else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("punditsSwitch")) {
+                        } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("punditsSwitch")) {
                             Intent intent = new Intent(mContext, LiveBroadcastersListActivity.class);
                             intent.putExtra("userComingFrom", "punditsSwitch");
                             intent.putExtra("matchidcontestentid", matchContenstentId);
@@ -918,7 +913,7 @@ public class LiveListeningActivity extends BaseActivity {
                             intent.putExtra("mUserDatum", getIntent().getSerializableExtra("mUserDatum"));
                             startActivity(intent);
                             finish();
-                        }else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("followingList")) {
+                        } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("followingList")) {
                             Intent intent = new Intent(mContext, LiveBroadcastersListActivity.class);
                             intent.putExtra("userComingFrom", "followingList");
                             intent.putExtra("matchidcontestentid", matchContenstentId);
@@ -926,8 +921,7 @@ public class LiveListeningActivity extends BaseActivity {
                             intent.putExtra("mUserDatum", getIntent().getSerializableExtra("mUserDatum"));
                             startActivity(intent);
                             finish();
-                        }
-                        else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("followingListSwitch")) {
+                        } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("followingListSwitch")) {
                             Intent intent = new Intent(mContext, LiveBroadcastersListActivity.class);
                             intent.putExtra("userComingFrom", "followingListSwitch");
                             intent.putExtra("matchidcontestentid", matchContenstentId);
@@ -935,8 +929,7 @@ public class LiveListeningActivity extends BaseActivity {
                             intent.putExtra("chatChannelKey", getIntent().getStringExtra("chatChannelKey"));
                             startActivity(intent);
                             finish();
-                        }
-                        else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("followerListSwitch")) {
+                        } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("followerListSwitch")) {
                             Intent intent = new Intent(mContext, LiveBroadcastersListActivity.class);
                             intent.putExtra("userComingFrom", "followerListSwitch");
                             intent.putExtra("matchidcontestentid", matchContenstentId);
@@ -1216,8 +1209,8 @@ public class LiveListeningActivity extends BaseActivity {
             startActivity(Intent.createChooser(i, "Share Via...."));*/
             PackageManager pm = getApplication().getPackageManager();
             List<ResolveInfo> activityList = pm.queryIntentActivities(i, 0);
-            for(final ResolveInfo app : activityList) {
-                if("com.facebook.katana.ShareLinkActivity".equals(app.activityInfo.name)) {
+            for (final ResolveInfo app : activityList) {
+                if ("com.facebook.katana.ShareLinkActivity".equals(app.activityInfo.name)) {
                     ShareDialog shareDialog;
                     shareDialog = new ShareDialog(mContext);
                     ShareLinkContent content = new ShareLinkContent.Builder()
@@ -1387,7 +1380,10 @@ public class LiveListeningActivity extends BaseActivity {
         subscribe = new R5Stream(connection);
         subscribe.play(media);
         getListnerCountData(channelId);
-        setkickofftime();
+       /* if(!mckeckbool)
+        setkickofftime();*/
+        String path = broadcasterId + "/" + channelId;
+        getAddsList(path);
     }
 
     private void getBroadcastersProfile(String broadcastersId) {
@@ -1429,6 +1425,7 @@ public class LiveListeningActivity extends BaseActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                      //  mckeckbool=true;
                         txtkickoffTime.setText(String.valueOf(strMin) + ":" + String.valueOf(strSec));
                         strSec += 1;
                         if (strSec == 59) {
@@ -1588,12 +1585,117 @@ public class LiveListeningActivity extends BaseActivity {
         }, 0, 5000);
     }
 
+
+    private void getAddsList(final String path) {
+        if (ConnectivityReceivers.isConnected()) {
+            tm = new Timer();
+            if (timer != null) {
+                timer.cancel();
+                timer = null;
+            }
+            tm.scheduleAtFixedRate(new TimerTask() {
+
+                @Override
+                public void run() {
+                  /*  runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {*/
+                    App.getApiHelper().getAdsList(path, new ApiCallBack<AddsModel>() {
+                        @Override
+                        public void onSuccess(AddsModel map) {
+                            if (map != null) {
+                                if (map.getAdsDetail().getPauseFlag().equalsIgnoreCase("1")) {
+                                    if (!mPlayPauseCheckbool) {
+                                        i = 0;
+                                        playlists = map.getAdsDetail().getPlaylist();
+                                        stopMediaPlayer();
+                                        if (playlists.size() > 0) {
+                                            mp = MediaPlayer.create(mContext, Uri.parse(playlists.get(i).getAdsAudio()));
+                                            mp.start();
+                                            mediatime = mp.getDuration();
+                                            timer = new Timer();
+                                            if (subscribe != null) {
+                                                subscribe.stop();
+                                                subscribe = null;
+                                            }
+                                            mPlayPauseCheckbool = true;
+                                            if (playlists.size() > 0) playNext();
+                                        }
+                                    }
+                                } else if (map.getAdsDetail().getPauseFlag().equalsIgnoreCase("0")) {
+                                    if (mPlayPauseCheckbool) {
+                                        mPlayPauseCheckbool = false;
+                                        stopMediaPlayer();
+                                        if (subscribe == null) {
+                                            configRedPro(streamName, serverAddress);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(String message) {
+                        }
+                    });
+                    //      }
+                    // });
+                }
+            }, 0, 5000);
+        } else {
+            SnackbarUtil.showWarningLongSnackbar(mContext, getResources().getString(R.string.internet_not_connected_text));
+        }
+    }
+
+    public void stopMediaPlayer() {
+        if (mp != null) {
+            if (mp.isPlaying())
+                mp.stop();
+            mp.reset();
+            mp.release();
+            mp = null;
+        }
+    }
+
+    public void playNext() {
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                stopMediaPlayer();
+                if ((playlists.size() - 1) == i) {
+                    i = 0;
+                } else {
+                    i = i + 1;
+                }
+                mp = MediaPlayer.create(mContext, Uri.parse(playlists.get(i).getAdsAudio()));
+                mp.start();
+                mediatime = mp.getDuration();
+                if (subscribe != null) {
+                    subscribe.stop();
+                }
+                if (playlists.size() > i) {
+
+                    playNext();
+                }
+//                else{
+//                    i=0;
+//                    playNext1();
+//                }
+            }
+        }, mediatime);
+    }
+
     private void unmountListner(String listenerId) {
         if (ConnectivityReceivers.isConnected()) {
             App.getApiHelper().unmountListenerOnServer(listenerId, new ApiCallBack<Map>() {
                 @Override
                 public void onSuccess(Map map) {
                     if (map != null) {
+                        stopMediaPlayer();
+                        if (tm != null)
+                            tm.cancel();
+                        if (timer != null)
+                            timer.cancel();
                         finish();
                     }
                 }
@@ -1604,36 +1706,15 @@ public class LiveListeningActivity extends BaseActivity {
                 }
             });
         } else {
-
+            SnackbarUtil.showWarningLongSnackbar(mContext, getResources().getString(R.string.internet_not_connected_text));
         }
     }
 
-    private void enableDisableUserIntracton() {
-        Thread pBarThread = new Thread() {
-            @Override
-            public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        progressBarLiveListen.setVisibility(View.VISIBLE);
-                        disableUserIntraction();
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            public void run() {
-                                progressBarLiveListen.setVisibility(View.GONE);
-                                enableUserIntraction();
-                            }
-                        }, 3000);
-                    }
-                });
-            }
-        };
-        pBarThread.start();
-    }
 
     private void broadcasterLeaveDialog() {
         try {
             if (!isFinishing() && mContext != null) {
+                stopMediaPlayer();
                 final Dialog dialog = new Dialog(mContext);
                 dialog.setContentView(R.layout.custom_alertdialog_for_listner);
                 dialog.setCancelable(false);
@@ -1642,7 +1723,10 @@ public class LiveListeningActivity extends BaseActivity {
                     @Override
                     public void onClick(View v) {
                         t.cancel();
-                        AppPreferences.init(mContext).putString(AppConstant.LIVE, "0");
+                        if (tm != null)
+                            tm.cancel();
+                        if (timer != null)
+                            timer.cancel();
                         dialog.dismiss();
                         finish();
                     }
@@ -1650,7 +1734,9 @@ public class LiveListeningActivity extends BaseActivity {
                 dialog.show();
 
             }
-        }catch (Exception e){e.printStackTrace();}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void stopListenAppBackground() {
@@ -1671,6 +1757,14 @@ public class LiveListeningActivity extends BaseActivity {
         intent.putExtra(ConversationUIService.TAKE_ORDER, true);
         startActivity(intent);*/
     }
+
+    @Override
+    protected void onDestroy() {
+        unmountListner(listenerId);
+
+        super.onDestroy();
+    }
+
     /*private void onIncommingCallListen() {
         PhoneStateListener phoneStateListener1 = new PhoneStateListener() {
             @Override

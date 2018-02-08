@@ -128,23 +128,23 @@ public class UserProfileActivity extends BaseActivity {
     }
 
     @OnClick(R.id.iv_my_podcasts)
-    public void OnClickMyPodcast(){
-        Intent intent=new Intent(mContext,PodcastActivity.class);
-        intent.putExtra("punditsId",userId);
+    public void OnClickMyPodcast() {
+        Intent intent = new Intent(mContext, PodcastActivity.class);
+        intent.putExtra("punditsId", userId);
         startActivity(intent);
     }
 
     @OnClick(R.id.ll_followers)
-    public void OnClickFollowers(){
-        Intent intent=new Intent(mContext,FollowersListActivity.class);
-        intent.putExtra("usercomingfrom","userProfile");
+    public void OnClickFollowers() {
+        Intent intent = new Intent(mContext, FollowersListActivity.class);
+        intent.putExtra("usercomingfrom", "userProfile");
         startActivity(intent);
     }
 
     @OnClick(R.id.ll_followings)
-    public void OnClickFollowings(){
-        Intent intent=new Intent(mContext,FollowingListActivity.class);
-        intent.putExtra("usercomingfrom","userProfile");
+    public void OnClickFollowings() {
+        Intent intent = new Intent(mContext, FollowingListActivity.class);
+        intent.putExtra("usercomingfrom", "userProfile");
         startActivity(intent);
     }
 
@@ -285,27 +285,27 @@ public class UserProfileActivity extends BaseActivity {
                             protected Bitmap doInBackground(Void... voids) {
                                 Bitmap bitmap = null;
                                 try {
-                                    bitmap = Picasso.with(mContext).load(ApiConstants.PROFILE_IMAGE_BASE_URL + userProfileResponseModel.getMessage().getAvatar()).resize(250,250).get();
+                                    bitmap = Picasso.with(mContext).load(ApiConstants.PROFILE_IMAGE_BASE_URL + userProfileResponseModel.getMessage().getAvatar()).resize(250, 250).get();
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
                                 return bitmap;
                             }
                         }.execute();
-                        if(userProfileResponseModel.getMessage().getFirstName()!=null)
-                        etUserName.setText(userProfileResponseModel.getMessage().getFirstName());
-                        if(userProfileResponseModel.getMessage().getFollower()!=null)
-                        tvFollowerCount.setText(String.valueOf(userProfileResponseModel.getMessage().getFollowing()));
-                        if(userProfileResponseModel.getMessage().getFollowing()!=null)
-                        tvFollowingCount.setText(String.valueOf(userProfileResponseModel.getMessage().getFollower()));
-                        if(userProfileResponseModel.getMessage().getUserBio()!=null)
-                        etUserBio.setText(userProfileResponseModel.getMessage().getUserBio());
-                        if(userProfileResponseModel.getMessage().getFacebook()!=null)
-                        etFacebook.setText(userProfileResponseModel.getMessage().getFacebook());
-                        if(userProfileResponseModel.getMessage().getTwitter()!=null)
-                        etTwitter.setText(userProfileResponseModel.getMessage().getTwitter());
-                        if(userProfileResponseModel.getMessage().getYoutube()!=null)
-                        etYouTube.setText(userProfileResponseModel.getMessage().getYoutube());
+                        if (userProfileResponseModel.getMessage().getFirstName() != null)
+                            etUserName.setText(userProfileResponseModel.getMessage().getFirstName());
+                        if (userProfileResponseModel.getMessage().getFollower() != null)
+                            tvFollowerCount.setText(String.valueOf(userProfileResponseModel.getMessage().getFollowing()));
+                        if (userProfileResponseModel.getMessage().getFollowing() != null)
+                            tvFollowingCount.setText(String.valueOf(userProfileResponseModel.getMessage().getFollower()));
+                        if (userProfileResponseModel.getMessage().getUserBio() != null)
+                            etUserBio.setText(userProfileResponseModel.getMessage().getUserBio());
+                        if (userProfileResponseModel.getMessage().getFacebook() != null)
+                            etFacebook.setText(userProfileResponseModel.getMessage().getFacebook());
+                        if (userProfileResponseModel.getMessage().getTwitter() != null)
+                            etTwitter.setText(userProfileResponseModel.getMessage().getTwitter());
+                        if (userProfileResponseModel.getMessage().getYoutube() != null)
+                            etYouTube.setText(userProfileResponseModel.getMessage().getYoutube());
                     }
                 } else {
                     progressBarUserProfile.setVisibility(View.GONE);
@@ -325,7 +325,7 @@ public class UserProfileActivity extends BaseActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,  String[] permissions,  int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
             case AppConstant.REQUEST_CAMERA_PERMISSION_CODE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -371,7 +371,7 @@ public class UserProfileActivity extends BaseActivity {
                     userChoosenTask = "Choose Photo";
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         if (CommanUtil.checkAndRequestPermission(mContext, Manifest.permission.READ_EXTERNAL_STORAGE, AppConstant.REQUEST_READ_STORAGE_PERMISSION_CODE)) {
-                           galleryIntent();
+                            galleryIntent();
                         }
                     } else {
                         galleryIntent();
@@ -487,6 +487,36 @@ public class UserProfileActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        checkConnection();
+        setDataFollowUnFollow();
     }
+
+    // to set data on load activity
+    private void setDataFollowUnFollow() {
+        if (AppPreferences.init(mContext).getString(AppConstant.USER_ID) != null)
+            userId = AppPreferences.init(mContext).getString(AppConstant.USER_ID);
+        Map<String, String> profileMap = new HashMap<>();
+        profileMap.put(ApiConstants.USER_ID, userId);
+        App.getApiHelper().getUserProfile(profileMap, new ApiCallBack<UserProfileResponseModel>() {
+            @Override
+            public void onSuccess(final UserProfileResponseModel userProfileResponseModel) {
+                if (userProfileResponseModel != null) {
+                    if (userProfileResponseModel.getResponsestatus()) {
+                        if (userProfileResponseModel.getMessage().getFollower() != null)
+                            tvFollowerCount.setText(String.valueOf(userProfileResponseModel.getMessage().getFollowing()));
+                        if (userProfileResponseModel.getMessage().getFollowing() != null)
+                            tvFollowingCount.setText(String.valueOf(userProfileResponseModel.getMessage().getFollower()));
+                    }
+                } else {
+                    SnackbarUtil.showErrorLongSnackbar(mContext, getString(R.string.fb_error_message));
+                }
+            }
+
+            @Override
+            public void onFailure(String message) {
+                SnackbarUtil.showErrorLongSnackbar(mContext, message);
+            }
+        });
+
+    }
+
 }

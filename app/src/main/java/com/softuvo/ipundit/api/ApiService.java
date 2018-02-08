@@ -2,6 +2,7 @@ package com.softuvo.ipundit.api;
 
 import com.softuvo.ipundit.config.ApiConstants;
 import com.softuvo.ipundit.models.AboutUsModel;
+import com.softuvo.ipundit.models.AddsModel;
 import com.softuvo.ipundit.models.BreakingNewsParentModel;
 import com.softuvo.ipundit.models.BroadacstersDetailsModel;
 import com.softuvo.ipundit.models.BroadcastMatchlistModel;
@@ -195,5 +196,9 @@ interface ApiService {
     //Applogic Chat integartion
     @POST(ApiConstants.UPDATE_CHAT_ID)
     Call<Map> updateChatId(@Body Map map);
+
+
+    @POST("game/ListenStreamAds/{path}")
+    Call<AddsModel> getAdsList(@Path(value = "path", encoded = true) String stringPath);
 
 }

@@ -193,9 +193,9 @@ public class LiveBroadCastingActivity extends BaseActivity {
     private void setData() {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         if(isSelected==0)
-            ivPlayPause.setImageResource(R.drawable.play_nw);
-        else if(isSelected==1)
             ivPlayPause.setImageResource(R.drawable.stop_nw);
+        else if(isSelected==1)
+            ivPlayPause.setImageResource(R.drawable.play_nw);
         if (AppPreferences.init(mContext).getString(APP_BACKGROUND) != null)
             Picasso.with(mContext).load(AppPreferences.init(mContext).getString(APP_BACKGROUND)).into(rlLiveBroadcastingMain);
 //        AppPreferences.init(mContext).putString(AppConstant.User_CURRENT_STATE, "1");
@@ -261,14 +261,14 @@ public class LiveBroadCastingActivity extends BaseActivity {
     public void onClickPlaypause(){
         if(isSelected==0){
             isSelected=1;
-            ivPlayPause.setImageResource(R.drawable.stop_nw);
+            ivPlayPause.setImageResource(R.drawable.play_nw);
 
         }
         else if(isSelected==1){
             isSelected=0;
-            ivPlayPause.setImageResource(R.drawable.play_nw);
+            ivPlayPause.setImageResource(R.drawable.stop_nw);
         }
-        String path=channelId+"/"+isSelected+"";
+        String path=channelId+"/"+isSelected;
         pauseStream(path);
     }
 

@@ -4,6 +4,7 @@ import com.softuvo.ipundit.R;
 import com.softuvo.ipundit.config.ApiConstants;
 import com.softuvo.ipundit.config.App;
 import com.softuvo.ipundit.models.AboutUsModel;
+import com.softuvo.ipundit.models.AddsModel;
 import com.softuvo.ipundit.models.BreakingNewsParentModel;
 import com.softuvo.ipundit.models.BroadacstersDetailsModel;
 import com.softuvo.ipundit.models.BroadcastMatchlistModel;
@@ -812,6 +813,20 @@ public class ApiHelper {
 
             @Override
             public void onFailure(Call<FollowingListModel> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+    public void getAdsList(String stringPath, final ApiCallBack<AddsModel> apiCallBack) {
+        apiservice.getAdsList(stringPath).enqueue(new Callback<AddsModel>() {
+            @Override
+            public void onResponse(Call<AddsModel> call, Response<AddsModel> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<AddsModel> call, Throwable t) {
                 apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
             }
         });
