@@ -254,7 +254,7 @@
             android:value="@string/facebook_app_id" />
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="3bf1a053d2b15052e85e359852ba365ff7fa7844"/>
+            android:value="24a857ef84a5819bbf384f2c2c97505da3d36511"/>
             <!--android:value="3bf1a053d2b15052e85e359852ba365ff7fa7844" />-->
         <!--android:value="24a857ef84a5819bbf384f2c2c97505da3d36511"/>-->
         <meta-data
