@@ -102,8 +102,15 @@ public class LiveListeningActivity extends BaseActivity {
     private boolean mPlayPauseCheckbool = false;
     private static String listenerId;
     List<AddsModel.AdsDetail.Playlist> playlists;
-    private String shareUrl, matchContenstentId, followUnfoloowPath,
-            getfollowunfollowpath, status, broadcasterId, broadcasterName, channelId, streamName, serverAddress, groupID, chatChannelId;
+    private String matchContenstentId;
+    private String status;
+    private String broadcasterId;
+    private String broadcasterName;
+    private String channelId;
+    private String streamName;
+    private String serverAddress;
+    private String groupID;
+    private String chatChannelId;
     private int followStatus, strMin = 0, strSec = 0, visible = 0;
 
 
@@ -765,7 +772,7 @@ public class LiveListeningActivity extends BaseActivity {
             if (!(getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("matchListNoBroadcast"))) {
                 getBroadcastersDetails(matchContenstentId);
             }
-            getfollowunfollowpath = broadcasterId + "/" + AppPreferences.init(mContext).getString(AppConstant.USER_ID) + "/" + channelId;
+            String getfollowunfollowpath = broadcasterId + "/" + AppPreferences.init(mContext).getString(AppConstant.USER_ID) + "/" + channelId;
             getUserFollowCount(getfollowunfollowpath);
             getBroadcastersProfile(broadcasterId);
         } else {
@@ -1098,7 +1105,7 @@ public class LiveListeningActivity extends BaseActivity {
         if (ConnectivityReceivers.isConnected()) {
             String encodedBroadcastersId = Base64.encodeToString(broadcasterId.getBytes(), Base64.NO_WRAP);
             String username = broadcasterName.replace(" ", "");
-            shareUrl = ApiConstants.SHARE_BASE_URL + username + "-" + encodedBroadcastersId;
+            String shareUrl = ApiConstants.SHARE_BASE_URL + username + "-" + encodedBroadcastersId;
 //            AppPreferences.init(mContext).putString(AppConstant.User_CURRENT_STATE, "3");
             if (getIntent().getStringExtra("userComingFrom") != null) {
                 if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("matchList")) {
@@ -1236,6 +1243,7 @@ public class LiveListeningActivity extends BaseActivity {
             SnackbarUtil.showWarningShortSnackbar(mContext, getString(R.string.self_follow_text));
             btnFollowUnfollow.setClickable(false);
         } else {
+            String followUnfoloowPath;
             if (followStatus == 0) {
                 btnFollowUnfollow.setText(R.string.follow);
                 followUnfoloowPath = AppPreferences.init(mContext).getString(AppConstant.USER_ID) + "/" + broadcasterId;
