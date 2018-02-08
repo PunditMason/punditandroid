@@ -1619,8 +1619,10 @@ public class LiveListeningActivity extends BaseActivity {
                                         stopMediaPlayer();
                                         if (playlists.size() > 0) {
                                             mp = MediaPlayer.create(mContext, Uri.parse(playlists.get(i).getAdsAudio()));
-                                            mp.start();
-                                            mediatime = mp.getDuration();
+                                            if(mp!=null) {
+                                                mp.start();
+                                                mediatime = mp.getDuration();
+                                            }
                                             timer = new Timer();
                                             if (subscribe != null) {
                                                 subscribe.stop();
