@@ -23,6 +23,7 @@
     <color name="colorProfileBg">#1D1D1D</color>
     <color name="colorTransparentBlack">#CC000000</color>
     <color name="colorSignup">#7A7A7C</color>
+    <color name="colorPlaceholder">#e611e6</color>
 
 
 

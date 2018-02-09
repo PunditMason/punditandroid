@@ -63,18 +63,18 @@ public class AllLeagueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         if(AppPreferences.init(context).getString(AppConstant.USER_SELECTION).equalsIgnoreCase(AppConstant.SELECTED_BROADCAST)) {
             if (position == 0) {
                 HeaderViewHolder headerviewHolder = (HeaderViewHolder) holder;
-                if(leaguesItemList.get(position).getMarkImage()!=null)
-                    Picasso.with(context).load(ApiConstants.LEAGUE_IMAGE_BASE_URL + leaguesItemList.get(position).getMarkImage()).into(headerviewHolder.ivTopLeagueIcon);
-                if(leaguesItemList.get(position).getCoverImage()!=null)
-                    Picasso.with(context).load(ApiConstants.LEAGUE_IMAGE_BASE_URL + leaguesItemList.get(position).getCoverImage()).into(headerviewHolder.rlLeagueTopCoverImage);
+                if(leaguesItemList.get(position).getMarkImage()!=null||(!leaguesItemList.get(position).getMarkImage().equalsIgnoreCase("")))
+                    Picasso.with(context).load(leaguesItemList.get(position).getMarkImage()).into(headerviewHolder.ivTopLeagueIcon);
+                if(leaguesItemList.get(position).getCoverImage()!=null||(!leaguesItemList.get(position).getCoverImage().equalsIgnoreCase("")))
+                    Picasso.with(context).load(leaguesItemList.get(position).getCoverImage()).placeholder(R.drawable.placeholder).into(headerviewHolder.rlLeagueTopCoverImage);
                if(leaguesItemList.get(position).getName()!=null)
                 headerviewHolder.tvTopLeagueName.setText(leaguesItemList.get(position).getName());
             } else {
                 NormalViewHolder normalviewHolder = (NormalViewHolder) holder;
-                if(leaguesItemList.get(position).getCoverImage()!=null)
-                    Picasso.with(context).load(ApiConstants.LEAGUE_IMAGE_BASE_URL + leaguesItemList.get(position).getCoverImage()).into(normalviewHolder.leagueCoverImage);
-                if(leaguesItemList.get(position).getMarkImage()!=null)
-                    Picasso.with(context).load(ApiConstants.LEAGUE_IMAGE_BASE_URL + leaguesItemList.get(position).getMarkImage()).into(normalviewHolder.leagueIcon);
+                if(leaguesItemList.get(position).getCoverImage()!=null&&(!leaguesItemList.get(position).getCoverImage().equalsIgnoreCase("")))
+                    Picasso.with(context).load(leaguesItemList.get(position).getCoverImage()).placeholder(R.drawable.placeholder).into(normalviewHolder.leagueCoverImage);
+                if(leaguesItemList.get(position).getMarkImage()!=null&&(!leaguesItemList.get(position).getMarkImage().equalsIgnoreCase("")))
+                    Picasso.with(context).load(leaguesItemList.get(position).getMarkImage()).into(normalviewHolder.leagueIcon);
                 if(leaguesItemList.get(position).getName()!=null)
                     normalviewHolder.leagueName.setText(leaguesItemList.get(position).getName());
             }
@@ -82,10 +82,10 @@ public class AllLeagueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         else if(AppPreferences.init(context).getString(AppConstant.USER_SELECTION).equalsIgnoreCase(AppConstant.SELECTED_LISTNER)){
             if (position == 0) {
                 HeaderViewHolder headerviewHolder = (HeaderViewHolder) holder;
-                if(leaguesItemList.get(position).getMarkImage()!=null)
-                    Picasso.with(context).load(ApiConstants.LEAGUE_IMAGE_BASE_URL + leaguesItemList.get(position).getMarkImage()).into(headerviewHolder.ivTopLeagueIcon);
-                if(leaguesItemList.get(position).getCoverImage()!=null)
-                    Picasso.with(context).load(ApiConstants.LEAGUE_IMAGE_BASE_URL + leaguesItemList.get(position).getCoverImage()).into(headerviewHolder.rlLeagueTopCoverImage);
+                if(leaguesItemList.get(position).getMarkImage()!=null&&(!leaguesItemList.get(position).getMarkImage().equalsIgnoreCase("")))
+                    Picasso.with(context).load(leaguesItemList.get(position).getMarkImage()).into(headerviewHolder.ivTopLeagueIcon);
+                if(leaguesItemList.get(position).getCoverImage()!=null&&(!leaguesItemList.get(position).getCoverImage().equalsIgnoreCase("")))
+                    Picasso.with(context).load(leaguesItemList.get(position).getCoverImage()).placeholder(R.drawable.placeholder).into(headerviewHolder.rlLeagueTopCoverImage);
                 if(leaguesItemList.get(position).getName()!=null)
                     headerviewHolder.tvTopLeagueName.setText(leaguesItemList.get(position).getName());
                 if(!leaguesItemList.get(position).getBroadcasterCount().equalsIgnoreCase("0")) {
@@ -97,10 +97,10 @@ public class AllLeagueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 }
             } else {
                 NormalViewHolder normalviewHolder = (NormalViewHolder) holder;
-                if(leaguesItemList.get(position).getCoverImage()!=null)
-                    Picasso.with(context).load(ApiConstants.LEAGUE_IMAGE_BASE_URL + leaguesItemList.get(position).getCoverImage()).into(normalviewHolder.leagueCoverImage);
-                if(leaguesItemList.get(position).getMarkImage()!=null)
-                    Picasso.with(context).load(ApiConstants.LEAGUE_IMAGE_BASE_URL + leaguesItemList.get(position).getMarkImage()).into(normalviewHolder.leagueIcon);
+                if(leaguesItemList.get(position).getCoverImage()!=null&&(!leaguesItemList.get(position).getCoverImage().equalsIgnoreCase("")))
+                    Picasso.with(context).load(leaguesItemList.get(position).getCoverImage()).placeholder(R.drawable.placeholder).into(normalviewHolder.leagueCoverImage);
+                if(leaguesItemList.get(position).getMarkImage()!=null&&(!leaguesItemList.get(position).getMarkImage().equalsIgnoreCase("")))
+                    Picasso.with(context).load(leaguesItemList.get(position).getMarkImage()).into(normalviewHolder.leagueIcon);
                 if(leaguesItemList.get(position).getName()!=null)
                     normalviewHolder.leagueName.setText(leaguesItemList.get(position).getName());
                 if(!leaguesItemList.get(position).getBroadcasterCount().equalsIgnoreCase("0")) {

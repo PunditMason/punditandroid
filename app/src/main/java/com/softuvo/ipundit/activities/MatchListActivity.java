@@ -143,8 +143,8 @@ public class MatchListActivity extends BaseActivity implements DatePickerDialog.
 
     @OnClick(R.id.tv_leauge_table_teams)
     public void leagueTable() {
-        if (subCatDetail.getMarkImage() != null)
-            AppPreferences.init(mContext).putString(AppConstant.LEAGUE_IMAGE_URL, ApiConstants.LEAGUE_IMAGE_BASE_URL + subCatDetail.getMarkImage());
+        if (subCatDetail.getMarkImage() != null&&(!subCatDetail.getMarkImage().equalsIgnoreCase("")))
+            AppPreferences.init(mContext).putString(AppConstant.LEAGUE_IMAGE_URL, subCatDetail.getMarkImage());
         Intent intent = new Intent(mContext, MatchStandingActivity.class);
         intent.putExtra("sportsLeagueId", getIntent().getStringExtra("sportsLeagueId"));
         intent.putExtra("sportsLeagueName", subCatDetail.getName());
@@ -214,7 +214,8 @@ public class MatchListActivity extends BaseActivity implements DatePickerDialog.
                             matchListBroadcastAdapter = new MatchListBroadcastAdapter(mContext, matchListList, new MatchListBroadcastAdapter.ItemClickListener() {
                                 @Override
                                 public void onClick(int position) {
-                                    AppPreferences.init(mContext).putString(AppConstant.LEAGUE_IMAGE_URL, ApiConstants.LEAGUE_IMAGE_BASE_URL + subCatDetail.getMarkImage());
+                                    if(subCatDetail.getMarkImage()!=null&&(!subCatDetail.getMarkImage().equalsIgnoreCase("")))
+                                    AppPreferences.init(mContext).putString(AppConstant.LEAGUE_IMAGE_URL, subCatDetail.getMarkImage());
                                     chatChannelId = matchListList.get(position).getChatChannelid();
                                     chatChannelName = matchListList.get(position).getTeam1Name() + " Vs " + matchListList.get(position).getTeam2Name();
                                     matchid = matchListList.get(position).getMatchId();
@@ -279,7 +280,8 @@ public class MatchListActivity extends BaseActivity implements DatePickerDialog.
                             matchListListnerAdapter = new MatchListListnerAdapter(mContext, matchListenList, new MatchListListnerAdapter.ItemClickListener() {
                                 @Override
                                 public void onClick(int position) {
-                                    AppPreferences.init(mContext).putString(AppConstant.LEAGUE_IMAGE_URL, ApiConstants.LEAGUE_IMAGE_BASE_URL + subCatDetail.getMarkImage());
+                                    if(subCatDetail.getMarkImage()!=null&&(!subCatDetail.getMarkImage().equalsIgnoreCase("")))
+                                    AppPreferences.init(mContext).putString(AppConstant.LEAGUE_IMAGE_URL, subCatDetail.getMarkImage());
                                     chatChannelId = matchListenList.get(position).getChatChannelid();
                                     chatChannelName = matchListenList.get(position).getTeam1Name() + " Vs " + matchListenList.get(position).getTeam2Name();
                                     matchid = matchListenList.get(position).getMatchId();
@@ -428,8 +430,8 @@ public class MatchListActivity extends BaseActivity implements DatePickerDialog.
                 Picasso.with(mContext).load(AppPreferences.init(mContext).getString(APP_BACKGROUND)).into(rlMatcListingMain);
             if (getIntent().getSerializableExtra("subCatDetail") != null)
                 subCatDetail = (SportsNameModel.Sports.League) getIntent().getSerializableExtra("subCatDetail");
-            if (subCatDetail.getMarkImage() != null)
-                Picasso.with(mContext).load(ApiConstants.LEAGUE_IMAGE_BASE_URL + subCatDetail.getMarkImage()).into(ivLeaugeIcon);
+            if (subCatDetail.getMarkImage() != null&&(!subCatDetail.getMarkImage().equalsIgnoreCase("")))
+                Picasso.with(mContext).load(subCatDetail.getMarkImage()).into(ivLeaugeIcon);
             if (subCatDetail.getName() != null)
                 tvLeaugeName.setText(subCatDetail.getName());
             if (AppPreferences.init(mContext).getString(AppConstant.USER_SELECTION).equalsIgnoreCase(AppConstant.SELECTED_BROADCAST)) {

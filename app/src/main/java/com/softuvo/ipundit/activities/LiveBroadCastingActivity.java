@@ -697,32 +697,12 @@ public class LiveBroadCastingActivity extends BaseActivity {
                     }
                 }
             }
+            String text=shareUrl+"\n"+status;
             Intent i = new Intent(Intent.ACTION_SEND);
             i.setType("text/plain");
-           // i.putExtra(Intent.EXTRA_SUBJECT, "Pundit");
-           // i.putExtra(Intent.EXTRA_TEXT, status + "\n" + shareUrl);
-            //startActivity(Intent.createChooser(i, "Share Via...."));
-
-            PackageManager pm = getApplication().getPackageManager();
-            List<ResolveInfo> activityList = pm.queryIntentActivities(i, 0);
-            for(final ResolveInfo app : activityList) {
-                if("com.facebook.katana.ShareLinkActivity".equals(app.activityInfo.name)) {
-                    ShareDialog shareDialog;
-                    shareDialog = new ShareDialog(mContext);
-                    ShareLinkContent content = new ShareLinkContent.Builder()
-                            .setContentUrl(Uri.parse(shareUrl))
-                            .setQuote(status)
-                            .build();
-                    shareDialog.show(content);
-                    break;
-                } else {
-                    i.putExtra(Intent.EXTRA_SUBJECT, "Pundit");
-                    i.putExtra(Intent.EXTRA_TEXT, status + "\n" + shareUrl);
-                    startActivity(Intent.createChooser(i, "Share"));
-                    break;
-                }
-            }
-
+            i.putExtra(Intent.EXTRA_SUBJECT, "Pundit");
+            i.putExtra(Intent.EXTRA_TEXT, text);
+            startActivity(Intent.createChooser(i, "Share Via...."));
 
 
 

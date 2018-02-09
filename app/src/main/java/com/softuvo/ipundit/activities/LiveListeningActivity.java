@@ -11,17 +11,13 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.media.AudioManager;
+import android.content.pm.ResolveInfo;;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -31,9 +27,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-
-import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
-import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.red5pro.streaming.R5Connection;
@@ -41,7 +34,6 @@ import com.red5pro.streaming.R5Stream;
 import com.red5pro.streaming.R5StreamProtocol;
 import com.red5pro.streaming.config.R5Configuration;
 import com.softuvo.ipundit.R;
-import com.softuvo.ipundit.adapters.LiveFeedsAdapter;
 import com.softuvo.ipundit.adapters.ViewPagerAdapter;
 import com.softuvo.ipundit.api.ApiCallBack;
 import com.softuvo.ipundit.config.ApiConstants;
@@ -58,10 +50,7 @@ import com.softuvo.ipundit.models.FollowerListModel;
 import com.softuvo.ipundit.models.FollowingListModel;
 import com.softuvo.ipundit.models.ListnerCountModel;
 import com.softuvo.ipundit.models.LiveBroacastersListModel;
-import com.softuvo.ipundit.models.LiveFeedsModel;
-import com.softuvo.ipundit.models.LiveFeedsNewModel;
 import com.softuvo.ipundit.models.MatchListListnerModel;
-import com.softuvo.ipundit.models.PlayerDataModel;
 import com.softuvo.ipundit.models.RedFiveProGroupIdModel;
 import com.softuvo.ipundit.models.ServerListenerAddressModel;
 import com.softuvo.ipundit.models.StandingListeningModel;
@@ -75,19 +64,14 @@ import com.softuvo.ipundit.utils.SnackbarUtil;
 import com.softuvo.ipundit.views.CustomRelativeLayout;
 import com.softuvo.ipundit.views.CustomTextView;
 import com.squareup.picasso.Picasso;
-
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
 import static com.softuvo.ipundit.config.AppConstant.APP_BACKGROUND;
 
 public class LiveListeningActivity extends BaseActivity {
@@ -98,7 +82,6 @@ public class LiveListeningActivity extends BaseActivity {
     MediaPlayer mp;
     int i = 0;
     int mediatime = 0;
-    private boolean mckeckbool=false;
     private boolean mPlayPauseCheckbool = false;
     private static String listenerId;
     List<AddsModel.AdsDetail.Playlist> playlists;
@@ -212,7 +195,7 @@ public class LiveListeningActivity extends BaseActivity {
         if (ConnectivityReceivers.isConnected()) {
             if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("matchList")) {
                 if (getIntent().getSerializableExtra("mMatchDatum") != null) {
-                    if (AppPreferences.init(mContext).getString(AppConstant.LEAGUE_IMAGE_URL) != null)
+                    if (AppPreferences.init(mContext).getString(AppConstant.LEAGUE_IMAGE_URL) != null&& !AppPreferences.init(mContext).getString(AppConstant.LEAGUE_IMAGE_URL).equalsIgnoreCase(""))
                         Picasso.with(mContext).load(AppPreferences.init(mContext).getString(AppConstant.LEAGUE_IMAGE_URL)).into(ivLeagueLogo);
                     MatchListListnerModel.ListenMatchList matchDatum = (MatchListListnerModel.ListenMatchList) getIntent().getSerializableExtra("mMatchDatum");
                     channel = (LiveBroacastersListModel.Channel) getIntent().getSerializableExtra("mBrListDatum");
@@ -234,7 +217,7 @@ public class LiveListeningActivity extends BaseActivity {
                 }
             } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("matchStandingListenList")) {
                 if (getIntent().getSerializableExtra("mMatchDatum") != null) {
-                    if (AppPreferences.init(mContext).getString(AppConstant.LEAGUE_IMAGE_URL) != null)
+                    if (AppPreferences.init(mContext).getString(AppConstant.LEAGUE_IMAGE_URL) != null&& !AppPreferences.init(mContext).getString(AppConstant.LEAGUE_IMAGE_URL).equalsIgnoreCase(""))
                         Picasso.with(mContext).load(AppPreferences.init(mContext).getString(AppConstant.LEAGUE_IMAGE_URL)).into(ivLeagueLogo);
                     StandingListeningModel.Datum matchDatum = (StandingListeningModel.Datum) getIntent().getSerializableExtra("mMatchDatum");
                     matchContenstentId = matchDatum.getContestantId();
@@ -258,8 +241,8 @@ public class LiveListeningActivity extends BaseActivity {
                 if (getIntent().getSerializableExtra("mUserDatum") != null) {
                     UserDetailsAndMatchDetailsModel.UsersList channell;
                     UserDetailsAndMatchDetailsModel.UsersList userDatum = (UserDetailsAndMatchDetailsModel.UsersList) getIntent().getSerializableExtra("mUserDatum");
-                    if (userDatum.getChannelInfo().get(0).getChannel().getMarkImage() != null)
-                        Picasso.with(mContext).load(ApiConstants.LEAGUE_IMAGE_BASE_URL + userDatum.getChannelInfo().get(0).getChannel().getMarkImage()).into(ivLeagueLogo);
+                    if (userDatum.getChannelInfo().get(0).getChannel().getMarkImage() != null && !userDatum.getChannelInfo().get(0).getChannel().getMarkImage().equalsIgnoreCase(""))
+                        Picasso.with(mContext).load(userDatum.getChannelInfo().get(0).getChannel().getMarkImage()).into(ivLeagueLogo);
                     if (userDatum.getChannelInfo().get(0).getChannel() != null) {
                         if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("match")) {
                             channell = (UserDetailsAndMatchDetailsModel.UsersList) getIntent().getSerializableExtra("mUserDatum");
@@ -303,8 +286,8 @@ public class LiveListeningActivity extends BaseActivity {
             } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("punditsSwitch")) {
                 if (getIntent().getSerializableExtra("mUserDatum") != null) {
                     UserDetailsAndMatchDetailsModel.UsersList userDatum = (UserDetailsAndMatchDetailsModel.UsersList) getIntent().getSerializableExtra("mUserDatum");
-                    if (userDatum.getChannelInfo().get(0).getChannel().getMarkImage() != null)
-                        Picasso.with(mContext).load(ApiConstants.LEAGUE_IMAGE_BASE_URL + userDatum.getChannelInfo().get(0).getChannel().getMarkImage()).into(ivLeagueLogo);
+                    if (userDatum.getChannelInfo().get(0).getChannel().getMarkImage() != null && !userDatum.getChannelInfo().get(0).getChannel().getMarkImage().equalsIgnoreCase(""))
+                        Picasso.with(mContext).load(userDatum.getChannelInfo().get(0).getChannel().getMarkImage()).into(ivLeagueLogo);
                     if (userDatum.getChannelInfo().get(0).getChannel() != null) {
                         if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("match")) {
                             channel = (LiveBroacastersListModel.Channel) getIntent().getSerializableExtra("mBrListDatum");
@@ -347,8 +330,8 @@ public class LiveListeningActivity extends BaseActivity {
                 if (getIntent().getSerializableExtra("mUserDatum") != null) {
                     UserSearchSportsModel.UserDatum channell;
                     UserSearchSportsModel.UserDatum userDatum = (UserSearchSportsModel.UserDatum) getIntent().getSerializableExtra("mUserDatum");
-                    if (userDatum.getChannelInfo().get(0).getChannel().getMarkImage() != null)
-                        Picasso.with(mContext).load(ApiConstants.LEAGUE_IMAGE_BASE_URL + userDatum.getChannelInfo().get(0).getChannel().getMarkImage()).into(ivLeagueLogo);
+                    if (userDatum.getChannelInfo().get(0).getChannel().getMarkImage() != null && !userDatum.getChannelInfo().get(0).getChannel().getMarkImage().equalsIgnoreCase(""))
+                        Picasso.with(mContext).load(userDatum.getChannelInfo().get(0).getChannel().getMarkImage()).into(ivLeagueLogo);
                     if (userDatum.getChannelInfo().get(0).getChannel() != null) {
                         if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("match")) {
                             channell = (UserSearchSportsModel.UserDatum) getIntent().getSerializableExtra("mUserDatum");
@@ -391,8 +374,8 @@ public class LiveListeningActivity extends BaseActivity {
             } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("sprotsUserSearchSwitch")) {
                 if (getIntent().getSerializableExtra("mUserDatum") != null) {
                     UserSearchSportsModel.UserDatum userDatum = (UserSearchSportsModel.UserDatum) getIntent().getSerializableExtra("mUserDatum");
-                    if (userDatum.getChannelInfo().get(0).getChannel().getMarkImage() != null)
-                        Picasso.with(mContext).load(ApiConstants.LEAGUE_IMAGE_BASE_URL + userDatum.getChannelInfo().get(0).getChannel().getMarkImage()).into(ivLeagueLogo);
+                    if (userDatum.getChannelInfo().get(0).getChannel().getMarkImage() != null && !userDatum.getChannelInfo().get(0).getChannel().getMarkImage().equalsIgnoreCase(""))
+                        Picasso.with(mContext).load(userDatum.getChannelInfo().get(0).getChannel().getMarkImage()).into(ivLeagueLogo);
                     if (userDatum.getChannelInfo().get(0).getChannel() != null) {
                         if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("match")) {
                             channel = (LiveBroacastersListModel.Channel) getIntent().getSerializableExtra("mBrListDatum");
@@ -434,8 +417,8 @@ public class LiveListeningActivity extends BaseActivity {
             } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("sprotsTeamSearch")) {
                 if (getIntent().getSerializableExtra("mTeamSearchDatum") != null) {
                     TeamSearchSportsModel.Datum teamDatum = (TeamSearchSportsModel.Datum) getIntent().getSerializableExtra("mTeamSearchDatum");
-                    if (teamDatum.getMarkImage() != null)
-                        Picasso.with(mContext).load(ApiConstants.LEAGUE_IMAGE_BASE_URL + teamDatum.getMarkImage()).into(ivLeagueLogo);
+                    if (teamDatum.getMarkImage() != null && !teamDatum.getMarkImage().equalsIgnoreCase(""))
+                        Picasso.with(mContext).load(teamDatum.getMarkImage()).into(ivLeagueLogo);
                     if (teamDatum.getChannelInfo() != null) {
                         {
                             channel = (LiveBroacastersListModel.Channel) getIntent().getSerializableExtra("mBrListDatum");
@@ -461,8 +444,8 @@ public class LiveListeningActivity extends BaseActivity {
                 if (getIntent().getSerializableExtra("mUserDatum") != null) {
                     UserSearchLeagueModel.Datum channell;
                     UserSearchLeagueModel.Datum userDatum = (UserSearchLeagueModel.Datum) getIntent().getSerializableExtra("mUserDatum");
-                    if (userDatum.getChannelInfo().get(0).getChannel().getMarkImage() != null)
-                        Picasso.with(mContext).load(ApiConstants.LEAGUE_IMAGE_BASE_URL + userDatum.getChannelInfo().get(0).getChannel().getMarkImage()).into(ivLeagueLogo);
+                    if (userDatum.getChannelInfo().get(0).getChannel().getMarkImage() != null && !userDatum.getChannelInfo().get(0).getChannel().getMarkImage().equalsIgnoreCase(""))
+                        Picasso.with(mContext).load(userDatum.getChannelInfo().get(0).getChannel().getMarkImage()).into(ivLeagueLogo);
                     if (userDatum.getChannelInfo().get(0).getChannel() != null) {
                         if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("match")) {
                             channell = (UserSearchLeagueModel.Datum) getIntent().getSerializableExtra("mUserDatum");
@@ -505,8 +488,8 @@ public class LiveListeningActivity extends BaseActivity {
                 if (getIntent().getSerializableExtra("mUserDatum") != null) {
                     FollowerListModel.Follwer channell;
                     FollowerListModel.Follwer userDatum = (FollowerListModel.Follwer) getIntent().getSerializableExtra("mUserDatum");
-                    if (userDatum.getChannelInfo().get(0).getChannel().getMarkImage() != null)
-                        Picasso.with(mContext).load(ApiConstants.LEAGUE_IMAGE_BASE_URL + userDatum.getChannelInfo().get(0).getChannel().getMarkImage()).into(ivLeagueLogo);
+                    if (userDatum.getChannelInfo().get(0).getChannel().getMarkImage() != null && !userDatum.getChannelInfo().get(0).getChannel().getMarkImage().equalsIgnoreCase(""))
+                        Picasso.with(mContext).load(userDatum.getChannelInfo().get(0).getChannel().getMarkImage()).into(ivLeagueLogo);
                     if (userDatum.getChannelInfo().get(0).getChannel() != null) {
                         if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("match")) {
                             channell = (FollowerListModel.Follwer) getIntent().getSerializableExtra("mUserDatum");
@@ -549,8 +532,8 @@ public class LiveListeningActivity extends BaseActivity {
                 if (getIntent().getSerializableExtra("mUserDatum") != null) {
                     FollowerListModel.Follwer channell;
                     FollowerListModel.Follwer userDatum = (FollowerListModel.Follwer) getIntent().getSerializableExtra("mUserDatum");
-                    if (userDatum.getChannelInfo().get(0).getChannel().getMarkImage() != null)
-                        Picasso.with(mContext).load(ApiConstants.LEAGUE_IMAGE_BASE_URL + userDatum.getChannelInfo().get(0).getChannel().getMarkImage()).into(ivLeagueLogo);
+                    if (userDatum.getChannelInfo().get(0).getChannel().getMarkImage() != null && !userDatum.getChannelInfo().get(0).getChannel().getMarkImage().equalsIgnoreCase(""))
+                        Picasso.with(mContext).load(userDatum.getChannelInfo().get(0).getChannel().getMarkImage()).into(ivLeagueLogo);
                     if (userDatum.getChannelInfo().get(0).getChannel() != null) {
                         if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("match")) {
                             channell = (FollowerListModel.Follwer) getIntent().getSerializableExtra("mUserDatum");
@@ -593,8 +576,8 @@ public class LiveListeningActivity extends BaseActivity {
                 if (getIntent().getSerializableExtra("mUserDatum") != null) {
                     FollowingListModel.Following channell;
                     FollowingListModel.Following userDatum = (FollowingListModel.Following) getIntent().getSerializableExtra("mUserDatum");
-                    if (userDatum.getChannelInfo().get(0).getChannel().getMarkImage() != null)
-                        Picasso.with(mContext).load(ApiConstants.LEAGUE_IMAGE_BASE_URL + userDatum.getChannelInfo().get(0).getChannel().getMarkImage()).into(ivLeagueLogo);
+                    if (userDatum.getChannelInfo().get(0).getChannel().getMarkImage() != null && !userDatum.getChannelInfo().get(0).getChannel().getMarkImage().equalsIgnoreCase(""))
+                        Picasso.with(mContext).load(userDatum.getChannelInfo().get(0).getChannel().getMarkImage()).into(ivLeagueLogo);
                     if (userDatum.getChannelInfo().get(0).getChannel() != null) {
                         if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("match")) {
                             channell = (FollowingListModel.Following) getIntent().getSerializableExtra("mUserDatum");
@@ -637,8 +620,8 @@ public class LiveListeningActivity extends BaseActivity {
                 if (getIntent().getSerializableExtra("mUserDatum") != null) {
                     FollowingListModel.Following channell;
                     FollowingListModel.Following userDatum = (FollowingListModel.Following) getIntent().getSerializableExtra("mUserDatum");
-                    if (userDatum.getChannelInfo().get(0).getChannel().getMarkImage() != null)
-                        Picasso.with(mContext).load(ApiConstants.LEAGUE_IMAGE_BASE_URL + userDatum.getChannelInfo().get(0).getChannel().getMarkImage()).into(ivLeagueLogo);
+                    if (userDatum.getChannelInfo().get(0).getChannel().getMarkImage() != null && !userDatum.getChannelInfo().get(0).getChannel().getMarkImage().equalsIgnoreCase(""))
+                        Picasso.with(mContext).load(userDatum.getChannelInfo().get(0).getChannel().getMarkImage()).into(ivLeagueLogo);
                     if (userDatum.getChannelInfo().get(0).getChannel() != null) {
                         if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("match")) {
                             channell = (FollowingListModel.Following) getIntent().getSerializableExtra("mUserDatum");
@@ -680,8 +663,8 @@ public class LiveListeningActivity extends BaseActivity {
             } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("leaguesUserSearchSwitch")) {
                 if (getIntent().getSerializableExtra("mUserDatum") != null) {
                     UserSearchLeagueModel.Datum userDatum = (UserSearchLeagueModel.Datum) getIntent().getSerializableExtra("mUserDatum");
-                    if (userDatum.getChannelInfo().get(0).getChannel().getMarkImage() != null)
-                        Picasso.with(mContext).load(ApiConstants.LEAGUE_IMAGE_BASE_URL + userDatum.getChannelInfo().get(0).getChannel().getMarkImage()).into(ivLeagueLogo);
+                    if (userDatum.getChannelInfo().get(0).getChannel().getMarkImage() != null&& !userDatum.getChannelInfo().get(0).getChannel().getMarkImage().equalsIgnoreCase(""))
+                        Picasso.with(mContext).load(userDatum.getChannelInfo().get(0).getChannel().getMarkImage()).into(ivLeagueLogo);
                     if (userDatum.getChannelInfo().get(0).getChannel() != null) {
                         if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("match")) {
                             channel = (LiveBroacastersListModel.Channel) getIntent().getSerializableExtra("mBrListDatum");
@@ -722,8 +705,8 @@ public class LiveListeningActivity extends BaseActivity {
             } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("leaguesTeamSearch")) {
                 if (getIntent().getSerializableExtra("mTeamSearchDatum") != null) {
                     TeamSearchSportsModel.Datum teamDatum = (TeamSearchSportsModel.Datum) getIntent().getSerializableExtra("mTeamSearchDatum");
-                    if (teamDatum.getMarkImage() != null)
-                        Picasso.with(mContext).load(ApiConstants.LEAGUE_IMAGE_BASE_URL + teamDatum.getMarkImage()).into(ivLeagueLogo);
+                    if (teamDatum.getMarkImage() != null&& !teamDatum.getMarkImage().equalsIgnoreCase(""))
+                        Picasso.with(mContext).load(teamDatum.getMarkImage()).into(ivLeagueLogo);
                     if (teamDatum.getChannelInfo() != null) {
                         {
                             channel = (LiveBroacastersListModel.Channel) getIntent().getSerializableExtra("mBrListDatum");
@@ -747,7 +730,7 @@ public class LiveListeningActivity extends BaseActivity {
                 }
             } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("matchListNoBroadcast")) {
                 if (getIntent().getSerializableExtra("mMatchDatum") != null) {
-                    if (AppPreferences.init(mContext).getString(AppConstant.LEAGUE_IMAGE_URL) != null)
+                    if (AppPreferences.init(mContext).getString(AppConstant.LEAGUE_IMAGE_URL) != null && !AppPreferences.init(mContext).getString(AppConstant.LEAGUE_IMAGE_URL).equalsIgnoreCase(""))
                         Picasso.with(mContext).load(AppPreferences.init(mContext).getString(AppConstant.LEAGUE_IMAGE_URL)).into(ivLeagueLogo);
                     MatchListListnerModel.ListenMatchList matchDatum = (MatchListListnerModel.ListenMatchList) getIntent().getSerializableExtra("mMatchDatum");
                     matchContenstentId = matchDatum.getMatchId();
@@ -1211,28 +1194,9 @@ public class LiveListeningActivity extends BaseActivity {
             }
             Intent i = new Intent(Intent.ACTION_SEND);
             i.setType("text/plain");
-          /*  i.putExtra(Intent.EXTRA_SUBJECT, "Pundit");
+            i.putExtra(Intent.EXTRA_SUBJECT, "Pundit");
             i.putExtra(Intent.EXTRA_TEXT, shareUrl + "\n" + status);
-            startActivity(Intent.createChooser(i, "Share Via...."));*/
-            PackageManager pm = getApplication().getPackageManager();
-            List<ResolveInfo> activityList = pm.queryIntentActivities(i, 0);
-            for (final ResolveInfo app : activityList) {
-                if ("com.facebook.katana.ShareLinkActivity".equals(app.activityInfo.name)) {
-                    ShareDialog shareDialog;
-                    shareDialog = new ShareDialog(mContext);
-                    ShareLinkContent content = new ShareLinkContent.Builder()
-                            .setContentUrl(Uri.parse(shareUrl))
-                            .setQuote(status)
-                            .build();
-                    shareDialog.show(content);
-                    break;
-                } else {
-                    i.putExtra(Intent.EXTRA_SUBJECT, "Pundit");
-                    i.putExtra(Intent.EXTRA_TEXT, status + "\n" + shareUrl);
-                    startActivity(Intent.createChooser(i, "Share"));
-                    break;
-                }
-            }
+            startActivity(Intent.createChooser(i, "Share Via...."));
         }
 
     }

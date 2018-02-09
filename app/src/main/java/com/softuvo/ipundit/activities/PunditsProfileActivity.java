@@ -53,9 +53,10 @@ public class PunditsProfileActivity extends BaseActivity {
     private String followingCount;
     private String followerCount;
     private String punditsBio;
-    private String live, chatChannelId, chatChannelName, matchid, channelType;
+    private String live, chatChannelId, chatChannelName, matchid, channelType,userId;
     private String punditsId;
     private int followStatus;
+
 
     @BindView(R.id.tv_pundits_name)
     CustomTextView tvPunditsName;
@@ -77,7 +78,8 @@ public class PunditsProfileActivity extends BaseActivity {
 
     @BindView(R.id.tv_pundits_bio)
     CustomTextView tvPunditsBio;
-
+    int i=0;
+    int pos=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,6 +88,7 @@ public class PunditsProfileActivity extends BaseActivity {
         ButterKnife.bind(this);
         setUIBackGrounds();
     }
+
 
     private void setUIBackGrounds() {
         if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("pundits")) {
