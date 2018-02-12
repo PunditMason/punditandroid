@@ -18,6 +18,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
@@ -39,6 +40,10 @@ public class BaseActivity extends AppCompatActivity implements ConnectivityRecei
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
         fireLocalNotification();
+    }
+
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
     @Override

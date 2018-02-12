@@ -6,4 +6,9 @@
     android:layout_height="match_parent"
     tools:context="com.softuvo.ipundit.activities.DummyActivity">
 
+    <WebView
+        android:id="@+id/wv_img"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
 </android.support.constraint.ConstraintLayout>

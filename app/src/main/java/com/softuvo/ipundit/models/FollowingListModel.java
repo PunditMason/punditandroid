@@ -670,6 +670,12 @@ public class FollowingListModel implements Serializable {
                 @SerializedName("team2_name")
                 @Expose
                 private String team2Name;
+                @SerializedName("team1_twitter_id")
+                @Expose
+                private String team1_twitter_id;
+                @SerializedName("team2__twitter_id")
+                @Expose
+                private String team2__twitter_id;
 
                 public String getId() {
                     return id;
@@ -705,6 +711,22 @@ public class FollowingListModel implements Serializable {
 
                 public String getSportId() {
                     return sportId;
+                }
+
+                public String getTeam1_twitter_id() {
+                    return team1_twitter_id;
+                }
+
+                public void setTeam1_twitter_id(String team1_twitter_id) {
+                    this.team1_twitter_id = team1_twitter_id;
+                }
+
+                public String getTeam2__twitter_id() {
+                    return team2__twitter_id;
+                }
+
+                public void setTeam2__twitter_id(String team2__twitter_id) {
+                    this.team2__twitter_id = team2__twitter_id;
                 }
 
                 public void setSportId(String sportId) {
@@ -1016,6 +1038,9 @@ public class FollowingListModel implements Serializable {
                 @SerializedName("points")
                 @Expose
                 private String points;
+                @SerializedName("twitter_id")
+                @Expose
+                private String twitter_id;
                 @SerializedName("matchesPlayed")
                 @Expose
                 private String matchesPlayed;
@@ -1099,6 +1124,14 @@ public class FollowingListModel implements Serializable {
 
                 public String getLeagueId() {
                     return leagueId;
+                }
+
+                public String getTwitter_id() {
+                    return twitter_id;
+                }
+
+                public void setTwitter_id(String twitter_id) {
+                    this.twitter_id = twitter_id;
                 }
 
                 public void setLeagueId(String leagueId) {

@@ -94,6 +94,9 @@ public class StandingListeningModel implements Serializable {
         @SerializedName("count_match")
         @Expose
         private String countMatch;
+        @SerializedName("twitter_id")
+        @Expose
+        private String twitter_id;
         @SerializedName("channel")
         @Expose
         private List<Channel> channel = null;
@@ -116,6 +119,22 @@ public class StandingListeningModel implements Serializable {
 
         public String getRank() {
             return rank;
+        }
+
+        public Object getcId() {
+            return cId;
+        }
+
+        public void setcId(Object cId) {
+            this.cId = cId;
+        }
+
+        public String getTwitter_id() {
+            return twitter_id;
+        }
+
+        public void setTwitter_id(String twitter_id) {
+            this.twitter_id = twitter_id;
         }
 
         public void setRank(String rank) {

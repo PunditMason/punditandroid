@@ -127,6 +127,12 @@ public class BroadcastMatchlistModel implements Serializable{
         @SerializedName("season_name")
         @Expose
         private String seasonName;
+        @SerializedName("team1_twitter_id")
+        @Expose
+        private String team1_twitter_id;
+        @SerializedName("team2__twitter_id")
+        @Expose
+        private String team2__twitter_id;
 
         public String getId() {
             return id;
@@ -150,6 +156,22 @@ public class BroadcastMatchlistModel implements Serializable{
 
         public void setCompetitionId(String competitionId) {
             this.competitionId = competitionId;
+        }
+
+        public String getTeam1_twitter_id() {
+            return team1_twitter_id;
+        }
+
+        public void setTeam1_twitter_id(String team1_twitter_id) {
+            this.team1_twitter_id = team1_twitter_id;
+        }
+
+        public String getTeam2__twitter_id() {
+            return team2__twitter_id;
+        }
+
+        public void setTeam2__twitter_id(String team2__twitter_id) {
+            this.team2__twitter_id = team2__twitter_id;
         }
 
         public String getStageId() {

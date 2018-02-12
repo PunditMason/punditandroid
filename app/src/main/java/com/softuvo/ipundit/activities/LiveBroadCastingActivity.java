@@ -7,12 +7,16 @@ package com.softuvo.ipundit.activities;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.LabeledIntent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
@@ -67,22 +71,41 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
 import static com.softuvo.ipundit.config.AppConstant.APP_BACKGROUND;
 import static com.softuvo.ipundit.config.AppConstant.USER_ID;
 import static com.softuvo.ipundit.config.AppConstant.USER_NAME;
 
 public class LiveBroadCastingActivity extends BaseActivity {
-    private static Activity mContext;
+    private Activity mContext;
     private int minutes = 0, seconds = 0;
-    private String strName, strMatchId, strBroadcastName, strBroadcastId, strAppName, strChannelType, shareUrl,
-             status, strFollowMsg, Score_team1, Score_team2, team1_id, team2_id, serverAddress,chatChannelId,strStream;
+    private String strName;
+    private String strMatchId;
+    private String strBroadcastName;
+    private String strBroadcastId;
+    private String strAppName;
+    private String strChannelType;
+    private String status;
+    private String twitterStatus;
+    private String strFollowMsg;
+    private String Score_team1;
+    private String Score_team2;
+    private String team1_id;
+    private String team2_id;
+    private String serverAddress;
+    private String chatChannelId;
+    private String team1TwittweId;
+    private String team2TwitterId;
+    private String teamTwitterId;
     private static R5Stream stream;
     private static String channelId;
     private int visible = 0;
-    private int isSelected=0;
+    private int isSelected = 0;
+    String mUserComingFrom;
 
     @BindView(R.id.rl_live_broadcasting_main)
     CustomRelativeLayout rlLiveBroadcastingMain;
@@ -192,15 +215,15 @@ public class LiveBroadCastingActivity extends BaseActivity {
 
     private void setData() {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        if(isSelected==0)
+        if (isSelected == 0)
             ivPlayPause.setImageResource(R.drawable.stop_nw);
-        else if(isSelected==1)
+        else if (isSelected == 1)
             ivPlayPause.setImageResource(R.drawable.play_nw);
         if (AppPreferences.init(mContext).getString(APP_BACKGROUND) != null)
             Picasso.with(mContext).load(AppPreferences.init(mContext).getString(APP_BACKGROUND)).into(rlLiveBroadcastingMain);
 //        AppPreferences.init(mContext).putString(AppConstant.User_CURRENT_STATE, "1");
         if (getIntent().getStringExtra("userComingFrom") != null) {
-            String mUserComingFrom;
+
             if ((getIntent().getStringExtra("userComingFrom")).equalsIgnoreCase("matchList")) {
                 mUserComingFrom = "match";
                 if (getIntent().getSerializableExtra("mBrDatum") != null) {
@@ -215,6 +238,8 @@ public class LiveBroadCastingActivity extends BaseActivity {
                     tvTeam2NameEditboard.setText(mBrDatum.getTeam2Name());
                     strName = mBrDatum.getTeam1Name() + " Vs " + mBrDatum.getTeam2Name() + "-" + AppPreferences.init(mContext).getString(AppConstant.USER_NAME);
                     strMatchId = mBrDatum.getMatchId();
+                    team1TwittweId = mBrDatum.getTeam1_twitter_id();
+                    team2TwitterId = mBrDatum.getTeam2__twitter_id();
                     strBroadcastName = AppPreferences.init(mContext).getString(USER_NAME);
                     strBroadcastId = AppPreferences.init(mContext).getString(AppConstant.USER_ID);
                     strAppName = "live";
@@ -238,6 +263,7 @@ public class LiveBroadCastingActivity extends BaseActivity {
                     tvTeam1scoreVsTeam2score.setText("");
                     strName = mBrDatum.getContestantName() + "-" + AppPreferences.init(mContext).getString(AppConstant.USER_NAME);
                     strMatchId = mBrDatum.getContestantId();
+                    teamTwitterId = mBrDatum.getTwitter_id();
                     strBroadcastName = AppPreferences.init(mContext).getString(USER_NAME);
                     strBroadcastId = AppPreferences.init(mContext).getString(AppConstant.USER_ID);
                     strAppName = "live";
@@ -250,25 +276,25 @@ public class LiveBroadCastingActivity extends BaseActivity {
             if (AppPreferences.init(mContext).getString(AppConstant.LEAGUE_IMAGE_URL) != null && !AppPreferences.init(mContext).getString(AppConstant.LEAGUE_IMAGE_URL).equalsIgnoreCase(""))
                 Picasso.with(mContext).load(AppPreferences.init(mContext).getString(AppConstant.LEAGUE_IMAGE_URL)).into(ivLeagueIcon);
             String broadcasterName = "Logged in as " + AppPreferences.init(mContext).getString(USER_NAME);
-            chatChannelId=getIntent().getStringExtra("chatChannelKey");
+            chatChannelId = getIntent().getStringExtra("chatChannelKey");
             gifView.setGifImageResource(R.drawable.broadcast_gif);
             tvBroadcsatersName.setText(broadcasterName);
             publish();
             createMap();
         }
     }
+
     @OnClick(R.id.iv_play_pause)
-    public void onClickPlaypause(){
-        if(isSelected==0){
-            isSelected=1;
+    public void onClickPlaypause() {
+        if (isSelected == 0) {
+            isSelected = 1;
             ivPlayPause.setImageResource(R.drawable.play_nw);
 
-        }
-        else if(isSelected==1){
-            isSelected=0;
+        } else if (isSelected == 1) {
+            isSelected = 0;
             ivPlayPause.setImageResource(R.drawable.stop_nw);
         }
-        String path=channelId+"/"+isSelected;
+        String path = channelId + "/" + isSelected;
         pauseStream(path);
     }
 
@@ -277,15 +303,15 @@ public class LiveBroadCastingActivity extends BaseActivity {
             App.getApiHelper().pauseStream(path, new ApiCallBack<Map>() {
                 @Override
                 public void onSuccess(Map map) {
-                    Log.e("Api","Api hit successfully");
+                    Log.e("Api", "Api hit successfully");
                 }
 
                 @Override
                 public void onFailure(String message) {
-                    Log.e("Api","Not successfully");
+                    Log.e("Api", "Not successfully");
                 }
             });
-        }else{
+        } else {
             SnackbarUtil.showWarningLongSnackbar(mContext, getResources().getString(R.string.internet_not_connected_text));
         }
     }
@@ -361,7 +387,6 @@ public class LiveBroadCastingActivity extends BaseActivity {
                 public void onSuccess(ServerAddressModel serverAddressModel) {
                     if (serverAddressModel != null) {
                         serverAddress = serverAddressModel.getServerAddress();
-                        strStream = serverAddressModel.getName();
                         configRedPro(serverAddress);
                         stream.publish(serverAddressModel.getName(), R5Stream.RecordType.Record);
 
@@ -682,30 +707,117 @@ public class LiveBroadCastingActivity extends BaseActivity {
             String encodedUserId = Base64.encodeToString(AppPreferences.init(mContext).getString(USER_ID).getBytes(), Base64.NO_WRAP);
             String username = AppPreferences.init(mContext).getString(USER_NAME);
             username = username.replace(" ", "");
-            shareUrl = ApiConstants.SHARE_BASE_URL + username + "-" + encodedUserId;
+            String shareUrl = ApiConstants.SHARE_BASE_URL + username + "-" + encodedUserId;
 //            AppPreferences.init(mContext).putString(AppConstant.User_CURRENT_STATE, "3");
             if (getIntent().getStringExtra("userComingFrom") != null) {
                 if ((getIntent().getStringExtra("userComingFrom")).equalsIgnoreCase("matchList")) {
                     if (getIntent().getSerializableExtra("mBrDatum") != null) {
                         BroadcastMatchlistModel.Datum mBrDatum = (BroadcastMatchlistModel.Datum) getIntent().getSerializableExtra("mBrDatum");
                         status = "I'm live on Pundit now discussing the game between " + mBrDatum.getTeam1Name() + " Vs " + mBrDatum.getTeam2Name() + ", come join me.";
+                        if(!mBrDatum.getTeam1_twitter_id().equalsIgnoreCase("")&&!mBrDatum.getTeam2__twitter_id().equalsIgnoreCase("")) {
+                            twitterStatus = "I'm live on Pundit now discussing the game between " + "@" + mBrDatum.getTeam1_twitter_id() + " Vs " +"@" + mBrDatum.getTeam1_twitter_id() + ", come join me.";
+                        }
+                        else{
+                            twitterStatus ="I'm live on Pundit now discussing the game between " + mBrDatum.getTeam1Name() + " Vs " + mBrDatum.getTeam2Name() + ", come join me.";
+                        }
                     }
                 } else if ((getIntent().getStringExtra("userComingFrom")).equalsIgnoreCase("matchStandingList")) {
                     if (getIntent().getSerializableExtra("mBrDatum") != null) {
                         MatchStandingListModel.Datum mBrDatum = (MatchStandingListModel.Datum) getIntent().getSerializableExtra("mBrDatum");
                         status = "I'm live on Pundit now discussing " + mBrDatum.getContestantClubName() + ", come join me.";
+                        if(!mBrDatum.getTwitter_id().equalsIgnoreCase("")) {
+                            twitterStatus = "I'm live on Pundit now discussing " +"@"+ mBrDatum.getContestantClubName() + ", come join me.";
+                        }
+                        else{
+                            twitterStatus ="I'm live on Pundit now discussing " + mBrDatum.getContestantClubName() + ", come join me.";
+                        }
                     }
                 }
             }
-            String text=shareUrl+"\n"+status;
+
+            /*List<Intent> targetedShareIntents = new ArrayList<Intent>();
             Intent i = new Intent(Intent.ACTION_SEND);
             i.setType("text/plain");
             i.putExtra(Intent.EXTRA_SUBJECT, "Pundit");
-            i.putExtra(Intent.EXTRA_TEXT, text);
-            startActivity(Intent.createChooser(i, "Share Via...."));
+            *//*
+            startActivity(Intent.createChooser(i, "Share Via...."));*//*
+            List<ResolveInfo> resInfo = getPackageManager()
+                    .queryIntentActivities(i, 0);
+            if (!resInfo.isEmpty()) {
+                for (ResolveInfo info : resInfo) {
+                    if (info.activityInfo.packageName.toLowerCase().contains("twitter")) {
+                        *//*ShareDialog shareDialog;
+                        shareDialog = new ShareDialog(mContext);
+                        ShareLinkContent content = new ShareLinkContent.Builder()
+                                .setContentUrl(Uri.parse(shareUrl))
+                                .setQuote(status)
+                                .build();
+                        shareDialog.show(content);*//*
+                        i.putExtra(Intent.EXTRA_TEXT, shareUrl + "\n" + status);
+                        targetedShareIntents.add(i);
+                    }
+                }
+                Intent chooserIntent = Intent.createChooser(
+                        targetedShareIntents.remove(0), "Share via....");
+                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS,
+                        targetedShareIntents.toArray(new Parcelable[]{}));
+                i.putExtra(Intent.EXTRA_TEXT, shareUrl + "\n" + status);
+                startActivity(chooserIntent);
 
+            }*/
 
+            Intent emailIntent = new Intent();
+            emailIntent.setAction(Intent.ACTION_SEND);
+            // Native email client doesn't currently support HTML, but it doesn't hurt to try in case they fix it
+            emailIntent.putExtra(Intent.EXTRA_TEXT, shareUrl + "\n" + status);
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Pundit");
+            emailIntent.setType("message/rfc822");
 
+            PackageManager pm = getPackageManager();
+            Intent sendIntent = new Intent(Intent.ACTION_SEND);
+            sendIntent.setType("text/plain");
+            Intent openInChooser = Intent.createChooser(emailIntent,"Share via....");
+
+            List<ResolveInfo> resInfo = pm.queryIntentActivities(sendIntent, 0);
+            List<LabeledIntent> intentList = new ArrayList<LabeledIntent>();
+            for (int i = 0; i < resInfo.size(); i++) {
+                // Extract the label, append it, and repackage it in a LabeledIntent
+                ResolveInfo ri = resInfo.get(i);
+                String packageName = ri.activityInfo.packageName;
+                if (packageName.contains("android.email")) {
+                    emailIntent.setPackage(packageName);
+                } else if (packageName.contains("twitter") || packageName.contains("facebook") || packageName.contains("mms") || packageName.contains("android.gm")) {
+                    Intent intent = new Intent();
+                    intent.setComponent(new ComponentName(packageName, ri.activityInfo.name));
+                    intent.setAction(Intent.ACTION_SEND);
+                    intent.setType("text/plain");
+                    if (packageName.contains("twitter")) {
+                        intent.putExtra(Intent.EXTRA_TEXT, shareUrl + "\n" + twitterStatus);
+                    } else if (packageName.contains("facebook")) {
+                       /* ShareDialog shareDialog;
+                        shareDialog = new ShareDialog(mContext);
+                        ShareLinkContent content = new ShareLinkContent.Builder()
+                                .setContentUrl(Uri.parse(shareUrl))
+                                .setQuote(status)
+                                .build();
+                        shareDialog.show(content);*/
+                        intent.putExtra(Intent.EXTRA_TEXT, shareUrl + "\n" + status);
+                    } else if (packageName.contains("mms")) {
+                        intent.putExtra(Intent.EXTRA_TEXT, shareUrl + "\n" + status);
+                    } else if (packageName.contains("android.gm")) { // If Gmail shows up twice, try removing this else-if clause and the reference to "android.gm" above
+                        intent.putExtra(Intent.EXTRA_TEXT, shareUrl + "\n" + status);
+                        intent.putExtra(Intent.EXTRA_SUBJECT, "Pundit");
+
+                        intent.setType("message/rfc822");
+                    }
+
+                    intentList.add(new LabeledIntent(intent, packageName, ri.loadLabel(pm), ri.icon));
+                }
+            }
+            // convert intentList to array
+            LabeledIntent[] extraIntents = intentList.toArray(new LabeledIntent[intentList.size()]);
+            openInChooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, extraIntents);
+            startActivity(openInChooser);
         }
     }
 
@@ -748,7 +860,7 @@ public class LiveBroadCastingActivity extends BaseActivity {
         }
     }*/
 
-    public static void stopBroadcastAppBackground() {
+  /*  public static void stopBroadcastAppBackground() {
         if (stream != null) {
             if (mContext != null) {
                 new LiveBroadCastingActivity().unmountUser();
@@ -756,7 +868,7 @@ public class LiveBroadCastingActivity extends BaseActivity {
                     mContext.finish();
             }
         }
-    }
+    }*/
 
     private void onIncommingCallBroadcast() {
         PhoneStateListener phoneStateListener = new PhoneStateListener() {

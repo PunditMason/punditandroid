@@ -16,22 +16,23 @@ import com.softuvo.ipundit.config.NotificationConstants;
 public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
     private static final String TAG = MyFirebaseInstanceIDService.class.getSimpleName();
 
-    @Override
-    public void onTokenRefresh() {
-        super.onTokenRefresh();
-        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
 
-        // Saving reg id to shared preferences
-        storeRegIdInPref(refreshedToken);
+        @Override
+        public void onTokenRefresh() {
+            // Get updated InstanceID token.
+            String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+            Log.d(TAG, "Refreshed token: " + refreshedToken);
 
-        // sending reg id to your server
-        sendRegistrationToServer(refreshedToken);
-
+            // If you want to send messages to this application instance or
+            // manage this apps subscriptions on the server side, send the
+            // Instance ID token to your app server.
+            sendRegistrationToServer(refreshedToken);
         // Notify UI that registration has completed, so the progress indicator can be hidden.
         Intent registrationComplete = new Intent(NotificationConstants.REGISTRATION_COMPLETE);
         registrationComplete.putExtra("token", refreshedToken);
         Log.e("Firebase reg id: ", refreshedToken);
         LocalBroadcastManager.getInstance(this).sendBroadcast(registrationComplete);
+        storeRegIdInPref(refreshedToken);
     }
 
     private void sendRegistrationToServer(final String token) {

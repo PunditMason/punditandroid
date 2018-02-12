@@ -4,6 +4,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.webkit.WebView;
 
 import com.softuvo.ipundit.R;
 
@@ -15,16 +16,8 @@ public class DummyActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dummy);
-        String url = "http://52.19.91.90:81/pundit-ios/assets/Songs/And_We_Are.mp3"; // your URL here
-        MediaPlayer mediaPlayer = new MediaPlayer();
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        try {
-            mediaPlayer.setDataSource(url);
-            mediaPlayer.prepare();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        // might take long! (for buffering, etc)
-        mediaPlayer.start();
+        WebView wv=findViewById(R.id.wv_img);
+        String sHtmlTemplate = "<html><head></head><body><img src=\"file:///android_asset/img/broadcast.svg\"></body></html>";
+        wv.loadDataWithBaseURL(null, sHtmlTemplate, "text/html", "utf-8",null);
     }
 }

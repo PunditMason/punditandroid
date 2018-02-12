@@ -147,6 +147,8 @@
     <string name="gareth_nobel">Gareth Nobel</string>
     <string name="v">V</string>
     <string name="no_live_pundit">No Live Pundit !</string>
+    <string name="broadcast">BROADCAST</string>
+    <string name="listen">LISTEN</string>
 
 
 </resources>

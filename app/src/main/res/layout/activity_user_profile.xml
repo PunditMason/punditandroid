@@ -87,6 +87,7 @@
                 android:layout_alignParentBottom="true"
                 android:background="@color/colorBlack"
                 android:hint="@string/user_name"
+                android:maxLines="1"
                 android:gravity="center"
                 android:imeOptions="actionDone"
                 android:layout_marginBottom="@dimen/pading_2dp"

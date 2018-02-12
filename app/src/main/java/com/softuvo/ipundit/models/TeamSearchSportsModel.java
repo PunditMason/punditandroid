@@ -91,6 +91,9 @@ public class TeamSearchSportsModel implements Serializable {
         @SerializedName("matchesLost")
         @Expose
         private String matchesLost;
+        @SerializedName("twitter_id")
+        @Expose
+        private String twitter_id;
         @SerializedName("matchesDrawn")
         @Expose
         private String matchesDrawn;
@@ -215,6 +218,32 @@ public class TeamSearchSportsModel implements Serializable {
 
         public String getRank() {
             return rank;
+        }
+
+        public String getlId() {
+            return lId;
+        }
+
+        public void setlId(String lId) {
+            this.lId = lId;
+        }
+
+        public String getTwitter_id() {
+
+            return twitter_id;
+        }
+
+        public void setTwitter_id(String twitter_id) {
+            this.twitter_id = twitter_id;
+        }
+
+        public String getsId() {
+
+            return sId;
+        }
+
+        public void setsId(String sId) {
+            this.sId = sId;
         }
 
         public void setRank(String rank) {

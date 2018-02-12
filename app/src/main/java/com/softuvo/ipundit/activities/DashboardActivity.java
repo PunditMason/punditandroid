@@ -17,6 +17,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,7 +27,9 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -113,6 +116,12 @@ public class DashboardActivity extends BaseActivity {
 
     @BindView(R.id.iv_fb_icon)
     ImageView ivFbIcon;
+
+    @BindView(R.id.wv_broadcast)
+    WebView wvBroadcast;
+
+    @BindView(R.id.wv_listen)
+    WebView wvListen;
 
     @BindView(R.id.tv_breaking_news)
     CustomTextView tvBreakingNews;
@@ -207,10 +216,49 @@ public class DashboardActivity extends BaseActivity {
                     if (dataModelBgImg.getData().getLivematchBackground() != null) {
                         AppPreferences.init(mContext).putString(PUNDITS_PAGE_BACKGROUND, ApiConstants.IMAGE_BASE_URL + dataModelBgImg.getData().getLivematchBackground());
                     }
-                    if (dataModelBgImg.getData().getBroadcaster() != null)
-                        Picasso.with(mContext).load(ApiConstants.IMAGE_BASE_URL + dataModelBgImg.getData().getBroadcaster()).into(rlBroadcastBackground);
-                    if (dataModelBgImg.getData().getListeners() != null)
-                        Picasso.with(mContext).load(ApiConstants.IMAGE_BASE_URL + dataModelBgImg.getData().getListeners()).into(rlListenBackground);
+                    String broadcastTemplate = "<html><head></head><body><img src=\"file:///android_asset/img/broadcast.svg\"></body></html>";
+                    String listenTemplate = "<html><head></head><body><img src=\"file:///android_asset/img/listen.svg\"></body></html>";
+                    wvBroadcast.loadDataWithBaseURL(null, broadcastTemplate, "text/html", "utf-8",null);
+                    wvBroadcast.getSettings();
+                    wvBroadcast.setBackgroundColor(Color.TRANSPARENT);
+                    wvListen.loadDataWithBaseURL(null, listenTemplate, "text/html", "utf-8",null);
+                    wvListen.getSettings();
+                    wvListen.setBackgroundColor(Color.TRANSPARENT);
+
+                    wvBroadcast.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
+                            if (!isLoggedIn())
+                                SnackbarUtil.showWarningLongSnackbar(mContext, getString(R.string.ask_user_for_login));
+                            else {
+                                AppPreferences.init(mContext).putString(AppConstant.USER_SELECTION, AppConstant.SELECTED_BROADCAST);
+                                Intent intent = new Intent(mContext, BroadcastListenerMainActivity.class);
+                                startActivity(intent);
+                                Log.e("broadcast","broadcastcalled");
+                            }
+                            return false;
+                        }
+                    });
+
+                    wvListen.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
+                            if (!isLoggedIn())
+                                SnackbarUtil.showWarningLongSnackbar(mContext, getString(R.string.ask_user_for_login));
+                            else {
+                                AppPreferences.init(mContext).putString(AppConstant.USER_SELECTION, AppConstant.SELECTED_LISTNER);
+                                Intent intent = new Intent(mContext, BroadcastListenerMainActivity.class);
+                                startActivity(intent);
+                                Log.e("listen","listencalled");
+                            }
+                            return false;
+                        }
+                    });
+
+//                    if (dataModelBgImg.getData().getBroadcaster() != null)
+//                        Picasso.with(mContext).load(ApiConstants.IMAGE_BASE_URL + dataModelBgImg.getData().getBroadcaster()).into(rlBroadcastBackground);
+//                    if (dataModelBgImg.getData().getListeners() != null)
+//                        Picasso.with(mContext).load(ApiConstants.IMAGE_BASE_URL + dataModelBgImg.getData().getListeners()).into(rlListenBackground);
                     if (dataModelBgImg.getData().getSettingicon() != null)
                         Picasso.with(mContext).load(ApiConstants.IMAGE_BASE_URL + dataModelBgImg.getData().getSettingicon()).into(ivPunditsIcon);
                     if (dataModelBgImg.getData().getAbouticon() != null)
@@ -231,7 +279,7 @@ public class DashboardActivity extends BaseActivity {
                                     if (userProfileResponseModel != null) {
                                         if (userProfileResponseModel.getResponsestatus()) {
                                             AppPreferences.init(mContext).putString(AppConstant.FB_ID, userProfileResponseModel.getMessage().getFbId());
-                                            AppPreferences.init(mContext).putString(AppConstant.USER_NAME, userProfileResponseModel.getMessage().getFirstName());
+                                            AppPreferences.init(mContext).putString(AppConstant.USER_NAME, userProfileResponseModel.getMessage().getFirstName().trim());
                                             loginChat(userProfileResponseModel.getMessage().getFbId(), userProfileResponseModel.getMessage().getFirstName(), userProfileResponseModel.getMessage().getAvatar());
                                         }
                                     }
@@ -373,7 +421,7 @@ public class DashboardActivity extends BaseActivity {
                             if (loginUserModel.getUser().get(0).getAvatar() != null)
                                 AppPreferences.init(mContext).putString(AppConstant.USER_PROFILE_PIC, loginUserModel.getUser().get(0).getAvatar());
                             if ((loginUserModel.getUser().get(0).getFirstName() != null) && (loginUserModel.getUser().get(0).getLastName() != null))
-                                AppPreferences.init(mContext).putString(AppConstant.USER_NAME, loginUserModel.getUser().get(0).getFirstName() + " " + loginUserModel.getUser().get(0).getLastName());
+                                AppPreferences.init(mContext).putString(AppConstant.USER_NAME, loginUserModel.getUser().get(0).getFirstName().trim() + " " + loginUserModel.getUser().get(0).getLastName().trim());
                             if (loginUserModel.getUser().get(0).getFbId()!=null)
                                 AppPreferences.init(mContext).putString(AppConstant.FB_ID, loginUserModel.getUser().get(0).getFbId());
                             SnackbarUtil.showSuccessLongSnackbar(mContext, loginUserModel.getMessage());
@@ -693,7 +741,7 @@ public class DashboardActivity extends BaseActivity {
         }
     }
 
-    @OnClick(R.id.rl_broadcast_background)
+   /* @OnClick(R.id.rl_broadcast_background)
     public void goBroadcastScreen() {
         if (!isLoggedIn())
             SnackbarUtil.showWarningLongSnackbar(mContext, getString(R.string.ask_user_for_login));
@@ -702,9 +750,9 @@ public class DashboardActivity extends BaseActivity {
             Intent intent = new Intent(mContext, BroadcastListenerMainActivity.class);
             startActivity(intent);
         }
-    }
+    }*/
 
-    @OnClick(R.id.rl_listen_background)
+   /* @OnClick(R.id.rl_listen_background)
     public void goListnerScreen() {
         if (!isLoggedIn())
             SnackbarUtil.showWarningLongSnackbar(mContext, getString(R.string.ask_user_for_login));
@@ -713,7 +761,7 @@ public class DashboardActivity extends BaseActivity {
             Intent intent = new Intent(mContext, BroadcastListenerMainActivity.class);
             startActivity(intent);
         }
-    }
+    }*/
 
     @OnClick(R.id.rl_pundits_tile)
     public void goPunditsScreen() {
@@ -773,7 +821,7 @@ public class DashboardActivity extends BaseActivity {
                         if (map.getUser().get(0).getAvatar() != null)
                             AppPreferences.init(mContext).putString(AppConstant.USER_PROFILE_PIC, map.getUser().get(0).getAvatar());
                         if ((map.getUser().get(0).getFirstName() != null) && (map.getUser().get(0).getLastName() != null))
-                            AppPreferences.init(mContext).putString(AppConstant.USER_NAME, map.getUser().get(0).getFirstName() + " " + map.getUser().get(0).getLastName());
+                            AppPreferences.init(mContext).putString(AppConstant.USER_NAME, map.getUser().get(0).getFirstName().trim() + " " + map.getUser().get(0).getLastName().trim());
                         if (map.getUser().get(0).getFbId()!=null)
                             AppPreferences.init(mContext).putString(AppConstant.FB_ID, map.getUser().get(0).getFbId());
                         tvLoginLogout.setText(R.string.fb_logout_text);

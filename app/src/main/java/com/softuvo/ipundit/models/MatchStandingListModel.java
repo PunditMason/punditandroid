@@ -96,6 +96,9 @@ public class MatchStandingListModel implements Serializable{
         @SerializedName("chatChannelid")
         @Expose
         private String chatChannelid;
+        @SerializedName("twitter_id")
+        @Expose
+        private String twitter_id;
 
         public String getId() {
             return id;
@@ -127,6 +130,14 @@ public class MatchStandingListModel implements Serializable{
 
         public void setLastRank(String lastRank) {
             this.lastRank = lastRank;
+        }
+
+        public String getTwitter_id() {
+            return twitter_id;
+        }
+
+        public void setTwitter_id(String twitter_id) {
+            this.twitter_id = twitter_id;
         }
 
         public String getContestantId() {

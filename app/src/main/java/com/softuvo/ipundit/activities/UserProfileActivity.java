@@ -224,7 +224,7 @@ public class UserProfileActivity extends BaseActivity {
                 if (map != null) {
                     if ((map.get("result")) != null) {
                         AppPreferences.init(mContext).putString(AppConstant.USER_PROFILE_PIC, ((LinkedTreeMap) (map.get("result"))).get("avatar").toString());
-                        AppPreferences.init(mContext).putString(AppConstant.USER_NAME, ((LinkedTreeMap) (map.get("result"))).get("first_name").toString());
+                        AppPreferences.init(mContext).putString(AppConstant.USER_NAME, ((LinkedTreeMap) (map.get("result"))).get("first_name").toString().trim());
 
                         SnackbarUtil.showSuccessLongSnackbar(mContext, getString(R.string.update_success_message));
                     }
@@ -263,7 +263,7 @@ public class UserProfileActivity extends BaseActivity {
                             AppPreferences.init(mContext).putString(AppConstant.USER_PROFILE_PIC, userProfileResponseModel.getMessage().getAvatar());
                         }
                         if ((userProfileResponseModel.getMessage().getFirstName() != null) && userProfileResponseModel.getMessage().getLastName() != null)
-                            AppPreferences.init(mContext).putString(AppConstant.USER_NAME, userProfileResponseModel.getMessage().getFirstName() + " " + userProfileResponseModel.getMessage().getLastName());
+                            AppPreferences.init(mContext).putString(AppConstant.USER_NAME, userProfileResponseModel.getMessage().getFirstName().trim() + " " + userProfileResponseModel.getMessage().getLastName().trim());
                         if (userProfileResponseModel.getMessage().getEmail() != null)
                             userEmail = userProfileResponseModel.getMessage().getEmail();
                         new AsyncTask<Void, Void, Bitmap>() {

@@ -130,6 +130,12 @@ public class MatchListListnerModel implements Serializable{
         @SerializedName("chatChannelid")
         @Expose
         private String chatChannelid;
+        @SerializedName("team1_twitter_id")
+        @Expose
+        private String team1_twitter_id;
+        @SerializedName("team2__twitter_id")
+        @Expose
+        private String team2__twitter_id;
         @SerializedName("channel")
         @Expose
         private List<Channel> channel = null;
@@ -168,6 +174,22 @@ public class MatchListListnerModel implements Serializable{
 
         public String getChatChannelid() {
             return chatChannelid;
+        }
+
+        public String getTeam1_twitter_id() {
+            return team1_twitter_id;
+        }
+
+        public void setTeam1_twitter_id(String team1_twitter_id) {
+            this.team1_twitter_id = team1_twitter_id;
+        }
+
+        public String getTeam2__twitter_id() {
+            return team2__twitter_id;
+        }
+
+        public void setTeam2__twitter_id(String team2__twitter_id) {
+            this.team2__twitter_id = team2__twitter_id;
         }
 
         public void setChatChannelid(String chatChannelid) {

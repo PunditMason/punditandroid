@@ -17,6 +17,7 @@ android {
         versionName "2.2"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
     }
     dexOptions {
 
@@ -81,15 +82,15 @@ dependencies {
     compile 'com.google.android.exoplayer:exoplayer:2.6.1'
 
     //noinspection UseOfBundledGooglePlayServices
-    compile 'com.google.android.gms:play-services:11.6.2'
-    compile 'com.google.android.gms:play-services-maps:11.6.2'
-    compile 'com.google.android.gms:play-services-location:11.6.2'
-    compile 'com.google.firebase:firebase-database:11.6.2'
-    compile 'com.google.firebase:firebase-messaging:11.6.2'
+    compile 'com.google.android.gms:play-services:11.8.0'
+    compile 'com.google.android.gms:play-services-maps:11.8.0'
+    compile 'com.google.android.gms:play-services-location:11.8.0'
+    compile 'com.google.firebase:firebase-database:11.8.0'
+    compile 'com.google.firebase:firebase-messaging:11.8.0'
 //    compile 'com.firebase:firebase-jobdispatcher:0.8.4'
 //    compile 'com.applozic.communication.uiwidget:mobicomkitui:4.99'
     compile project(':mobicomkitui')
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 }
-//apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.gms.google-services'
