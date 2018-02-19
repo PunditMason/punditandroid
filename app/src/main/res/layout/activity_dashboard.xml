@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:Pundit="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -77,7 +78,7 @@
                 android:layout_weight="0.96">
                 <WebView
                     android:id="@+id/wv_broadcast"
-                    android:layout_width="100dp"
+                    android:layout_width="115dp"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
 
@@ -128,9 +129,10 @@
 
                 <WebView
                     android:id="@+id/wv_listen"
-                    android:layout_width="100dp"
+                    android:layout_width="115dp"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true" />
+
                 <com.softuvo.ipundit.views.CustomTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -168,7 +170,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1.1"
+                android:layout_weight="1.12"
                 android:paddingTop="@dimen/margin_small_large">
 
                 <android.support.v4.view.ViewPager
@@ -181,7 +183,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.1"
+            android:layout_weight="0.11"
             android:background="@color/colorBlack"
             android:baselineAligned="false"
             android:orientation="horizontal"
@@ -337,7 +339,8 @@
                     android:layout_marginTop="@dimen/margin_xxxlarge"
                     android:text="@string/sign_in"
                     android:textColor="@color/colorWhite"
-                    android:textSize="@dimen/text_size_xlarge" />
+                    android:textSize="@dimen/text_size_xlarge"
+                    tools:ignore="RelativeOverlap" />
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -466,7 +469,8 @@
                     android:layout_marginStart="@dimen/margin_small_large"
                     android:text="@string/sign_up"
                     android:textColor="@color/colorWhite"
-                    android:textSize="@dimen/text_size_xlarge" />
+                    android:textSize="@dimen/text_size_xlarge"
+                    tools:ignore="RelativeOverlap" />
 
                 <ImageView
                     android:layout_width="wrap_content"

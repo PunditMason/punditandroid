@@ -8,8 +8,10 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -35,6 +37,7 @@ import com.softuvo.ipundit.utils.SnackbarUtil;
 import com.softuvo.ipundit.views.CustomTextView;
 import com.squareup.picasso.Picasso;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,6 +59,7 @@ public class PunditsProfileActivity extends BaseActivity {
     private String live, chatChannelId, chatChannelName, matchid, channelType,userId;
     private String punditsId;
     private int followStatus;
+    private Uri data;
 
 
     @BindView(R.id.tv_pundits_name)
@@ -78,15 +82,123 @@ public class PunditsProfileActivity extends BaseActivity {
 
     @BindView(R.id.tv_pundits_bio)
     CustomTextView tvPunditsBio;
-    int i=0;
-    int pos=0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pundits_profile);
         mContext = PunditsProfileActivity.this;
         ButterKnife.bind(this);
-        setUIBackGrounds();
+        Intent in = getIntent();
+        data = in.getData();
+        System.out.println("deeplinkingcallback   :- "+data);
+        if(data!=null) {
+            String path = data.toString();
+            String[] separated = path.split("-");
+            String id = separated[1];
+            try {
+                byte[] newid = id.getBytes("UTF-8");
+                byte[] ids = Base64.decode(newid, Base64.DEFAULT);
+                punditsId= new String(ids, "UTF-8");
+                setData(punditsId+"/"+AppPreferences.init(mContext).getString(AppConstant.USER_ID));
+
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+        else {
+            setUIBackGrounds();
+        }
+    }
+
+    private void setData(String apiPath) {
+        if (ConnectivityReceivers.isConnected()) {
+            App.getApiHelper().deepLinking(apiPath, new ApiCallBack<UserDetailsAndMatchDetailsModel>() {
+                @Override
+                public void onSuccess(final UserDetailsAndMatchDetailsModel userDetailsAndMatchDetailsModel) {
+                    if(userDetailsAndMatchDetailsModel.getUsersList().size()>0) {
+                        punditsName = userDetailsAndMatchDetailsModel.getUsersList().get(0).getFirstName();
+                        profilepic = userDetailsAndMatchDetailsModel.getUsersList().get(0).getAvatar();
+                        punditsBio = userDetailsAndMatchDetailsModel.getUsersList().get(0).getUserBio();
+                        followingCount = userDetailsAndMatchDetailsModel.getUsersList().get(0).getFollowingCount().toString();
+                        followerCount = userDetailsAndMatchDetailsModel.getUsersList().get(0).getFollowCount().toString();
+                        live = userDetailsAndMatchDetailsModel.getUsersList().get(0).getLive().toString();
+                        punditsId = userDetailsAndMatchDetailsModel.getUsersList().get(0).getId();
+                        if (userDetailsAndMatchDetailsModel.getUsersList().get(0).getLive().toString().equals("1")) {
+                            if (userDetailsAndMatchDetailsModel.getUsersList().get(0).getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("match")) {
+                                chatChannelId = userDetailsAndMatchDetailsModel.getUsersList().get(0).getChannelInfo().get(0).getMatchInfo().getChatChannelid();
+                                chatChannelName = userDetailsAndMatchDetailsModel.getUsersList().get(0).getChannelInfo().get(0).getMatchInfo().getTeam1Name() + " Vs " + userDetailsAndMatchDetailsModel.getUsersList().get(0).getChannelInfo().get(0).getMatchInfo().getTeam1Name();
+                                matchid = userDetailsAndMatchDetailsModel.getUsersList().get(0).getChannelInfo().get(0).getChannel().getMatchId();
+                                channelType = userDetailsAndMatchDetailsModel.getUsersList().get(0).getChannelInfo().get(0).getChannel().getChannelType();
+                            } else if (userDetailsAndMatchDetailsModel.getUsersList().get(0).getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
+                                chatChannelId = userDetailsAndMatchDetailsModel.getUsersList().get(0).getChannelInfo().get(0).getTeamInfo().getChatChannelid();
+                                chatChannelName = userDetailsAndMatchDetailsModel.getUsersList().get(0).getChannelInfo().get(0).getTeamInfo().getContestantName();
+                                matchid = userDetailsAndMatchDetailsModel.getUsersList().get(0).getChannelInfo().get(0).getTeamInfo().getContestantId();
+                                channelType = userDetailsAndMatchDetailsModel.getUsersList().get(0).getChannelInfo().get(0).getChannel().getChannelType();
+                            }
+                            if (chatChannelId.equalsIgnoreCase("0")) {
+                                // new createChannel().execute();
+                                getChannelId();
+                            } else {
+                                ApplozicChannelAddMemberTask.ChannelAddMemberListener channelAddMemberListener = new ApplozicChannelAddMemberTask.ChannelAddMemberListener() {
+                                    @Override
+                                    public void onSuccess(String response, Context context) {
+                                        Log.i("ApplozicChannelMember", "Add Response:" + response);
+                                    }
+
+                                    @Override
+                                    public void onFailure(String response, Exception e, Context context) {
+
+                                    }
+                                };
+                                ApplozicChannelAddMemberTask applozicChannelAddMemberTask = new ApplozicChannelAddMemberTask(mContext, Integer.parseInt(chatChannelId), AppPreferences.init(mContext).getString(FB_ID), channelAddMemberListener);//pass channel key and userId whom you want to add to channel
+                                applozicChannelAddMemberTask.execute((Void) null);
+                            }
+                        }
+
+                        if (userDetailsAndMatchDetailsModel.getUsersList().get(0).getFollowCheck().equalsIgnoreCase("TRUE"))
+                            followStatus = 1;
+                        else if (userDetailsAndMatchDetailsModel.getUsersList().get(0).getFollowCheck().equalsIgnoreCase("FALSE"))
+                            followStatus = 0;
+                        tvPunditsName.setText(punditsName);
+                        Picasso.with(mContext).load(ApiConstants.PROFILE_IMAGE_BASE_URL + profilepic).into(ivPunditsProfilePic);
+                        tvPunditsFollowerCount.setText(followingCount);
+                        tvPunditsFollowingCount.setText(followerCount);
+                        tvPunditsBio.setText(punditsBio);
+                        if (live.equals("1")) {
+                            ivListenLive.setImageResource(R.drawable.listen_live_red);
+                            ivListenLive.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent(mContext, LiveListeningActivity.class);
+                                    intent.putExtra("userComingFrom", "pundits");
+                                    intent.putExtra("mUserDatum", userDetailsAndMatchDetailsModel.getUsersList().get(0));
+                                    intent.putExtra("chatChannelKey", chatChannelId);
+                                    startActivity(intent);
+                                }
+                            });
+                        } else {
+                            ivListenLive.setImageResource(R.drawable.listen_live_gray);
+                            ivListenLive.setClickable(false);
+                        }
+                        if (followStatus == 0)
+                            ivFollowMe.setImageResource(R.drawable.follow_me);
+                        else if (followStatus == 1) {
+                            ivFollowMe.setImageResource(R.drawable.unfollow);
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(String message) {
+
+                }
+            });
+        }else{
+            SnackbarUtil.showWarningLongSnackbar(mContext, getResources().getString(R.string.internet_not_connected_text));
+        }
     }
 
 
@@ -466,6 +578,10 @@ public class PunditsProfileActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        setUIBackGrounds();
+        if(data!=null){
+
+        }else {
+            //setUIBackGrounds();
+        }
     }
 }

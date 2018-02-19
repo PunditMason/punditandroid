@@ -149,6 +149,7 @@
     <string name="no_live_pundit">No Live Pundit !</string>
     <string name="broadcast">BROADCAST</string>
     <string name="listen">LISTEN</string>
+    <string name="reconnecting">Reconnecting....</string>
 
 
 </resources>

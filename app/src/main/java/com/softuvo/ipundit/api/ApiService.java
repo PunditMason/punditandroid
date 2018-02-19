@@ -20,6 +20,7 @@ import com.softuvo.ipundit.models.LoginUserModel;
 import com.softuvo.ipundit.models.MatchListListnerModel;
 import com.softuvo.ipundit.models.MatchStandingListModel;
 import com.softuvo.ipundit.models.PodcastDetailsModel;
+import com.softuvo.ipundit.models.ReconnectModel;
 import com.softuvo.ipundit.models.RedFiveProGroupIdModel;
 import com.softuvo.ipundit.models.ServerAddressModel;
 import com.softuvo.ipundit.models.ServerListenerAddressModel;
@@ -200,5 +201,13 @@ interface ApiService {
 
     @POST("game/ListenStreamAds/{path}")
     Call<AddsModel> getAdsList(@Path(value = "path", encoded = true) String stringPath);
+
+    @POST("Game/refreshListening/{path}")
+    Call<ReconnectModel> refreshListening(@Path(value = "path", encoded = true) String stringPath);
+
+    @POST("Game/deepLinking/{path}")
+    Call<UserDetailsAndMatchDetailsModel> deepLinking(@Path(value = "path", encoded = true) String stringPath);
+
+
 
 }

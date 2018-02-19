@@ -6,7 +6,7 @@ package com.softuvo.ipundit.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.app.Activity;
+import android.app.Activity;;
 import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.DialogInterface;
@@ -51,6 +51,7 @@ import com.softuvo.ipundit.models.FollowingListModel;
 import com.softuvo.ipundit.models.ListnerCountModel;
 import com.softuvo.ipundit.models.LiveBroacastersListModel;
 import com.softuvo.ipundit.models.MatchListListnerModel;
+import com.softuvo.ipundit.models.ReconnectModel;
 import com.softuvo.ipundit.models.RedFiveProGroupIdModel;
 import com.softuvo.ipundit.models.ServerListenerAddressModel;
 import com.softuvo.ipundit.models.StandingListeningModel;
@@ -64,7 +65,6 @@ import com.softuvo.ipundit.utils.SnackbarUtil;
 import com.softuvo.ipundit.views.CustomRelativeLayout;
 import com.softuvo.ipundit.views.CustomTextView;
 import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -97,14 +97,15 @@ public class LiveListeningActivity extends BaseActivity {
     private String groupID;
     private String twitterStatus;
     private String chatChannelId;
-    private String team1TwittweId;
-    private String team2TwitterId;
-    private String teamTwitterId;
     private int followStatus, strMin = 0, strSec = 0, visible = 0;
 
 
     @BindView(R.id.rl_live_listening_main)
     CustomRelativeLayout rlLiveListeningMain;
+
+    @BindView(R.id.tv_reconnecting)
+    CustomTextView tvReconnecting;
+
 
     @BindView(R.id.txt_match_name_top)
     CustomTextView txtMatchNameTop;
@@ -141,7 +142,6 @@ public class LiveListeningActivity extends BaseActivity {
 
     @BindView(R.id.rl_pundit_tile)
     RelativeLayout rlPunditTile;
-
 
     /* @BindView(R.id.rv_livefeeds_container1)
      RecyclerView rvLivefeedsContainer;
@@ -210,14 +210,10 @@ public class LiveListeningActivity extends BaseActivity {
                     tvTeam2Name.setText(matchDatum.getTeam2Name() + ":");
                     txtMatchNameTop.setText(matchDatum.getTeam1Name() + " Vs " + matchDatum.getTeam2Name());
                     broadcasterName = channel.getBroadcasterName();
-                    team1TwittweId=matchDatum.getTeam1_twitter_id();
-                    team2TwitterId=matchDatum.getTeam2__twitter_id();
                     txtBroadcasterName.setText("BroadCasting this Game:" + broadcasterName);
                     broadcasterId = channel.getBroadcasterId();
                     channelId = channel.getId();
                     streamName = channel.getStreamName();
-                    team1TwittweId=matchDatum.getTeam1_twitter_id();
-                    team2TwitterId=matchDatum.getTeam2__twitter_id();
                     getRed5ProGroupId();
 //                    configRedPro(streamName);
 //                    getLiveFeedsFromServer(matchContenstentId);
@@ -238,14 +234,12 @@ public class LiveListeningActivity extends BaseActivity {
                     txtBroadcasterName.setText("BroadCasting this Game:" + broadcasterName);
                     tvTeam1Name.setText(matchDatum.getContestantClubName());
                     tvTeam2Name.setText("Points: " + matchDatum.getPoints());
-                    teamTwitterId=matchDatum.getTwitter_id();
                     tvNoData.setVisibility(View.VISIBLE);
                     tvNoData.setText(R.string.team_talk);
                     broadcasterId = channel.getBroadcasterId();
                     channelId = channel.getId();
                     streamName = channel.getStreamName();
                     mTabLayout.setVisibility(View.GONE);
-                    teamTwitterId=matchDatum.getTwitter_id();
                     getRed5ProGroupId();
 //                    configRedPro(streamName);
                 }
@@ -267,8 +261,6 @@ public class LiveListeningActivity extends BaseActivity {
                             broadcasterId = channell.getChannelInfo().get(0).getChannel().getBroadcasterId();
                             channelId = channell.getChannelInfo().get(0).getChannel().getId();
                             streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
-                            team1TwittweId=userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id();
-                            team2TwitterId=userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2__twitter_id();
                             getRed5ProGroupId();
 //                            configRedPro(streamName);
 //                            getLiveFeedsFromServer(matchContenstentId);
@@ -291,7 +283,6 @@ public class LiveListeningActivity extends BaseActivity {
                             tvNoData.setText(R.string.team_talk);
                             streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
                             mTabLayout.setVisibility(View.GONE);
-                            teamTwitterId=userDatum.getChannelInfo().get(0).getTeamInfo().getTwitter_id();
                             getRed5ProGroupId();
 //                            configRedPro(streamName);
                         }
@@ -315,8 +306,6 @@ public class LiveListeningActivity extends BaseActivity {
                             broadcasterId = channel.getBroadcasterId();
                             channelId = channel.getId();
                             streamName = channel.getStreamName();
-                            team1TwittweId=userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id();
-                            team2TwitterId=userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2__twitter_id();
                             getRed5ProGroupId();
 //                            configRedPro(streamName);
 //                            getLiveFeedsFromServer(matchContenstentId);
@@ -338,7 +327,6 @@ public class LiveListeningActivity extends BaseActivity {
                             tvNoData.setText(R.string.team_talk);
                             streamName = channel.getStreamName();
                             mTabLayout.setVisibility(View.GONE);
-                            teamTwitterId=userDatum.getChannelInfo().get(0).getTeamInfo().getTwitter_id();
                             getRed5ProGroupId();
 //                            configRedPro(streamName);
                         }
@@ -362,8 +350,6 @@ public class LiveListeningActivity extends BaseActivity {
                             broadcasterId = channell.getChannelInfo().get(0).getChannel().getBroadcasterId();
                             channelId = channell.getChannelInfo().get(0).getChannel().getId();
                             streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
-                            team1TwittweId=userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id();
-                            team2TwitterId=userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2__twitter_id();
                             getRed5ProGroupId();
 //                            configRedPro(streamName);
 //                            getLiveFeedsFromServer(matchContenstentId);
@@ -385,7 +371,6 @@ public class LiveListeningActivity extends BaseActivity {
                             tvNoData.setText(R.string.team_talk);
                             streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
                             mTabLayout.setVisibility(View.GONE);
-                            teamTwitterId=userDatum.getChannelInfo().get(0).getTeamInfo().getTwitter_id();
                             getRed5ProGroupId();
 
 //                            configRedPro(streamName);
@@ -409,8 +394,6 @@ public class LiveListeningActivity extends BaseActivity {
                             broadcasterId = channel.getBroadcasterId();
                             channelId = channel.getId();
                             streamName = channel.getStreamName();
-                            team1TwittweId=userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id();
-                            team2TwitterId=userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2__twitter_id();
                             getRed5ProGroupId();
 //                            configRedPro(streamName);
 //                            getLiveFeedsFromServer(matchContenstentId);
@@ -431,7 +414,6 @@ public class LiveListeningActivity extends BaseActivity {
                             tvNoData.setVisibility(View.VISIBLE);
                             tvNoData.setText(R.string.team_talk);
                             streamName = channel.getStreamName();
-                            teamTwitterId=userDatum.getChannelInfo().get(0).getTeamInfo().getTwitter_id();
                             getRed5ProGroupId();
                             mTabLayout.setVisibility(View.GONE);
 //                            configRedPro(streamName);
@@ -458,7 +440,6 @@ public class LiveListeningActivity extends BaseActivity {
                             tvNoData.setVisibility(View.VISIBLE);
                             tvNoData.setText(R.string.team_talk);
                             streamName = channel.getStreamName();
-                           teamTwitterId=teamDatum.getTwitter_id();
                             getRed5ProGroupId();
                             mTabLayout.setVisibility(View.GONE);
 //                            configRedPro(streamName);
@@ -483,8 +464,6 @@ public class LiveListeningActivity extends BaseActivity {
                             broadcasterId = channell.getChannelInfo().get(0).getChannel().getBroadcasterId();
                             channelId = channell.getChannelInfo().get(0).getChannel().getId();
                             streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
-                            team1TwittweId=userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id();
-                            team2TwitterId=userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2__twitter_id();
                             getRed5ProGroupId();
 //                            configRedPro(streamName);
 //                            getLiveFeedsFromServer(matchContenstentId);
@@ -505,7 +484,6 @@ public class LiveListeningActivity extends BaseActivity {
                             tvNoData.setVisibility(View.VISIBLE);
                             tvNoData.setText(R.string.team_talk);
                             streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
-                            teamTwitterId=userDatum.getChannelInfo().get(0).getTeamInfo().getTwitter_id();
                             getRed5ProGroupId();
                             mTabLayout.setVisibility(View.GONE);
 //                            configRedPro(streamName);
@@ -530,8 +508,6 @@ public class LiveListeningActivity extends BaseActivity {
                             broadcasterId = channell.getChannelInfo().get(0).getChannel().getBroadcasterId();
                             channelId = channell.getChannelInfo().get(0).getChannel().getId();
                             streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
-                            team1TwittweId=userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id();
-                            team2TwitterId=userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2__twitter_id();
                             getRed5ProGroupId();
 //                            configRedPro(streamName);
 //                            getLiveFeedsFromServer(matchContenstentId);
@@ -552,7 +528,6 @@ public class LiveListeningActivity extends BaseActivity {
                             tvNoData.setVisibility(View.VISIBLE);
                             tvNoData.setText(R.string.team_talk);
                             streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
-                            teamTwitterId=userDatum.getChannelInfo().get(0).getTeamInfo().getTwitter_id();
                             getRed5ProGroupId();
                             mTabLayout.setVisibility(View.GONE);
 //                            configRedPro(streamName);
@@ -577,8 +552,6 @@ public class LiveListeningActivity extends BaseActivity {
                             broadcasterId = channell.getChannelInfo().get(0).getChannel().getBroadcasterId();
                             channelId = channell.getChannelInfo().get(0).getChannel().getId();
                             streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
-                            team1TwittweId=userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id();
-                            team2TwitterId=userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2__twitter_id();
                             getRed5ProGroupId();
 //                            configRedPro(streamName);
 //                            getLiveFeedsFromServer(matchContenstentId);
@@ -599,7 +572,6 @@ public class LiveListeningActivity extends BaseActivity {
                             tvNoData.setVisibility(View.VISIBLE);
                             tvNoData.setText(R.string.team_talk);
                             streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
-                            teamTwitterId=userDatum.getChannelInfo().get(0).getTeamInfo().getTwitter_id();
                             getRed5ProGroupId();
                             mTabLayout.setVisibility(View.GONE);
 //                            configRedPro(streamName);
@@ -624,8 +596,6 @@ public class LiveListeningActivity extends BaseActivity {
                             broadcasterId = channell.getChannelInfo().get(0).getChannel().getBroadcasterId();
                             channelId = channell.getChannelInfo().get(0).getChannel().getId();
                             streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
-                            team1TwittweId=userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id();
-                            team2TwitterId=userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2__twitter_id();
                             getRed5ProGroupId();
 //                            configRedPro(streamName);
 //                            getLiveFeedsFromServer(matchContenstentId);
@@ -646,7 +616,6 @@ public class LiveListeningActivity extends BaseActivity {
                             tvNoData.setVisibility(View.VISIBLE);
                             tvNoData.setText(R.string.team_talk);
                             streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
-                            teamTwitterId=userDatum.getChannelInfo().get(0).getTeamInfo().getTwitter_id();
                             getRed5ProGroupId();
                             mTabLayout.setVisibility(View.GONE);
 //                            configRedPro(streamName);
@@ -671,8 +640,6 @@ public class LiveListeningActivity extends BaseActivity {
                             broadcasterId = channell.getChannelInfo().get(0).getChannel().getBroadcasterId();
                             channelId = channell.getChannelInfo().get(0).getChannel().getId();
                             streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
-                            team1TwittweId=userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id();
-                            team2TwitterId=userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2__twitter_id();
                             getRed5ProGroupId();
 //                            configRedPro(streamName);
 //                            getLiveFeedsFromServer(matchContenstentId);
@@ -693,7 +660,6 @@ public class LiveListeningActivity extends BaseActivity {
                             tvNoData.setVisibility(View.VISIBLE);
                             tvNoData.setText(R.string.team_talk);
                             streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
-                            teamTwitterId=userDatum.getChannelInfo().get(0).getTeamInfo().getTwitter_id();
                             getRed5ProGroupId();
                             mTabLayout.setVisibility(View.GONE);
 //                            configRedPro(streamName);
@@ -717,8 +683,6 @@ public class LiveListeningActivity extends BaseActivity {
                             broadcasterId = channel.getBroadcasterId();
                             channelId = channel.getId();
                             streamName = channel.getStreamName();
-                            team1TwittweId=userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id();
-                            team2TwitterId=userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2__twitter_id();
                             getRed5ProGroupId();
 //                            configRedPro(streamName);
 //                            getLiveFeedsFromServer(matchContenstentId);
@@ -739,7 +703,6 @@ public class LiveListeningActivity extends BaseActivity {
                             tvNoData.setVisibility(View.VISIBLE);
                             tvNoData.setText(R.string.team_talk);
                             streamName = channel.getStreamName();
-                            teamTwitterId=userDatum.getChannelInfo().get(0).getTeamInfo().getTwitter_id();
                             getRed5ProGroupId();
 //                            configRedPro(streamName);
                         }
@@ -766,7 +729,6 @@ public class LiveListeningActivity extends BaseActivity {
                             tvNoData.setText(R.string.team_talk);
                             streamName = channel.getStreamName();
                             mTabLayout.setVisibility(View.GONE);
-                            teamTwitterId=teamDatum.getTwitter_id();
                             getRed5ProGroupId();
 //                            configRedPro(streamName);
                         }
@@ -1139,17 +1101,19 @@ public class LiveListeningActivity extends BaseActivity {
                     if (getIntent().getSerializableExtra("mMatchDatum") != null) {
                         MatchListListnerModel.ListenMatchList matchDatum = (MatchListListnerModel.ListenMatchList) getIntent().getSerializableExtra("mMatchDatum");
                         status = "I'm live on Pundit now listening " + matchDatum.getTeam1Name() + " Vs " + matchDatum.getTeam2Name() + ", come join me.";
-                        if(!matchDatum.getTeam1_twitter_id().equalsIgnoreCase("")&&!matchDatum.getTeam2__twitter_id().equalsIgnoreCase("")) {
-                            twitterStatus = "I'm live on Pundit now listening " + "@" + matchDatum.getTeam1_twitter_id() + " Vs " +"@" + matchDatum.getTeam1_twitter_id() + ", come join me.";
-                        }
-                        else{
-                            twitterStatus ="I'm live on Pundit now listening " + matchDatum.getTeam1Name() + " Vs " + matchDatum.getTeam2Name() + ", come join me.";
-                        }
+                        if (!matchDatum.getTeam1_twitter_id().equalsIgnoreCase("") && !matchDatum.getTeam2__twitter_id().equalsIgnoreCase(""))
+                            twitterStatus = "Twitter: @" + matchDatum.getTeam1_twitter_id() + " @" + matchDatum.getTeam2__twitter_id();
+                        else
+                            twitterStatus = "";
                     }
                 } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("matchStandingListenList")) {
                     if (getIntent().getSerializableExtra("mMatchDatum") != null) {
                         StandingListeningModel.Datum matchDatum = (StandingListeningModel.Datum) getIntent().getSerializableExtra("mMatchDatum");
                         status = "I'm live on Pundit now listening " + matchDatum.getContestantClubName() + ", come join me.";
+                        if (!matchDatum.getTwitter_id().equalsIgnoreCase(""))
+                            twitterStatus = "Twitter: @" + matchDatum.getTwitter_id();
+                        else
+                            twitterStatus = "";
 
                     }
                 } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("pundits")) {
@@ -1158,16 +1122,17 @@ public class LiveListeningActivity extends BaseActivity {
                         if (userDatum.getChannelInfo().get(0).getChannel() != null) {
                             if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("match")) {
                                 status = "I'm live on Pundit now listening " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + " Vs " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name() + ", come join me.";
-                                if(!userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id().equalsIgnoreCase("")&&!userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2__twitter_id().equalsIgnoreCase("")) {
-                                    twitterStatus = "I'm live on Pundit now listening " + "@" + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id() + " Vs " +"@" + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id() + ", come join me.";
-                                }
-                                else{
-                                    twitterStatus ="I'm live on Pundit now listening " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + " Vs " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name() + ", come join me.";
-                                }
+                                if (!userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id().equalsIgnoreCase("") && !userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2__twitter_id().equalsIgnoreCase(""))
+                                    twitterStatus = "Twitter: @" + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id() + " @" + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2__twitter_id();
+                                else
+                                    twitterStatus = "";
 
                             } else if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
                                 status = "I'm live on Pundit now listening " + userDatum.getChannelInfo().get(0).getTeamInfo().getContestantClubName() + ", come join me.";
-
+                                if (!userDatum.getChannelInfo().get(0).getTeamInfo().getTwitter_id().equalsIgnoreCase(""))
+                                    twitterStatus = "Twitter: @" + userDatum.getChannelInfo().get(0).getTeamInfo().getTwitter_id();
+                                else
+                                    twitterStatus = "";
                             }
 
                         }
@@ -1178,15 +1143,16 @@ public class LiveListeningActivity extends BaseActivity {
                         if (userDatum.getChannelInfo().get(0).getChannel() != null) {
                             if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("match")) {
                                 status = "I'm live on Pundit now listening " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + " Vs " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name() + ", come join me.";
-                                if(!userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id().equalsIgnoreCase("")&&!userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2__twitter_id().equalsIgnoreCase("")) {
-                                    twitterStatus = "I'm live on Pundit now listening " + "@" + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id() + " Vs " +"@" + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id() + ", come join me.";
-                                }
-                                else{
-                                    twitterStatus ="I'm live on Pundit now listening " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + " Vs " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name() + ", come join me.";
-                                }
+                                if (!userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id().equalsIgnoreCase("") && !userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2__twitter_id().equalsIgnoreCase(""))
+                                    twitterStatus = "Twitter: @" + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id() + " @" + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2__twitter_id();
+                                else
+                                    twitterStatus = "";
                             } else if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
                                 status = "I'm live on Pundit now listening " + userDatum.getChannelInfo().get(0).getTeamInfo().getContestantClubName() + ", come join me.";
-
+                                if (!userDatum.getChannelInfo().get(0).getTeamInfo().getTwitter_id().equalsIgnoreCase(""))
+                                    twitterStatus = "Twitter: @" + userDatum.getChannelInfo().get(0).getTeamInfo().getTwitter_id();
+                                else
+                                    twitterStatus = "";
                             }
                         }
                     }
@@ -1196,20 +1162,16 @@ public class LiveListeningActivity extends BaseActivity {
                         if (userDatum.getChannelInfo().get(0).getChannel() != null) {
                             if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("match")) {
                                 status = "I'm live on Pundit now listening " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + " Vs " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name() + ", come join me.";
-                                if(!userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id().equalsIgnoreCase("")&&!userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2__twitter_id().equalsIgnoreCase("")) {
-                                    twitterStatus = "I'm live on Pundit now listening " + "@" + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id() + " Vs " +"@" + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id() + ", come join me.";
-                                }
-                                else{
-                                    twitterStatus ="I'm live on Pundit now listening " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + " Vs " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name() + ", come join me.";
-                                }
+                                if (!userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id().equalsIgnoreCase("") && !userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2__twitter_id().equalsIgnoreCase(""))
+                                    twitterStatus = "Twitter: @" + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id() + " @" + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2__twitter_id();
+                                else
+                                    twitterStatus = "";
                             } else if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
                                 status = "I'm live on Pundit now listening " + userDatum.getChannelInfo().get(0).getTeamInfo().getContestantClubName() + ", come join me.";
-                                if(!userDatum.getChannelInfo().get(0).getTeamInfo().getTwitter_id().equalsIgnoreCase("")) {
-                                    twitterStatus = "I'm live on Pundit now listening " +"@"+ userDatum.getChannelInfo().get(0).getTeamInfo().getTwitter_id() + ", come join me.";
-                                }
-                                else{
-                                    twitterStatus ="I'm live on Pundit now listening " + userDatum.getChannelInfo().get(0).getTeamInfo().getTwitter_id() + ", come join me.";
-                                }
+                                if (!userDatum.getChannelInfo().get(0).getTeamInfo().getTwitter_id().equalsIgnoreCase(""))
+                                    twitterStatus = "Twitter: @" + userDatum.getChannelInfo().get(0).getTeamInfo().getTwitter_id();
+                                else
+                                    twitterStatus = "";
                             }
                         }
                     }
@@ -1219,20 +1181,16 @@ public class LiveListeningActivity extends BaseActivity {
                         if (userDatum.getChannelInfo().get(0).getChannel() != null) {
                             if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("match")) {
                                 status = "I'm live on Pundit now listening " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + " Vs " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name() + ", come join me.";
-                                if(!userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id().equalsIgnoreCase("")&&!userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2__twitter_id().equalsIgnoreCase("")) {
-                                    twitterStatus = "I'm live on Pundit now listening " + "@" + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id() + " Vs " +"@" + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id() + ", come join me.";
-                                }
-                                else{
-                                    twitterStatus ="I'm live on Pundit now listening " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + " Vs " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name() + ", come join me.";
-                                }
+                                if (!userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id().equalsIgnoreCase("") && !userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2__twitter_id().equalsIgnoreCase(""))
+                                    twitterStatus = "Twitter: @" + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id() + " @" + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2__twitter_id();
+                                else
+                                    twitterStatus = "";
                             } else if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
                                 status = "I'm live on Pundit now listening " + userDatum.getChannelInfo().get(0).getTeamInfo().getContestantClubName() + ", come join me.";
-                                if(!userDatum.getChannelInfo().get(0).getTeamInfo().getTwitter_id().equalsIgnoreCase("")) {
-                                    twitterStatus = "I'm live on Pundit now listening " +"@"+ userDatum.getChannelInfo().get(0).getTeamInfo().getTwitter_id() + ", come join me.";
-                                }
-                                else{
-                                    twitterStatus ="I'm live on Pundit now listening " + userDatum.getChannelInfo().get(0).getTeamInfo().getTwitter_id() + ", come join me.";
-                                }
+                                if (!userDatum.getChannelInfo().get(0).getTeamInfo().getTwitter_id().equalsIgnoreCase(""))
+                                    twitterStatus = "Twitter: @" + userDatum.getChannelInfo().get(0).getTeamInfo().getTwitter_id();
+                                else
+                                    twitterStatus = "";
                             }
                         }
                     }
@@ -1242,20 +1200,16 @@ public class LiveListeningActivity extends BaseActivity {
                         if (userDatum.getChannelInfo().get(0).getChannel() != null) {
                             if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("match")) {
                                 status = "I'm live on Pundit now listening " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + " Vs " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name() + ", come join me.";
-                                if(!userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id().equalsIgnoreCase("")&&!userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2__twitter_id().equalsIgnoreCase("")) {
-                                    twitterStatus = "I'm live on Pundit now listening " + "@" + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id() + " Vs " +"@" + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id() + ", come join me.";
-                                }
-                                else{
-                                    twitterStatus ="I'm live on Pundit now listening " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + " Vs " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name() + ", come join me.";
-                                }
+                                if (!userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id().equalsIgnoreCase("") && !userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2__twitter_id().equalsIgnoreCase(""))
+                                    twitterStatus = "Twitter: @" + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id() + " @" + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2__twitter_id();
+                                else
+                                    twitterStatus = "";
                             } else if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
                                 status = "I'm live on Pundit now listening " + userDatum.getChannelInfo().get(0).getTeamInfo().getContestantClubName() + ", come join me.";
-                                if(!userDatum.getChannelInfo().get(0).getTeamInfo().getTwitter_id().equalsIgnoreCase("")) {
-                                    twitterStatus = "I'm live on Pundit now listening " +"@"+ userDatum.getChannelInfo().get(0).getTeamInfo().getTwitter_id() + ", come join me.";
-                                }
-                                else{
-                                    twitterStatus ="I'm live on Pundit now listening " + userDatum.getChannelInfo().get(0).getTeamInfo().getTwitter_id() + ", come join me.";
-                                }
+                                if (!userDatum.getChannelInfo().get(0).getTeamInfo().getTwitter_id().equalsIgnoreCase(""))
+                                    twitterStatus = "Twitter: @" + userDatum.getChannelInfo().get(0).getTeamInfo().getTwitter_id();
+                                else
+                                    twitterStatus = "";
                             }
                         }
                     }
@@ -1265,20 +1219,16 @@ public class LiveListeningActivity extends BaseActivity {
                         if (userDatum.getChannelInfo().get(0).getChannel() != null) {
                             if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("match")) {
                                 status = "I'm live on Pundit now listening " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + " Vs " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name() + ", come join me.";
-                                if(!userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id().equalsIgnoreCase("")&&!userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2__twitter_id().equalsIgnoreCase("")) {
-                                    twitterStatus = "I'm live on Pundit now listening " + "@" + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id() + " Vs " +"@" + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id() + ", come join me.";
-                                }
-                                else{
-                                    twitterStatus ="I'm live on Pundit now listening " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + " Vs " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name() + ", come join me.";
-                                }
+                                if (!userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id().equalsIgnoreCase("") && !userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2__twitter_id().equalsIgnoreCase(""))
+                                    twitterStatus = "Twitter: @" + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1_twitter_id() + " @" + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2__twitter_id();
+                                else
+                                    twitterStatus = "";
                             } else if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
                                 status = "I'm live on Pundit now listening " + userDatum.getChannelInfo().get(0).getTeamInfo().getContestantClubName() + ", come join me.";
-                                if(!userDatum.getChannelInfo().get(0).getTeamInfo().getTwitter_id().equalsIgnoreCase("")) {
-                                    twitterStatus = "I'm live on Pundit now listening " +"@"+ userDatum.getChannelInfo().get(0).getTeamInfo().getTwitter_id() + ", come join me.";
-                                }
-                                else{
-                                    twitterStatus ="I'm live on Pundit now listening " + userDatum.getChannelInfo().get(0).getTeamInfo().getTwitter_id() + ", come join me.";
-                                }
+                                if (!userDatum.getChannelInfo().get(0).getTeamInfo().getTwitter_id().equalsIgnoreCase(""))
+                                    twitterStatus = "Twitter: @" + userDatum.getChannelInfo().get(0).getTeamInfo().getTwitter_id();
+                                else
+                                    twitterStatus = "";
                             }
                         }
                     }
@@ -1286,27 +1236,33 @@ public class LiveListeningActivity extends BaseActivity {
                     if (getIntent().getSerializableExtra("mTeamSearchDatum") != null) {
                         TeamSearchSportsModel.Datum teamDatum = (TeamSearchSportsModel.Datum) getIntent().getSerializableExtra("mTeamSearchDatum");
                         status = "I'm live on Pundit now listening " + teamDatum.getContestantClubName() + ", come join me.";
-                        if(!teamDatum.getTwitter_id().equalsIgnoreCase("")) {
-                            twitterStatus = "I'm live on Pundit now listening " +"@"+ teamDatum.getTwitter_id() + ", come join me.";
-                        }
-                        else{
-                            twitterStatus ="I'm live on Pundit now listening " + teamDatum.getTwitter_id() + ", come join me.";
-                        }
+                        if (!teamDatum.getTwitter_id().equalsIgnoreCase(""))
+                            twitterStatus = "Twitter: @" + teamDatum.getTwitter_id();
+                        else
+                            twitterStatus = "";
                     }
                 } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("leaguesTeamSearch")) {
                     if (getIntent().getSerializableExtra("mTeamSearchDatum") != null) {
                         TeamSearchSportsModel.Datum teamDatum = (TeamSearchSportsModel.Datum) getIntent().getSerializableExtra("mTeamSearchDatum");
                         status = "I'm live on Pundit now listening " + teamDatum.getContestantClubName() + ", come join me.";
-
+                        if (!teamDatum.getTwitter_id().equalsIgnoreCase(""))
+                            twitterStatus = "Twitter: @" + teamDatum.getTwitter_id();
+                        else
+                            twitterStatus = "";
                     }
                 }
             }
-            /*Intent i = new Intent(Intent.ACTION_SEND);
+            Intent i = new Intent(Intent.ACTION_SEND);
             i.setType("text/plain");
             i.putExtra(Intent.EXTRA_SUBJECT, "Pundit");
-            i.putExtra(Intent.EXTRA_TEXT, shareUrl + "\n" + status);
-            startActivity(Intent.createChooser(i, "Share Via...."));*/
-            Intent emailIntent = new Intent();
+            if (twitterStatus.equalsIgnoreCase(""))
+                i.putExtra(Intent.EXTRA_TEXT, status + "\n" + shareUrl);
+            else
+                i.putExtra(Intent.EXTRA_TEXT, twitterStatus+"\n"+status + "\n" + shareUrl);
+            startActivity(Intent.createChooser(i, "Share Via...."));
+        }
+    }
+           /* Intent emailIntent = new Intent();
             emailIntent.setAction(Intent.ACTION_SEND);
             // Native email client doesn't currently support HTML, but it doesn't hurt to try in case they fix it
             emailIntent.putExtra(Intent.EXTRA_TEXT, shareUrl + "\n" + status);
@@ -1334,13 +1290,13 @@ public class LiveListeningActivity extends BaseActivity {
                     if (packageName.contains("twitter")) {
                         intent.putExtra(Intent.EXTRA_TEXT, shareUrl + "\n" + twitterStatus);
                     } else if (packageName.contains("facebook")) {
-                       /* ShareDialog shareDialog;
+                       *//* ShareDialog shareDialog;
                         shareDialog = new ShareDialog(mContext);
                         ShareLinkContent content = new ShareLinkContent.Builder()
                                 .setContentUrl(Uri.parse(shareUrl))
                                 .setQuote(status)
                                 .build();
-                        shareDialog.show(content);*/
+                        shareDialog.show(content);*//*
                         intent.putExtra(Intent.EXTRA_TEXT, shareUrl + "\n" + status);
                     } else if (packageName.contains("mms")) {
                         intent.putExtra(Intent.EXTRA_TEXT, shareUrl + "\n" + status);
@@ -1358,9 +1314,9 @@ public class LiveListeningActivity extends BaseActivity {
             LabeledIntent[] extraIntents = intentList.toArray(new LabeledIntent[intentList.size()]);
             openInChooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, extraIntents);
             startActivity(openInChooser);
-        }
+        }*/
 
-    }
+
 
     @OnClick(R.id.btn_follow_unfollow)
     public void buttonFollowUnfollow() {
@@ -1513,8 +1469,7 @@ public class LiveListeningActivity extends BaseActivity {
         subscribe = new R5Stream(connection);
         subscribe.play(media);
         getListnerCountData(channelId);
-       /* if(!mckeckbool)
-        setkickofftime();*/
+
         String path = broadcasterId + "/" + channelId;
         getAddsList(path);
     }
@@ -1850,6 +1805,14 @@ public class LiveListeningActivity extends BaseActivity {
         try {
             if (!isFinishing() && mContext != null) {
                 stopMediaPlayer();
+                /*t.cancel();
+                if (tm != null)
+                    tm.cancel();
+                if (timer != null)
+                    timer.cancel();
+                tvReconnecting.setVisibility(View.VISIBLE);
+                refreshListening();*/
+
                 final Dialog dialog = new Dialog(mContext);
                 dialog.setContentView(R.layout.custom_alertdialog_for_listner);
                 dialog.setCancelable(false);
@@ -1874,6 +1837,22 @@ public class LiveListeningActivity extends BaseActivity {
         }
     }
 
+    private void refreshListening() {
+        App.getApiHelper().refreshListening(broadcasterId, new ApiCallBack<ReconnectModel>() {
+            @Override
+            public void onSuccess(ReconnectModel reconnectModel) {
+                streamName=reconnectModel.getChannel().getStreamName();
+                configRedPro(streamName,serverAddress);
+                tvReconnecting.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onFailure(String message) {
+
+            }
+        });
+    }
+
     public static void stopListenAppBackground() {
         if (subscribe != null) {
             subscribe.stop();
@@ -1896,7 +1875,6 @@ public class LiveListeningActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         unmountListner(listenerId);
-
         super.onDestroy();
     }
 

@@ -22,6 +22,7 @@ import com.softuvo.ipundit.models.LoginUserModel;
 import com.softuvo.ipundit.models.MatchListListnerModel;
 import com.softuvo.ipundit.models.MatchStandingListModel;
 import com.softuvo.ipundit.models.PodcastDetailsModel;
+import com.softuvo.ipundit.models.ReconnectModel;
 import com.softuvo.ipundit.models.RedFiveProGroupIdModel;
 import com.softuvo.ipundit.models.ServerAddressModel;
 import com.softuvo.ipundit.models.ServerListenerAddressModel;
@@ -832,6 +833,32 @@ public class ApiHelper {
         });
     }
 
+    public void refreshListening(String stringPath, final ApiCallBack<ReconnectModel> apiCallBack) {
+        apiservice.refreshListening(stringPath).enqueue(new Callback<ReconnectModel>() {
+            @Override
+            public void onResponse(Call<ReconnectModel> call, Response<ReconnectModel> response) {
+                apiCallBack.onSuccess(response.body());
+            }
 
+            @Override
+            public void onFailure(Call<ReconnectModel> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+    public void deepLinking(String stringPath, final ApiCallBack<UserDetailsAndMatchDetailsModel> apiCallBack) {
+        apiservice.deepLinking(stringPath).enqueue(new Callback<UserDetailsAndMatchDetailsModel>() {
+            @Override
+            public void onResponse(Call<UserDetailsAndMatchDetailsModel> call, Response<UserDetailsAndMatchDetailsModel> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<UserDetailsAndMatchDetailsModel> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
 }
 

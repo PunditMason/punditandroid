@@ -9,6 +9,7 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.softuvo.ipundit.activities.DashboardActivity;
+import com.softuvo.ipundit.activities.PunditsProfileActivity;
 import com.softuvo.ipundit.config.NotificationConstants;
 import com.softuvo.ipundit.utils.NotificationUtils;
 
@@ -98,7 +99,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 notificationUtils.playNotificationSound();
             } else {
                 // app is in background, show the notification in notification tray
-                Intent resultIntent = new Intent(getApplicationContext(), DashboardActivity.class);
+                Intent resultIntent = new Intent(getApplicationContext(), PunditsProfileActivity.class);
                 resultIntent.putExtra("message", message);
 
                 // check for image attachment

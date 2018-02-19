@@ -233,8 +233,9 @@
 
         <activity
             android:name=".activities.DashboardActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
 
+        </activity>
         <receiver
             android:name=".receivers.ConnectivityReceivers"
             android:enabled="true">
@@ -303,13 +304,41 @@
         <activity
             android:name=".activities.LiveBroadcastersListActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activities.PunditsProfileActivity" />
-        <activity android:name=".activities.PodcastActivity" />
-        <activity android:name=".activities.PodcastDetailsActivity" />
-        <activity android:name=".activities.FollowersListActivity" />
-        <activity android:name=".activities.FollowingListActivity" />
-        <activity android:name=".activities.LiveRightNowActivity" />
-        <activity android:name=".activities.DummyActivity"></activity>
+
+        <activity android:name=".activities.PunditsProfileActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" android:host="play.pundit.world" android:pathPrefix="/broadcast"
+                    android:pathPattern="/.*"/>
+                <data android:scheme="app" android:host="com.softuvo.ipundit" />
+            </intent-filter>
+          <!--  <intent-filter>
+                <action android:name="OPEN_PROFILE_ACTIVITY" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>-->
+
+        </activity>
+
+        <activity android:name=".activities.PodcastActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".activities.PodcastDetailsActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".activities.FollowersListActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".activities.FollowingListActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".activities.LiveRightNowActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".activities.DummyActivity"/>
+
     </application>
 
 </manifest>
