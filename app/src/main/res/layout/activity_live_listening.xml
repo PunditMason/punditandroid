@@ -2,6 +2,7 @@
 <com.softuvo.ipundit.views.CustomRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:Pundit="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rl_live_listening_main"
+    android:background="@color/broadcastingBackGround"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -27,6 +28,7 @@
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/app_logo_string"
                 android:padding="@dimen/margin_large"
+                android:layout_gravity="center"
                 android:src="@drawable/app_logo" />
 
             <LinearLayout
@@ -81,7 +83,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.1"
-            android:background="@color/colorTransparent"
+            android:background="@color/colorBlack"
             android:orientation="horizontal"
             android:padding="@dimen/margin_2_dp"
             android:layout_marginBottom="@dimen/margin_2_dp"
@@ -150,7 +152,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.54"
+            android:layout_weight="0.49"
             android:layout_marginTop="@dimen/margin_2_dp">
 
             <android.support.design.widget.TabLayout
@@ -158,13 +160,14 @@
                 android:background="@color/colorTransparent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                Pundit:tabIndicatorColor="@color/colorWhite"
+                Pundit:tabIndicatorColor="@color/colorBlack"
                 Pundit:tabIndicatorHeight="4dp" />
             <android.support.v4.view.ViewPager
                 android:layout_below="@+id/tabs"
                 android:id="@+id/viewpager"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small"
                 Pundit:layout_behavior="@string/appbar_scrolling_view_behavior"/>
             <com.softuvo.ipundit.views.CustomTextView
                 android:id="@+id/tv_no_deta"
@@ -321,6 +324,41 @@
                 android:visibility="gone"/>
 
         </RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_alignParentBottom="true"
+            android:layout_weight="0.05"
+            android:background="@color/colorBlack"
+            android:orientation="horizontal">
+
+            <com.softuvo.ipundit.views.CustomTextView
+                android:layout_width="@dimen/breaking_news_width"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@color/colorBreakingNewsHeader"
+                android:gravity="end|center_vertical"
+                android:padding="2dp"
+                android:text="@string/breaking_news_heading_text"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/text_size_10sp"
+                Pundit:fonttextview="@string/helvetica_neue_medium" />
+
+            <com.softuvo.ipundit.views.CustomTextView
+                android:id="@+id/tv_breaking_news"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="start|center"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_10sp"
+                Pundit:fonttextview="@string/helvetica_neue_medium" />
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/bottum_layout"

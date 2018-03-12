@@ -18,7 +18,7 @@ import com.softuvo.ipundit.models.UserDetailsAndMatchDetailsModel;
 import java.util.List;
 
 
-public class AllUsersDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener {
+public class AllUsersDetailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context context;
     private List<UserDetailsAndMatchDetailsModel.UsersList> userItemList;
     private ItemClickListener itemClickListener;
@@ -58,10 +58,6 @@ public class AllUsersDetailsAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         return userItemList.size();
     }
 
-    @Override
-    public void onClick(View v) {
-
-    }
 
     private class UserDetailsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         CardView cvUserDetailsContainer;
@@ -69,8 +65,8 @@ public class AllUsersDetailsAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
         private UserDetailsViewHolder(View view) {
             super(view);
-            cvUserDetailsContainer = (CardView) view.findViewById(R.id.cv_user_details_container);
-            tvUsername = (TextView) view.findViewById(R.id.tv_username);
+            cvUserDetailsContainer =  view.findViewById(R.id.cv_user_details_container);
+            tvUsername =  view.findViewById(R.id.tv_username);
             cvUserDetailsContainer.setOnClickListener(this);
         }
 

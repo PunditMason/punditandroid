@@ -34,17 +34,15 @@ import java.util.List;
 
 public class BaseActivity extends AppCompatActivity implements ConnectivityReceivers.ConnectivityListener {
 
-    public BroadcastReceiver mRegistrationBroadcastReceiver;
+//    public BroadcastReceiver mRegistrationBroadcastReceiver;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
-        fireLocalNotification();
+//        fireLocalNotification();
     }
 
-    static {
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-    }
+
 
     @Override
     public void onNetworkConnectionChanged(boolean isConnected) {
@@ -116,7 +114,7 @@ public class BaseActivity extends AppCompatActivity implements ConnectivityRecei
         }
     }
 
-    public void fireLocalNotification(){
+   /* public void fireLocalNotification(){
 
     mRegistrationBroadcastReceiver =new BroadcastReceiver() {
         @Override
@@ -130,9 +128,9 @@ public class BaseActivity extends AppCompatActivity implements ConnectivityRecei
                 mBuilder.setSmallIcon(R.drawable.notifiction_icon);
                 mBuilder.setContentTitle("Pundit");
                 mBuilder.setContentText(message);
-               /* Intent notificationIntent = new Intent(BaseActivity.this, BaseActivity.class);
+               *//* Intent notificationIntent = new Intent(BaseActivity.this, BaseActivity.class);
                 PendingIntent contentIntent = PendingIntent.getActivity(BaseActivity.this, 0, notificationIntent,
-                        PendingIntent.FLAG_UPDATE_CURRENT);*/
+                        PendingIntent.FLAG_UPDATE_CURRENT);*//*
 //                mBuilder.setContentIntent(contentIntent);
                 NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 manager.notify(0, mBuilder.build());
@@ -140,19 +138,19 @@ public class BaseActivity extends AppCompatActivity implements ConnectivityRecei
         }
     };
 
-}
+}*/
 
     @Override
     protected void onPause() {
         super.onPause();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+//        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         // register GCM registration complete receiver
-        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+        /*LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
                 new IntentFilter(NotificationConstants.REGISTRATION_COMPLETE));
 
         // register new push message receiver
@@ -161,6 +159,6 @@ public class BaseActivity extends AppCompatActivity implements ConnectivityRecei
                 new IntentFilter(NotificationConstants.PUSH_NOTIFICATION));
 
         // clear the notification area when the app is opened
-        NotificationUtils.clearNotifications(getApplicationContext());
+        NotificationUtils.clearNotifications(getApplicationContext());*/
     }
 }

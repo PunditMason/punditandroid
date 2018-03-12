@@ -482,6 +482,34 @@ public class ApiHelper {
         });
     }
 
+    public void updatePodacstName(Map map, final ApiCallBack<Map> apiCallBack) {
+        apiservice.updatePodacstName(map).enqueue(new Callback<Map>() {
+            @Override
+            public void onResponse(Call<Map> call, Response<Map> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<Map> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+    public void logoutUSer(Map map, final ApiCallBack<Map> apiCallBack) {
+        apiservice.logoutUSer(map).enqueue(new Callback<Map>() {
+            @Override
+            public void onResponse(Call<Map> call, Response<Map> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<Map> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
     public void searchLeaguesTeam(Map map, final ApiCallBack<TeamSearchSportsModel> apiCallBack) {
         apiservices.searchLeaguesTeam(map).enqueue(new Callback<TeamSearchSportsModel>() {
             @Override

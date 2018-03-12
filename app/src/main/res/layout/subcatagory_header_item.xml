@@ -7,6 +7,7 @@
         android:layout_height="match_parent"
         android:id="@+id/rl_league_top_cover_image"
         android:layout_margin="@dimen/margin_small"
+        android:background="@color/colorPlaceholder"
         android:scaleType="fitXY">
         <RelativeLayout
             android:layout_width="wrap_content"

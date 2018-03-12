@@ -158,7 +158,10 @@ public class UserProfileActivity extends BaseActivity {
                         ivProfilePic.setImageBitmap(null);
                         ivProfilePic.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.profile_dummy_image));
                         Drawable myDrawable = ContextCompat.getDrawable(mContext, R.drawable.profile_dummy_image);
-                        Bitmap anImage = ((BitmapDrawable) myDrawable).getBitmap();
+                        Bitmap anImage = null;
+                        if ((myDrawable) != null) {
+                            anImage = ((BitmapDrawable) myDrawable).getBitmap();
+                        }
                         base64Img = convertImageToStringForServer(anImage);
                         Bitmap resultedBitmap = CustomBlurImage.blur(mContext, anImage);
                         rlProfilePicBlur.setBackground(new BitmapDrawable(mContext.getResources(), resultedBitmap));

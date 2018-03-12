@@ -31,8 +31,8 @@ public class PrivacyPolicyActivity extends BaseActivity {
         setContentView(R.layout.activity_privacy_policy);
         Activity mContext = PrivacyPolicyActivity.this;
         ButterKnife.bind(mContext);
-        if(AppPreferences.init(mContext).getString(APP_BACKGROUND)!=null)
-        Picasso.with(mContext).load(AppPreferences.init(mContext).getString(APP_BACKGROUND)).into(rlPrivacyPolicyMainBackground);
+       /* if(AppPreferences.init(mContext).getString(APP_BACKGROUND)!=null)
+        Picasso.with(mContext).load(AppPreferences.init(mContext).getString(APP_BACKGROUND)).into(rlPrivacyPolicyMainBackground);*/
         if(getIntent().getStringExtra(AppConstant.PRIVACY_POLICY)!=null) {
             tvPrivacyPolicyContent.setText(getIntent().getStringExtra(AppConstant.PRIVACY_POLICY));
         }

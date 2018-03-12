@@ -140,10 +140,20 @@ public class SubCategotyActivity extends BaseActivity {
     }
 
     private void setData() {
-        if (AppPreferences.init(mContext).getString(APP_BACKGROUND) != null)
-            Picasso.with(mContext).load(AppPreferences.init(mContext).getString(APP_BACKGROUND)).into(llSubCatMain);
-        if (AppPreferences.init(mContext).getString(AppConstant.USER_PROFILE_PIC) != null)
-            Picasso.with(mContext).load(ApiConstants.PROFILE_IMAGE_BASE_URL + AppPreferences.init(mContext).getString(AppConstant.USER_PROFILE_PIC)).into(ivUserProfileImage);
+        if (AppPreferences.init(mContext).getString(AppConstant.USER_SELECTION).equalsIgnoreCase(AppConstant.SELECTED_BROADCAST)) {
+            llSubCatMain.setBackground(getResources().getDrawable(R.drawable.screen_image));
+            if (AppPreferences.init(mContext).getString(AppConstant.USER_PROFILE_PIC) != null) {
+                ivUserProfileImage.setVisibility(View.VISIBLE);
+                Picasso.with(mContext).load(ApiConstants.PROFILE_IMAGE_BASE_URL + AppPreferences.init(mContext).getString(AppConstant.USER_PROFILE_PIC)).into(ivUserProfileImage);
+            }
+        }
+        else if (AppPreferences.init(mContext).getString(AppConstant.USER_SELECTION).equalsIgnoreCase(AppConstant.SELECTED_LISTNER)) {
+            llSubCatMain.setBackground(getResources().getDrawable(R.drawable.screen_image));
+            ivUserProfileImage.setVisibility(View.GONE);
+        }
+
+       /* if (AppPreferences.init(mContext).getString(APP_BACKGROUND) != null)
+            Picasso.with(mContext).load(AppPreferences.init(mContext).getString(APP_BACKGROUND)).into(llSubCatMain);*/
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getApplicationContext(), 2);
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
@@ -194,9 +204,7 @@ public class SubCategotyActivity extends BaseActivity {
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    if (timer != null) {
-                        timer.cancel();
-                    }
+                    cancelTimer();
                 }
 
                 @Override
@@ -232,13 +240,14 @@ public class SubCategotyActivity extends BaseActivity {
 
                                 }
                             }
-                        }, 500);
+                        }, 800);
                     }
                 }
             });
             closeLeagueSearch.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    cancelTimer();
                     edSearchLeague.setText("");
                     selectedSearchType = "leagues";
                     rlSearchTypeContainer.setVisibility(View.GONE);
@@ -342,17 +351,23 @@ public class SubCategotyActivity extends BaseActivity {
     public void onClickBtn(View view) {
         if (view.getId() == R.id.btn_user) {
             selectedSearchType = "user";
-            if(leaguesItemLists!=null){
-                leaguesItemLists.clear();
+            if (leaguesItemList != null) {
+                leaguesItemList.clear();
+                cancelTimer();
                 allLeagueAdapters.notifyDataSetChanged();
+                rvLeagueItem.setAdapter(null);
             }
             if (leaguesItemList != null) {
                 leaguesItemList.clear();
+                cancelTimer();
                 allLeagueAdapter.notifyDataSetChanged();
+                rvLeagueItem.setAdapter(null);
             }
             if (searchTeamDetailsList != null) {
                 searchTeamDetailsList.clear();
                 searchTeamSportsAdapter.notifyDataSetChanged();
+                cancelTimer();
+                rvLeagueItem.setAdapter(null);
             }
             if(edSearchLeague.getText()!=null)
                 edSearchLeague.getText().clear();
@@ -364,17 +379,23 @@ public class SubCategotyActivity extends BaseActivity {
         }
         if (view.getId() == R.id.btn_team) {
             selectedSearchType = "team";
-            if(leaguesItemLists!=null){
+            if (leaguesItemLists != null) {
                 leaguesItemLists.clear();
+                cancelTimer();
                 allLeagueAdapters.notifyDataSetChanged();
+                rvLeagueItem.setAdapter(null);
             }
             if (leaguesItemList != null) {
                 leaguesItemList.clear();
+                cancelTimer();
                 allLeagueAdapter.notifyDataSetChanged();
+                rvLeagueItem.setAdapter(null);
             }
             if (searchUserDetailsList != null) {
                 searchUserDetailsList.clear();
+                cancelTimer();
                 searchUserLeaguesAdapter.notifyDataSetChanged();
+                rvLeagueItem.setAdapter(null);
             }
             if(edSearchLeague.getText()!=null)
                 edSearchLeague.getText().clear();
@@ -388,11 +409,15 @@ public class SubCategotyActivity extends BaseActivity {
             selectedSearchType = "leagues";
             if (searchTeamDetailsList != null) {
                 searchTeamDetailsList.clear();
+                cancelTimer();
                 searchTeamSportsAdapter.notifyDataSetChanged();
+                rvLeagueItem.setAdapter(null);
             }
             if (searchUserDetailsList != null) {
                 searchUserDetailsList.clear();
+                cancelTimer();
                 searchUserLeaguesAdapter.notifyDataSetChanged();
+                rvLeagueItem.setAdapter(null);
             }
             getSportsAndLeaugesData();
             if(edSearchLeague.getText()!=null)
@@ -400,6 +425,12 @@ public class SubCategotyActivity extends BaseActivity {
             btnUser.setTextColor(ContextCompat.getColor(mContext, R.color.colorWhite));
             btnLeagues.setTextColor(ContextCompat.getColor(mContext, R.color.colorPurple));
             btnTeam.setTextColor(ContextCompat.getColor(mContext, R.color.colorWhite));
+        }
+    }
+
+    private void cancelTimer() {
+        if(timer!=null){
+            timer.cancel();
         }
     }
 
@@ -412,6 +443,7 @@ public class SubCategotyActivity extends BaseActivity {
     public void onResume() {
         super.onResume();
         selectedSearchType = "leagues";
+        cancelTimer();
         btnUser.setTextColor(ContextCompat.getColor(mContext, R.color.colorWhite));
         btnLeagues.setTextColor(ContextCompat.getColor(mContext, R.color.colorPurple));
         btnTeam.setTextColor(ContextCompat.getColor(mContext, R.color.colorWhite));

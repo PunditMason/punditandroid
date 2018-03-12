@@ -110,9 +110,10 @@ import java.util.List;
 import java.util.Set;
 
 
-/**
+/*
  * Created by devashish on 6/25/2015.
  */
+
 public class ConversationActivity extends AppCompatActivity implements MessageCommunicator, MobiComKitActivityInterface, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, ActivityCompat.OnRequestPermissionsResultCallback, MobicomkitUriListener, SearchView.OnQueryTextListener, OnClickReplyInterface {
 
     public static final int LOCATION_SERVICE_ENABLE = 1001;

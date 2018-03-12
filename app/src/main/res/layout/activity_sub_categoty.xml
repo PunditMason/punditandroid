@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
     <com.softuvo.ipundit.views.CustomLinearLayout
-
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -20,6 +19,7 @@
                 android:id="@+id/imgLogo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
                 android:contentDescription="@string/app_logo_string"
                 android:padding="@dimen/pading_small"
                 android:src="@drawable/app_logo" />
@@ -32,7 +32,8 @@
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/app_name"
                 android:padding="@dimen/margin_small_large"
-                android:scaleType="fitXY" />
+                android:scaleType="fitXY"
+                android:visibility="gone"/>
             <View
                 android:id="@+id/viewHorizontalLine"
                 android:layout_width="wrap_content"
@@ -122,7 +123,7 @@
             android:id="@+id/swiperefreshSubcat"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.68">
+            android:layout_weight="0.72">
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_league_items"
                 android:layout_width="match_parent"
@@ -139,8 +140,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginTop="@dimen/margin_2_dp"
         android:background="@color/colorBlack"
-        android:orientation="horizontal"
-        android:layout_marginBottom="@dimen/margin_small">
+        android:orientation="horizontal">
 
         <com.softuvo.ipundit.views.CustomTextView
             android:layout_width="@dimen/breaking_news_width"

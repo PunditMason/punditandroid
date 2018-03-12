@@ -122,6 +122,12 @@ interface ApiService {
     @POST(ApiConstants.SEARCH_LEAGUES)
     Call<TeamSearchSportsModel> searchLeaguesTeam(@Body Map map);
 
+    @POST(ApiConstants.UPDATE_PODACAST_NAME)
+    Call<Map> updatePodacstName(@Body Map map);
+
+    @POST(ApiConstants.LOGOUT_USER)
+    Call<Map> logoutUSer(@Body Map map);
+
     @POST("Broadcast/unmount/{path}")
     Call<Map> unmountOnServer(@Path(value = "path", encoded = true) String stringPath);
 

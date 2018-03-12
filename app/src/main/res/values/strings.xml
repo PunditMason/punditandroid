@@ -52,7 +52,7 @@
     <string name="decline">Decline</string>
     <string name="privacy_policy_text">Privacy Policy</string>
     <string name="fb_logout_message">You have successfully logged out.</string>
-    <string name="search_game">Search Sports/Find Game</string>
+    <string name="search_game">Search Sports</string>
     <string name="user">User</string>
     <string name="teams">Team</string>
     <string name="sport">Sport</string>
@@ -85,13 +85,15 @@
     <string name="server_error">Sorry! Server not responding</string>
     <string name="delete">Delete</string>
 
+
     <!--MatchList Activity -->
     <string name="match_time">MATCH TIME</string>
     <string name="team">TEAMS</string>
     <string name="score">SCORE</string>
     <string name="time">TIME</string>
-    <string name="league_table_teams">League Table/Teams</string>
-    <string name="no_mataches_available">No matches available</string>
+    <string name="league_table_teams">LEAGUE TABLE</string>
+    <string name="no_mataches_available">No Matches Available</string>
+
 
     <!--Standing Screen Activity -->
     <string name="position">Pos</string>
@@ -107,6 +109,7 @@
     <string name="no_data_available">No Teams Available</string>
     <string name="tap_club">Tap a club name to Broadcast about this team</string>
     <string name="tap_club_listen">Tap a club name to Listen about this team</string>
+
 
     <!--live Broadcast Activity-->
     <string name="cancel_broadcast_title">Stop Broadcasting!</string>
@@ -131,15 +134,17 @@
     <string name="broadcaster_left_message">Broadcaster Left</string>
     <string name="ok">OK</string>
     <string name="done_text">Done</string>
+    <string name="name_updated_successfully">Podcast Name Updated Successfully.</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
     <string name="default_media_location_folder">Applozic</string>
-    <string name="applozic_id">yopmail16bdf300d3e8d97588b435dfb25ddea2a</string>
-    <!--<string name="applozic_id">348ee5f2dc9df272707eb1a3f0b6ad07c</string>-->
+    <!--   <string name="applozic_id">yopmail16bdf300d3e8d97588b435dfb25ddea2a</string>-->
+   <!-- <string name="applozic_id">softuvo26632f185aa66535997473c</string>-->
 
-    <string name="podcast">PODCAST</string>
-    <string name="podcasts_details">PODCASTS DETAILS</string>
+    <string name="applozic_id">punditsports348ee5f2dc9df272707eb1a3f0b6ad07c</string>
+
+    <string name="podcast">PODCAST MATCHES</string>
+    <string name="podcasts_details">MATCH PODCASTS</string>
     <string name="following">FOLLOWING</string>
     <string name="follower">FOLLOWERS</string>
     <string name="live_right_now">LIVE RIGHT NOW</string>
@@ -150,6 +155,22 @@
     <string name="broadcast">BROADCAST</string>
     <string name="listen">LISTEN</string>
     <string name="reconnecting">Reconnecting....</string>
+    <string name="live_now">Live Now</string>
+    <string name="about_me_tell_the_world_who_you_are">ABOUTME: (tell the world who you are)</string>
 
+
+
+    <string name="error_no_yt_link">Not a valid YouTube link!</string>
+    <string name="exo_controls_previous_description">Previous track</string>
+    <string name="exo_controls_next_description">Next track</string>
+    <string name="exo_controls_pause_description">Pause</string>
+    <string name="exo_controls_play_description">Play</string>
+    <string name="exo_controls_stop_description">Stop</string>
+    <string name="exo_controls_rewind_description">Rewind</string>
+    <string name="exo_controls_fastforward_description">Fast forward</string>
+    <string name="exo_controls_repeat_off_description">Repeat none</string>
+    <string name="exo_controls_repeat_one_description">Repeat one</string>
+    <string name="exo_controls_repeat_all_description">Repeat all</string>
+    <string name="exo_controls_shuffle_description">Shuffle</string>
 
 </resources>

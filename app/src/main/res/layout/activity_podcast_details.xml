@@ -4,22 +4,46 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:focusableInTouchMode="true"
+    android:background="@color/colorPodcastPage"
     tools:context="com.softuvo.ipundit.activities.PodcastDetailsActivity">
-
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorBlack"
-        android:gravity="center_horizontal"
-        android:padding="@dimen/pading_xlarge"
-        android:text="@string/podcasts_details"
-        android:textColor="@color/colorWhite"
-        android:textSize="@dimen/text_size_large"
-        android:textStyle="bold" />
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorBlack"
+            android:gravity="center_horizontal"
+            android:padding="@dimen/pading_xlarge"
+            android:text="@string/podcasts_details"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/text_size_large"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/listen_head"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/margin_small"/>
+    </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_podcast_details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <com.softuvo.ipundit.exoplayer.ui.SimpleExoPlayerView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/player_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:keepScreenOn="true"/>
 
 </LinearLayout>

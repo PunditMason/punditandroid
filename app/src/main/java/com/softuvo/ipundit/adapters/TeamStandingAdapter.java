@@ -42,7 +42,7 @@ public class TeamStandingAdapter  extends RecyclerView.Adapter<RecyclerView.View
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         TeamViewHolder holder1 = (TeamViewHolder) holder;
         if(teamStandingList.get(position).getChannel().size()>0)
-            holder1.cvContainer.setBackgroundResource(R.color.colorBroadcastersListBackground);
+            holder1.cvContainer.setCardBackgroundColor(context.getResources().getColor(R.color.colorBroadcastersListBackground));
         else
             holder1.cvContainer.setOnClickListener(null);
         if(teamStandingList.get(position).getRank()!=null)
@@ -75,15 +75,15 @@ public class TeamStandingAdapter  extends RecyclerView.Adapter<RecyclerView.View
 
         private TeamViewHolder(View view) {
             super(view);
-            cvContainer=(CardView)view.findViewById(R.id.cv_container);
-            tvLeaguePos = (TextView) view.findViewById(R.id.tv_league_pos);
-            tv_league_club = (TextView) view.findViewById(R.id.tv_league_club);
-            tv_league_p = (TextView) view.findViewById(R.id.tv_league_p);
-            tv_league_w = (TextView) view.findViewById(R.id.tv_league_w);
-            tv_league_d = (TextView) view.findViewById(R.id.tv_league_d);
-            tv_league_l = (TextView) view.findViewById(R.id.tv_league_l);
-            tv_league_gd = (TextView) view.findViewById(R.id.tv_league_gd);
-            tv_league_pt = (TextView) view.findViewById(R.id.tv_league_pt);
+            cvContainer=view.findViewById(R.id.cv_container);
+            tvLeaguePos =  view.findViewById(R.id.tv_league_pos);
+            tv_league_club =  view.findViewById(R.id.tv_league_club);
+            tv_league_p =  view.findViewById(R.id.tv_league_p);
+            tv_league_w =  view.findViewById(R.id.tv_league_w);
+            tv_league_d =  view.findViewById(R.id.tv_league_d);
+            tv_league_l =  view.findViewById(R.id.tv_league_l);
+            tv_league_gd =  view.findViewById(R.id.tv_league_gd);
+            tv_league_pt =  view.findViewById(R.id.tv_league_pt);
             cvContainer.setOnClickListener(this);
         }
 

@@ -6,6 +6,7 @@ package com.softuvo.ipundit.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,7 +23,10 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;;
+import android.widget.RelativeLayout;
+import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
+import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
+import com.bumptech.glide.Glide;
 import com.google.gson.internal.LinkedTreeMap;
 import com.red5pro.streaming.R5Connection;
 import com.red5pro.streaming.R5Stream;
@@ -38,6 +42,8 @@ import com.softuvo.ipundit.config.AppConstant;
 import com.softuvo.ipundit.config.AppPreferences;
 import com.softuvo.ipundit.fragments.LiveFeedsFragment;
 import com.softuvo.ipundit.fragments.LiveFeedsPlayerFragment;
+import com.softuvo.ipundit.models.BreakingNewsDatum;
+import com.softuvo.ipundit.models.BreakingNewsParentModel;
 import com.softuvo.ipundit.models.BroadcastMatchlistModel;
 import com.softuvo.ipundit.models.ListnerCountModel;
 import com.softuvo.ipundit.models.LiveBroadcstingModel;
@@ -45,24 +51,26 @@ import com.softuvo.ipundit.models.MatchStandingListModel;
 import com.softuvo.ipundit.models.ServerAddressModel;
 import com.softuvo.ipundit.receivers.ConnectivityReceivers;
 import com.softuvo.ipundit.utils.SnackbarUtil;
-import com.softuvo.ipundit.views.CustomGifImageView;
 import com.softuvo.ipundit.views.CustomRelativeLayout;
 import com.softuvo.ipundit.views.CustomTextView;
 import com.squareup.picasso.Picasso;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import static com.softuvo.ipundit.config.AppConstant.APP_BACKGROUND;
 import static com.softuvo.ipundit.config.AppConstant.USER_ID;
 import static com.softuvo.ipundit.config.AppConstant.USER_NAME;
 
 public class LiveBroadCastingActivity extends BaseActivity {
     private Activity mContext;
-    private int minutes = 0, seconds = 0;
+    private int minutes = 0, seconds = 0, hours = 0;
     private String strName;
     private String strMatchId;
     private String strBroadcastName;
@@ -83,24 +91,28 @@ public class LiveBroadCastingActivity extends BaseActivity {
     private int visible = 0;
     private int isSelected = 0;
     String mUserComingFrom;
+    String time;
 
     @BindView(R.id.rl_live_broadcasting_main)
     CustomRelativeLayout rlLiveBroadcastingMain;
 
-    @BindView(R.id.tv_match_name_top)
-    CustomTextView tvMatcNameTop;
+   /* @BindView(R.id.tv_match_name_top)
+    CustomTextView tvMatcNameTop;*/
 
     @BindView(R.id.tv_match_time_top)
-    public CustomTextView tvMatchTimeTop;
+    CustomTextView tvMatchTimeTop;
 
-    @BindView(R.id.tv_broadcsaters_name)
-    CustomTextView tvBroadcsatersName;
+  /*  @BindView(R.id.tv_broadcsaters_name)
+    CustomTextView tvBroadcsatersName;*/
 
     @BindView(R.id.tv_kickoff_time_top)
     CustomTextView tvKickoffTimeTop;
 
     @BindView(R.id.iv_league_icon)
     ImageView ivLeagueIcon;
+
+    @BindView(R.id.tv_breaking_news)
+    CustomTextView tvBreakingNews;
 
     @BindView(R.id.tv_team1_score)
     CustomTextView tvTeam1Score;
@@ -123,14 +135,14 @@ public class LiveBroadCastingActivity extends BaseActivity {
     @BindView(R.id.iv_share)
     ImageView ivShare;
 
-    @BindView(R.id.tv_team1name_vs_team2name)
+   /* @BindView(R.id.tv_team1name_vs_team2name)
     CustomTextView tvTeam1nameVsTeam2name;
 
     @BindView(R.id.tv_team1score_vs_team2score)
     CustomTextView tvTeam1scoreVsTeam2score;
 
     @BindView(R.id.tv_match_kickoff_time)
-    CustomTextView tvMatchKickoffTime;
+    CustomTextView tvMatchKickoffTime;*/
 
     @BindView(R.id.tv_listners_count)
     CustomTextView tvListnersCount;
@@ -138,8 +150,11 @@ public class LiveBroadCastingActivity extends BaseActivity {
     @BindView(R.id.tv_no_deta_br)
     CustomTextView tvNo_DataBr;
 
-    @BindView(R.id.gif_view)
-    CustomGifImageView gifView;
+   /* @BindView(R.id.gif_view)
+    CustomGifImageView gifView;*/
+
+    @BindView(R.id.gif_live_view)
+    ImageView gifLiveView;
 
     @BindView(R.id.progress_bar_live_broadcasting)
     ProgressBar progressarLiveBroadcasting;
@@ -186,8 +201,14 @@ public class LiveBroadCastingActivity extends BaseActivity {
         setContentView(R.layout.activity_live_broad_casting);
         mContext = LiveBroadCastingActivity.this;
         ButterKnife.bind(mContext);
+        Date date = new Date();  // to get the date
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd"); // getting date in this format
+        String formattedDate = df.format(date.getTime());
+        Log.e("cureent date:",formattedDate);
+        getNewsFromServer(formattedDate);
         setData();
-        onIncommingCallBroadcast();
+//        onIncommingCallBroadcast();
     }
 
     private void setData() {
@@ -196,8 +217,9 @@ public class LiveBroadCastingActivity extends BaseActivity {
             ivPlayPause.setImageResource(R.drawable.break_new);
         else if (isSelected == 1)
             ivPlayPause.setImageResource(R.drawable.live_new);
-        if (AppPreferences.init(mContext).getString(APP_BACKGROUND) != null)
-            Picasso.with(mContext).load(AppPreferences.init(mContext).getString(APP_BACKGROUND)).into(rlLiveBroadcastingMain);
+        rlLiveBroadcastingMain.setBackground(getResources().getDrawable(R.drawable.screen_image));
+        /*if (AppPreferences.init(mContext).getString(APP_BACKGROUND) != null)
+            Picasso.with(mContext).load(AppPreferences.init(mContext).getString(APP_BACKGROUND)).into(rlLiveBroadcastingMain);*/
 //        AppPreferences.init(mContext).putString(AppConstant.User_CURRENT_STATE, "1");
         if (getIntent().getStringExtra("userComingFrom") != null) {
 
@@ -205,8 +227,8 @@ public class LiveBroadCastingActivity extends BaseActivity {
                 mUserComingFrom = "match";
                 if (getIntent().getSerializableExtra("mBrDatum") != null) {
                     BroadcastMatchlistModel.Datum mBrDatum = (BroadcastMatchlistModel.Datum) getIntent().getSerializableExtra("mBrDatum");
-                    tvMatcNameTop.setText(mBrDatum.getTeam1Name() + " Vs " + mBrDatum.getTeam2Name());
-                    tvTeam1nameVsTeam2name.setText(mBrDatum.getTeam1Name() + " Vs " + mBrDatum.getTeam2Name());
+//                    tvMatcNameTop.setText(mBrDatum.getTeam1Name() + " Vs " + mBrDatum.getTeam2Name());
+                   // tvTeam1nameVsTeam2name.setText(mBrDatum.getTeam1Name() + " Vs " + mBrDatum.getTeam2Name());
                     tvTeam1Name.setText(mBrDatum.getTeam1Name() + ":");
                     tvTeam2Name.setText(mBrDatum.getTeam2Name() + ":");
                     team1_id = mBrDatum.getTeam1Id();
@@ -224,18 +246,19 @@ public class LiveBroadCastingActivity extends BaseActivity {
 //                getLiveFeedsFromServer(strMatchId);
                 setupViewPager(mViewPager, strMatchId);
                 mViewPager.setOffscreenPageLimit(0);
+                mTabLayout.setVisibility(View.VISIBLE);
                 mTabLayout.setupWithViewPager(mViewPager);
             } else if ((getIntent().getStringExtra("userComingFrom")).equalsIgnoreCase("matchStandingList")) {
                 mUserComingFrom = "team";
                 if (getIntent().getSerializableExtra("mBrDatum") != null) {
                     ivEditScore.setVisibility(View.GONE);
                     MatchStandingListModel.Datum mBrDatum = (MatchStandingListModel.Datum) getIntent().getSerializableExtra("mBrDatum");
-                    tvMatcNameTop.setText(mBrDatum.getContestantName());
+//                    tvMatcNameTop.setText(mBrDatum.getContestantName());
                     tvMatchTimeTop.setText("Rank:" + mBrDatum.getRank());
-                    tvTeam1nameVsTeam2name.setText(mBrDatum.getContestantName());
+                   // tvTeam1nameVsTeam2name.setText(mBrDatum.getContestantName());
                     tvTeam1Name.setText(mBrDatum.getContestantClubName());
                     tvTeam2Name.setText("Points : " + mBrDatum.getPoints());
-                    tvTeam1scoreVsTeam2score.setText("");
+                   // tvTeam1scoreVsTeam2score.setText("");
                     strName = mBrDatum.getContestantName() + "-" + AppPreferences.init(mContext).getString(AppConstant.USER_NAME);
                     strMatchId = mBrDatum.getContestantId();
                     strBroadcastName = AppPreferences.init(mContext).getString(USER_NAME);
@@ -246,15 +269,80 @@ public class LiveBroadCastingActivity extends BaseActivity {
                     tvNo_DataBr.setText(R.string.team_talk);
                     strFollowMsg = AppPreferences.init(mContext).getString(USER_NAME) + "is now the live pundit on " + mBrDatum.getContestantName() + ", " + "Listen now";
                 }
+                mTabLayout.setVisibility(View.GONE);
             }
             if (AppPreferences.init(mContext).getString(AppConstant.LEAGUE_IMAGE_URL) != null && !AppPreferences.init(mContext).getString(AppConstant.LEAGUE_IMAGE_URL).equalsIgnoreCase(""))
                 Picasso.with(mContext).load(AppPreferences.init(mContext).getString(AppConstant.LEAGUE_IMAGE_URL)).into(ivLeagueIcon);
             String broadcasterName = "Logged in as " + AppPreferences.init(mContext).getString(USER_NAME);
             chatChannelId = getIntent().getStringExtra("chatChannelKey");
-            gifView.setGifImageResource(R.drawable.broadcast_gif);
-            tvBroadcsatersName.setText(broadcasterName);
+            //gifView.setGifImageResource(R.drawable.broadcast_gif);
+
+            Glide.with(mContext).load(R.drawable.live_gif).into(gifLiveView);
+//            gifLiveView.setGifImageResource(R.drawable.live_gif);
+//            tvBroadcsatersName.setText(broadcasterName);
             publish();
             createMap();
+        }
+    }
+
+    private void getNewsFromServer(final String date) {
+        if (ConnectivityReceivers.isConnected()) {
+            int apiHitTimeInterval = 40000;
+            Timer t = new Timer();
+            t.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                           /* App.getApiHelper().getBreakingNews(new ApiCallBack<BreakingNewsParentModel>() {
+                                @Override
+                                public void onSuccess(BreakingNewsParentModel breakingNewsParentModel) {
+                                    if (breakingNewsParentModel != null) {
+                                        ArrayList<BreakingNewsDatum> breakingNewsResponse = (ArrayList<BreakingNewsDatum>) breakingNewsParentModel.getData();
+                                        List<String> breakingNews = new ArrayList<>();
+                                        for (int i = 0; i < breakingNewsResponse.size(); i++) {
+                                            if (breakingNewsResponse.get(i).getTitle() != null)
+                                                breakingNews.add(breakingNewsResponse.get(i).getTitle());
+                                        }
+                                        String SubTitle = (breakingNews.toString().replace("[", "").replace("]", "").trim()).replaceAll(",", ". ||   ");
+                                        tvBreakingNews.setText(SubTitle);
+                                        tvBreakingNews.setSelected(true);
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(String message) {
+                                    SnackbarUtil.showErrorLongSnackbar(mContext, message);
+                                }
+                            });*/
+                            App.getApiHelper().getBreakingNewsList("null/"+date, new ApiCallBack<BreakingNewsParentModel>() {
+                                @Override
+                                public void onSuccess(BreakingNewsParentModel breakingNewsParentModel) {
+                                    if (breakingNewsParentModel != null) {
+                                        ArrayList<BreakingNewsDatum> breakingNewsResponse = (ArrayList<BreakingNewsDatum>) breakingNewsParentModel.getData();
+                                        List<String> breakingNews = new ArrayList<>();
+                                        for (int i = 0; i < breakingNewsResponse.size(); i++) {
+                                            if (breakingNewsResponse.get(i).getTitle() != null)
+                                                breakingNews.add(breakingNewsResponse.get(i).getTitle());
+                                        }
+                                        String SubTitle = (breakingNews.toString().replace("[", "").replace("]", "").trim()).replaceAll(",", ". ||   ");
+                                        tvBreakingNews.setText(SubTitle);
+                                        tvBreakingNews.setSelected(true);
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(String message) {
+
+                                }
+                            });
+                        }
+                    });
+                }
+            }, 0, apiHitTimeInterval);
+        } else {
+            SnackbarUtil.showWarningLongSnackbar(mContext, getResources().getString(R.string.internet_not_connected_text));
         }
     }
 
@@ -268,8 +356,9 @@ public class LiveBroadCastingActivity extends BaseActivity {
             isSelected = 0;
             ivPlayPause.setImageResource(R.drawable.break_new);
         }
-        String path = channelId + "/" + isSelected;
+        String path = channelId + "/" + isSelected+"/"+time;
         pauseStream(path);
+        Log.e("pathtime",path);
     }
 
     private void pauseStream(String path) {
@@ -312,14 +401,24 @@ public class LiveBroadCastingActivity extends BaseActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        tvKickoffTimeTop.setText(String.valueOf(minutes) + ":" + String.valueOf(seconds));
-                        tvMatchKickoffTime.setText(String.valueOf(minutes) + ":" + String.valueOf(seconds));
+                        String newMinute,newSeconds,newHour;
                         seconds += 1;
-                        if (seconds == 59) {
-                            tvKickoffTimeTop.setText(String.valueOf(minutes) + ":" + String.valueOf(seconds));
-                            tvMatchKickoffTime.setText(String.valueOf(minutes) + ":" + String.valueOf(seconds));
+                        time=String.valueOf(hours)+":"+String.valueOf(minutes) + ":" + String.valueOf(seconds);
+                        tvKickoffTimeTop.setText(time);
+                        if (seconds == 60) {
+                            time=String.valueOf(hours)+":"+String.valueOf(minutes) + ":" + String.valueOf(seconds);
+                            tvKickoffTimeTop.setText(time);
+                            //tvMatchKickoffTime.setText(String.valueOf(minutes) + ":" + String.valueOf(seconds));
                             seconds = 0;
                             minutes = minutes + 1;
+                        }
+                        if(minutes==60){
+                            time=String.valueOf(hours)+":"+String.valueOf(minutes) + ":" + String.valueOf(seconds);
+                            tvKickoffTimeTop.setText(time);
+                            minutes=0;
+                            hours=hours+1;
+
+
                         }
                     }
                 });
@@ -1020,12 +1119,10 @@ public class LiveBroadCastingActivity extends BaseActivity {
 
     @OnClick(R.id.rl_chat_tile)
     public void onClickChatBroadcast() {
-        SnackbarUtil.showWarningShortSnackbar(mContext, getString(R.string.under_development_message));
-       /* AppPreferences.init(mContext).putString(AppConstant.User_CURRENT_STATE, "3");
-        Intent intent = new Intent(this, ConversationActivity.class);
+        Intent intent = new Intent(mContext, ConversationActivity.class);
         intent.putExtra(ConversationUIService.GROUP_ID, Integer.parseInt(chatChannelId));
         intent.putExtra(ConversationUIService.TAKE_ORDER,true);
-        startActivity(intent);*/
+        startActivity(intent);
     }
 }
 

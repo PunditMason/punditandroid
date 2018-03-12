@@ -33,16 +33,18 @@ import java.util.List;
 public class FollowingListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener{
     private Context context;
     private List<FollowingListModel.Following> follwingList;
+    private String userComingFrom;
     private ItemClickListener itemClickListener;
 
     public interface ItemClickListener {
         void onClick(int position);
     }
 
-    public FollowingListAdapter(Context context, List<FollowingListModel.Following> follwingList, ItemClickListener itemClickListener) {
+    public FollowingListAdapter(Context context,String userComingFrom, List<FollowingListModel.Following> follwingList, ItemClickListener itemClickListener) {
         this.context = context;
         this.follwingList = follwingList;
         this.itemClickListener = itemClickListener;
+        this.userComingFrom = userComingFrom;
     }
 
 
@@ -52,7 +54,7 @@ public class FollowingListAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         final FollowingViewHolder viewholder = (FollowingViewHolder) holder;
         Picasso.with(context).load(ApiConstants.PROFILE_IMAGE_BASE_URL + follwingList.get(position).getAvatar()).into(viewholder.ivUserPic);
         viewholder.tvFollwerFollowingName.setText(follwingList.get(position).getFirstName());
@@ -63,20 +65,20 @@ public class FollowingListAdapter extends RecyclerView.Adapter<RecyclerView.View
         viewholder.ivFollowUnfollow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (AppPreferences.init(context).getString(AppConstant.USER_ID).equalsIgnoreCase(follwingList.get(position).getId())) {
+                if (AppPreferences.init(context).getString(AppConstant.USER_ID).equalsIgnoreCase(follwingList.get(viewholder.getAdapterPosition()).getId())) {
                     SnackbarUtil.showWarningShortSnackbar((Activity) context, context.getString(R.string.self_follow_text));
                     viewholder.ivFollowUnfollow.setClickable(false);
                 } else {
                     String followUnfoloowPath;
-                    if (follwingList.get(position).getFollow() == 0) {
+                    if (follwingList.get(viewholder.getAdapterPosition()).getFollow() == 0) {
                         viewholder.ivFollowUnfollow.setImageResource(R.drawable.follow_me);
-                        followUnfoloowPath = AppPreferences.init(context).getString(AppConstant.USER_ID) + "/" + follwingList.get(position).getId();
-                        followunfollowUser(followUnfoloowPath,viewholder.ivFollowUnfollow,position);
+                        followUnfoloowPath = AppPreferences.init(context).getString(AppConstant.USER_ID) + "/" + follwingList.get(viewholder.getAdapterPosition()).getId();
+                        followunfollowUser(followUnfoloowPath,viewholder.ivFollowUnfollow,viewholder.getAdapterPosition());
 
-                    } else if (follwingList.get(position).getFollow() == 1) {
+                    } else if (follwingList.get(viewholder.getAdapterPosition()).getFollow() == 1) {
                         viewholder.ivFollowUnfollow.setImageResource(R.drawable.unfollow);
-                        followUnfoloowPath = AppPreferences.init(context).getString(AppConstant.USER_ID) + "/" + follwingList.get(position).getId();
-                        followunfollowUser(followUnfoloowPath,viewholder.ivFollowUnfollow,position);
+                        followUnfoloowPath = AppPreferences.init(context).getString(AppConstant.USER_ID) + "/" + follwingList.get(viewholder.getAdapterPosition()).getId();
+                        followunfollowUser(followUnfoloowPath,viewholder.ivFollowUnfollow,viewholder.getAdapterPosition());
                     }
                 }
             }
@@ -85,7 +87,7 @@ public class FollowingListAdapter extends RecyclerView.Adapter<RecyclerView.View
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(context,PodcastActivity.class);
-                intent.putExtra("punditsId", follwingList.get(position).getId());
+                intent.putExtra("punditsId", follwingList.get(viewholder.getAdapterPosition()).getId());
                 context.startActivity(intent);
             }
         });
@@ -94,7 +96,7 @@ public class FollowingListAdapter extends RecyclerView.Adapter<RecyclerView.View
             public void onClick(View v) {
                 Intent intent = new Intent(context, PunditsProfileActivity.class);
                 intent.putExtra("userComingFrom", "followingList");
-                intent.putExtra("mUserDatum", follwingList.get(position));
+                intent.putExtra("mUserDatum", follwingList.get(viewholder.getAdapterPosition()));
                 context.startActivity(intent);
             }
         });
@@ -110,8 +112,13 @@ public class FollowingListAdapter extends RecyclerView.Adapter<RecyclerView.View
                         followStatus = followUnfollowModel.getData().getResult();
                         if (followStatus == 0) {
 //                            ivFollowUnfollow.setImageResource(R.drawable.follow_me);
-                            follwingList.remove(position);
-                            notifyItemRemoved(position);
+                            if(userComingFrom.equalsIgnoreCase("userProfile")) {
+                                follwingList.remove(position);
+                                notifyItemRemoved(position);
+                            }
+                            else if(userComingFrom.equalsIgnoreCase("punditsProfile")){
+                                ivFollowUnfollow.setImageResource(R.drawable.follow_me);
+                            }
                         } else if (followStatus == 1) {
                             ivFollowUnfollow.setImageResource(R.drawable.unfollow);
                         }

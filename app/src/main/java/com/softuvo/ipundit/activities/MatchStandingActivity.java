@@ -188,7 +188,7 @@ public class MatchStandingActivity extends BaseActivity {
                         teamStandingAdapter = new TeamStandingAdapter(mContext, teamStandingList, new TeamStandingAdapter.ItemClickListener() {
                             @Override
                             public void onClick(int position) {
-                                chatChannelId = teamStandingList.get(position).getChannel().get(0).getChatChannelid();
+                                chatChannelId = teamStandingList.get(position).getChatChannelid();
                                 chatChannelName = teamStandingList.get(position).getContestantName();
                                 matchid = teamStandingList.get(position).getContestantId();
                                 if (chatChannelId.equalsIgnoreCase("0")) {
@@ -236,7 +236,7 @@ public class MatchStandingActivity extends BaseActivity {
     }
 
     private void getChannelId() {
-        try{
+        try {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -247,13 +247,15 @@ public class MatchStandingActivity extends BaseActivity {
                     ChannelService service = ChannelService.getInstance(mContext);
                     Channel channel = service.createChannel(channelInfo);
                     Log.i("Channel", "Channel respone is:" + channel);
-                    if (channel!=null && channel.getKey() != null) {
+                    if (channel != null && channel.getKey() != null) {
                         chatChannelId = String.valueOf(channel.getKey());
                         updateChatChannelId();
                     }
                 }
             }).start();
-        }catch (Exception e){e.printStackTrace();}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void updateChatChannelId() {
@@ -385,7 +387,7 @@ public class MatchStandingActivity extends BaseActivity {
         if (getIntent().getStringExtra("sportsLeagueId") != null)
             sportsLeagueId = getIntent().getStringExtra("sportsLeagueId");
         if (getIntent().getStringExtra("sportsLeagueName") != null) {
-            final String sportsLeagueName = getIntent().getStringExtra("sportsLeagueName");
+            final String sportsLeagueName = getIntent().getStringExtra("sportsLeagueName").toUpperCase();
             if (AppPreferences.init(mContext).getString(AppConstant.USER_SELECTION).equalsIgnoreCase(AppConstant.SELECTED_BROADCAST)) {
                 if (sportsLeagueId != null) {
                     getMatchData(sportsLeagueId);

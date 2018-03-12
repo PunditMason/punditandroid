@@ -24,14 +24,11 @@ import com.softuvo.ipundit.config.AppConstant;
 import com.softuvo.ipundit.config.AppPreferences;
 import com.softuvo.ipundit.models.FollowUnfollowModel;
 import com.softuvo.ipundit.models.FollowerListModel;
-import com.softuvo.ipundit.models.PodcastDetailsModel;
 import com.softuvo.ipundit.receivers.ConnectivityReceivers;
 import com.softuvo.ipundit.utils.SnackbarUtil;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
-
-import butterknife.BindView;
 
 public class FollowerListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener {
     private Context context;
@@ -54,7 +51,7 @@ public class FollowerListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder,  int position) {
         final FollowerViewHolder viewholder = (FollowerViewHolder) holder;
         Picasso.with(context).load(ApiConstants.PROFILE_IMAGE_BASE_URL + follwerList.get(position).getAvatar()).into(viewholder.ivUserPic);
         viewholder.tvFollwerFollowingName.setText(follwerList.get(position).getFirstName());
@@ -65,19 +62,19 @@ public class FollowerListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         viewholder.ivFollowUnfollow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (AppPreferences.init(context).getString(AppConstant.USER_ID).equalsIgnoreCase(follwerList.get(position).getId())) {
+                if (AppPreferences.init(context).getString(AppConstant.USER_ID).equalsIgnoreCase(follwerList.get(viewholder.getAdapterPosition()).getId())) {
                     SnackbarUtil.showWarningShortSnackbar((Activity) context, context.getString(R.string.self_follow_text));
                     viewholder.ivFollowUnfollow.setClickable(false);
                 } else {
                     String followUnfoloowPath;
-                    if (follwerList.get(position).getFollow() == 0) {
+                    if (follwerList.get(viewholder.getAdapterPosition()).getFollow() == 0) {
                         viewholder.ivFollowUnfollow.setImageResource(R.drawable.follow_me);
-                        followUnfoloowPath = AppPreferences.init(context).getString(AppConstant.USER_ID) + "/" + follwerList.get(position).getId();
+                        followUnfoloowPath = AppPreferences.init(context).getString(AppConstant.USER_ID) + "/" + follwerList.get(viewholder.getAdapterPosition()).getId();
                         followunfollowUser(followUnfoloowPath,viewholder.ivFollowUnfollow);
 
-                    } else if (follwerList.get(position).getFollow() == 1) {
+                    } else if (follwerList.get(viewholder.getAdapterPosition()).getFollow() == 1) {
                         viewholder.ivFollowUnfollow.setImageResource(R.drawable.unfollow);
-                        followUnfoloowPath = AppPreferences.init(context).getString(AppConstant.USER_ID) + "/" + follwerList.get(position).getId();
+                        followUnfoloowPath = AppPreferences.init(context).getString(AppConstant.USER_ID) + "/" + follwerList.get(viewholder.getAdapterPosition()).getId();
                         followunfollowUser(followUnfoloowPath,viewholder.ivFollowUnfollow);
                     }
                 }
@@ -87,7 +84,7 @@ public class FollowerListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(context,PodcastActivity.class);
-                intent.putExtra("punditsId", follwerList.get(position).getId());
+                intent.putExtra("punditsId", follwerList.get(viewholder.getAdapterPosition()).getId());
                 context.startActivity(intent);
             }
         });
@@ -96,7 +93,7 @@ public class FollowerListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             public void onClick(View v) {
                 Intent intent = new Intent(context, PunditsProfileActivity.class);
                 intent.putExtra("userComingFrom", "followerList");
-                intent.putExtra("mUserDatum", follwerList.get(position));
+                intent.putExtra("mUserDatum", follwerList.get(viewholder.getAdapterPosition()));
                 context.startActivity(intent);
             }
         });

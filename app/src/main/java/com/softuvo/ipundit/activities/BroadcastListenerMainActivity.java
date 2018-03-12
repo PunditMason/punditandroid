@@ -97,6 +97,9 @@ public class BroadcastListenerMainActivity extends BaseActivity {
     @BindView(R.id.btn_sports)
     Button btnSports;
 
+    @BindView(R.id.iv_user_profile_image)
+    ImageView ivUserProfileImage;
+
 
     private SwipeRefreshLayout swipeDownRefresh;
 
@@ -136,8 +139,17 @@ public class BroadcastListenerMainActivity extends BaseActivity {
         progressBar.setVisibility(View.VISIBLE);
         disableUserIntraction();
         if (ConnectivityReceivers.isConnected()) {
-            if (AppPreferences.init(mContext).getString(APP_BACKGROUND) != null)
-                Picasso.with(mContext).load(AppPreferences.init(mContext).getString(APP_BACKGROUND)).into(llMainSports);
+            if (AppPreferences.init(mContext).getString(AppConstant.USER_SELECTION).equalsIgnoreCase(AppConstant.SELECTED_BROADCAST)) {
+                llMainSports.setBackground(getResources().getDrawable(R.drawable.screen_image));
+                ivUserProfileImage.setVisibility(View.GONE);
+            }
+            else if (AppPreferences.init(mContext).getString(AppConstant.USER_SELECTION).equalsIgnoreCase(AppConstant.SELECTED_LISTNER)) {
+                llMainSports.setBackground(getResources().getDrawable(R.drawable.screen_image));
+                ivUserProfileImage.setVisibility(View.GONE);
+            }
+
+           /* if (AppPreferences.init(mContext).getString(APP_BACKGROUND) != null)
+                Picasso.with(mContext).load(AppPreferences.init(mContext).getString(APP_BACKGROUND)).into(llMainSports);*/
             mContext.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
             App.getApiHelper().getSportsAndLeauges(new ApiCallBack<SportsNameModel>() {
                 @Override
@@ -195,9 +207,7 @@ public class BroadcastListenerMainActivity extends BaseActivity {
 
                         @Override
                         public void onTextChanged(CharSequence s, int start, int before, int count) {
-                            if (timer != null) {
-                                timer.cancel();
-                            }
+                            cancelTimer();
                         }
 
                         @Override
@@ -239,6 +249,7 @@ public class BroadcastListenerMainActivity extends BaseActivity {
                     ivCloseSearch.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            cancelTimer();
                             edSearchGame.setText("");
                             selectedSearchType = "sports";
                             rlSearchTypeContainer.setVisibility(View.GONE);
@@ -279,9 +290,15 @@ public class BroadcastListenerMainActivity extends BaseActivity {
             selectedSearchType = "user";
             if (sportsItemList != null) {
                 sportsItemList.clear();
+                cancelTimer();
+                allsportsadapter.notifyDataSetChanged();
+                rvGameItems.setAdapter(null);
             }
             if (searchTeamDetailsList != null) {
                 searchTeamDetailsList.clear();
+                cancelTimer();
+                searchTeamSportsAdapter.notifyDataSetChanged();
+                rvGameItems.setAdapter(null);
             }
             if (edSearchGame.getText() != null)
                 edSearchGame.getText().clear();
@@ -295,9 +312,15 @@ public class BroadcastListenerMainActivity extends BaseActivity {
             selectedSearchType = "team";
             if (sportsItemList != null) {
                 sportsItemList.clear();
+                cancelTimer();
+                allsportsadapter.notifyDataSetChanged();
+                rvGameItems.setAdapter(null);
             }
             if (searchUserDetailsList != null) {
                 searchUserDetailsList.clear();
+                cancelTimer();
+                searchUserSportsAdapter.notifyDataSetChanged();
+                rvGameItems.setAdapter(null);
             }
             if (edSearchGame.getText() != null)
                 edSearchGame.getText().clear();
@@ -311,9 +334,15 @@ public class BroadcastListenerMainActivity extends BaseActivity {
             selectedSearchType = "sports";
             if (searchTeamDetailsList != null) {
                 searchTeamDetailsList.clear();
+                cancelTimer();
+                searchTeamSportsAdapter.notifyDataSetChanged();
+                rvGameItems.setAdapter(null);
             }
             if (searchUserDetailsList != null) {
                 searchUserDetailsList.clear();
+                cancelTimer();
+                searchUserSportsAdapter.notifyDataSetChanged();
+                rvGameItems.setAdapter(null);
             }
             checkConnection();
             if (edSearchGame.getText() != null)
@@ -321,6 +350,12 @@ public class BroadcastListenerMainActivity extends BaseActivity {
             btnUser.setTextColor(ContextCompat.getColor(mContext, R.color.colorWhite));
             btnSports.setTextColor(ContextCompat.getColor(mContext, R.color.colorPurple));
             btnTeam.setTextColor(ContextCompat.getColor(mContext, R.color.colorWhite));
+        }
+    }
+
+    private void cancelTimer() {
+        if(timer!=null){
+            timer.cancel();
         }
     }
 
@@ -468,6 +503,7 @@ public class BroadcastListenerMainActivity extends BaseActivity {
         selectedSearchType = "sports";
         rlSearchTypeContainer.setVisibility(View.GONE);
         edSearchGame.setText("");
+        cancelTimer();
         btnUser.setTextColor(ContextCompat.getColor(mContext, R.color.colorWhite));
         btnSports.setTextColor(ContextCompat.getColor(mContext, R.color.colorPurple));
         btnTeam.setTextColor(ContextCompat.getColor(mContext, R.color.colorWhite));

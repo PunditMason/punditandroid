@@ -2,6 +2,7 @@
 <com.softuvo.ipundit.views.CustomRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:Pundit="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rl_live_broadcasting_main"
+    android:background="@color/broadcastingBackGround"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -14,9 +15,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.29"
+            android:layout_weight="0.18"
             android:orientation="vertical"
-            android:padding="@dimen/margin_2_dp">
+            >
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -27,6 +28,7 @@
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/app_logo_string"
                     android:padding="@dimen/margin_large"
+                    android:layout_centerHorizontal="true"
                     android:src="@drawable/app_logo" />
                 <ImageView
                     android:id="@+id/iv_play_pause"
@@ -39,7 +41,7 @@
 
             </RelativeLayout>
 
-            <LinearLayout
+<!--            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_small"
@@ -83,15 +85,14 @@
                     android:layout_weight="0.6"
                     android:gravity="center"
                     android:textColor="@color/colorWhite" />
-            </LinearLayout>
+            </LinearLayout>-->
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginBottom="@dimen/margin_2_dp"
-            android:layout_weight="0.08"
-            android:background="@color/colorTransparent"
+            android:layout_weight="0.1"
+            android:background="@color/colorBlack"
             android:orientation="horizontal"
             android:padding="@dimen/margin_2_dp"
             android:weightSum="1">
@@ -101,14 +102,38 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:layout_weight="0.2"
+                android:layout_weight="0.15"
                 android:contentDescription="@string/app_name" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.25"
+                android:orientation="vertical"
+                android:weightSum="1">
+                    <com.softuvo.ipundit.views.CustomTextView
+                        android:id="@+id/tv_kickoff_time_top"
+                        android:layout_width="match_parent"
+                        android:gravity="center"
+                        android:layout_height="0dp"
+                        android:layout_weight="0.5"
+                        android:textColor="@color/colorWhite" />
+
+                    <com.softuvo.ipundit.views.CustomTextView
+                        android:id="@+id/tv_match_time_top"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:gravity="center"
+                        android:layout_weight="0.5"
+                        android:padding="@dimen/margin_2_dp"
+                        android:textColor="@color/colorWhite" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:layout_weight="0.7"
+                android:layout_weight="0.6"
                 android:orientation="vertical"
                 android:weightSum="1">
 
@@ -170,9 +195,9 @@
             android:id="@+id/ll_livefeeds_container"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.35"
+            android:layout_weight="0.59"
             android:orientation="vertical"
-            android:padding="@dimen/margin_2_dp">
+            android:layout_marginBottom="@dimen/margin_small_large">
 
             <ProgressBar
                 android:id="@+id/progress_bar_live_broadcasting"
@@ -187,9 +212,13 @@
                 android:id="@+id/tabs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                style="@style/customTabLayout"
                 android:background="@color/colorTransparent"
-                Pundit:tabIndicatorColor="@color/colorWhite"
-                Pundit:tabIndicatorHeight="4dp" />
+                Pundit:tabIndicatorColor="@color/colorBlack"
+                Pundit:tabTextColor="@color/colorWhite"
+                Pundit:tabSelectedTextColor="@color/colorWhite"
+                Pundit:tabIndicatorHeight="4dp"
+                android:visibility="gone"/>
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/viewpager"
@@ -210,6 +239,42 @@
         </RelativeLayout>
 
         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_alignParentBottom="true"
+            android:layout_weight="0.05"
+            android:background="@color/colorBlack"
+            android:orientation="horizontal">
+
+            <com.softuvo.ipundit.views.CustomTextView
+                android:layout_width="@dimen/breaking_news_width"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@color/colorBreakingNewsHeader"
+                android:gravity="end|center_vertical"
+                android:padding="2dp"
+                android:text="@string/breaking_news_heading_text"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/text_size_10sp"
+                Pundit:fonttextview="@string/helvetica_neue_medium" />
+
+            <com.softuvo.ipundit.views.CustomTextView
+                android:id="@+id/tv_breaking_news"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="start|center"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_10sp"
+                Pundit:fonttextview="@string/helvetica_neue_medium" />
+        </LinearLayout>
+
+       <!-- <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.20"
@@ -268,15 +333,15 @@
                     android:text="@string/you_are_live"
                     android:textColor="@color/colorWhite" />
 
-                <!-- <com.softuvo.ipundit.views.CustomTextView
+                &lt;!&ndash; <com.softuvo.ipundit.views.CustomTextView
                     android:id="@+id/tv_listners_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentEnd="true"
-                    android:textColor="@color/colorWhite" />-->
+                    android:textColor="@color/colorWhite" />&ndash;&gt;
             </RelativeLayout>
-        </LinearLayout>
+        </LinearLayout>-->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -291,20 +356,25 @@
                 android:layout_marginRight="@dimen/margin_xxxlarge"
                 android:background="@color/colorBlack"
                 android:weightSum="1">
+                <RelativeLayout
+                    android:id="@+id/rl_live_tile"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.28">
 
                 <ImageView
-                    android:layout_width="0dp"
+                    android:id="@+id/gif_live_view"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_large"
-                    android:layout_weight="0.25"
+                    android:layout_centerInParent="true"
                     android:contentDescription="@string/app_name"
-                    android:src="@drawable/live_icon" />
-
+                     />
+                </RelativeLayout>
                 <RelativeLayout
                     android:id="@+id/rl_share_tile"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.25">
+                    android:layout_weight="0.24">
 
                     <ImageView
                         android:id="@+id/iv_share"
@@ -331,7 +401,7 @@
                     android:id="@+id/rl_chat_tile"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.25">
+                    android:layout_weight="0.24">
 
                     <ImageView
                         android:id="@+id/iv_chat"
@@ -357,7 +427,7 @@
                     android:id="@+id/rl_listner_count_tile"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.25">
+                    android:layout_weight="0.24">
 
                     <ImageView
                         android:id="@+id/iv_listners"

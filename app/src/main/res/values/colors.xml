@@ -6,26 +6,33 @@
     <color name="colorBlack">#000000</color>
     <color name="colorBreakingNewsHeader">#EDED18</color>
     <color name="colorWhite">#FFFFFF</color>
+    <color name="colorProfileGray">#484848</color>
     <color name="colorRed">#E53935</color>
     <color name="colorGreen">#43A047</color>
     <color name="colorDelete">#044307</color>
     <color name="colorOrange">#EF6C00</color>
     <color name="colorGray"> #cfcfcf</color>
     <color name="colorTransparent">#65FFFFFF</color>
-    <color name="colorPrivacyPolicyBackground">#39A3D7</color>
+    <color name="colorPrivacyPolicyBackground">#748993</color>
     <color name="colorRedRoundShape">#FF0000</color>
-    <color name="colorMatchScreenBackground">#0A6CB7</color>
-    <color name="colorMatchScreenHeadingBackground">#2290CF</color>
+    <color name="colorMatchScreenBackground">#686868</color>
+    <color name="colorMatchScreenListenBackground">#292B5B</color>
+    <color name="colorMatchScreenHeadingBackground">#9C9EA1</color>
+    <color name="colorMatchScreenHeadingListenBackground">#80A0BE</color>
     <color name="colorStandingScreenBackground">#045597</color>
-    <color name="colorBroadcastersListBackground">#1FBE4A</color>
+    <color name="colorBroadcastersListBackground">#61A474</color>
     <color name="colorGreenRoundShape">#149D1E</color>
     <color name="colorPurple">#800080</color>
     <color name="colorProfileBg">#1D1D1D</color>
     <color name="colorTransparentBlack">#CC000000</color>
+    <color name="colorTransparentRedBlack">#6c000000</color>
+    <color name="colorRedLeagueTable">#A32B2C</color>
     <color name="colorSignup">#7A7A7C</color>
-    <color name="colorPlaceholder">#e611e6</color>
-
-
+    <color name="colorPodcastPage">#285598</color>
+    <color name="colorPlaceholder">#e611e6</color>\
+    <color name="broadcastingBackGround">#f00001</color>
+    <color name="listeningBackGround">#285598</color>
+    <color name="exo_edit_mode_background_color">#FFF4F3F0</color>
 
 </resources>
 

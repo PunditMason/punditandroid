@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="80dp"
     android:orientation="vertical"
-    app:cardBackgroundColor="@color/colorMatchScreenHeadingBackground"
+    app:cardBackgroundColor="@color/colorMatchScreenHeadingListenBackground"
     app:cardCornerRadius="2dp"
     app:cardUseCompatPadding="true"
     android:id="@+id/cv_container">

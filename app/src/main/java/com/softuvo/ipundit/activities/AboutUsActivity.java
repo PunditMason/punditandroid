@@ -55,8 +55,8 @@ public class AboutUsActivity extends BaseActivity {
 
     private void getAboutPrivacyContent() {
         if (ConnectivityReceivers.isConnected()) {
-            if (AppPreferences.init(mContext).getString(APP_BACKGROUND) != null)
-                Picasso.with(mContext).load(AppPreferences.init(mContext).getString(APP_BACKGROUND)).into(rlAboutUsMainBackground);
+            /*if (AppPreferences.init(mContext).getString(APP_BACKGROUND) != null)
+                Picasso.with(mContext).load(AppPreferences.init(mContext).getString(APP_BACKGROUND)).into(rlAboutUsMainBackground);*/
             progressBarAboutUs.setVisibility(View.VISIBLE);
             disableUserIntraction();
             App.getApiHelper().getAboutUs(new ApiCallBack<AboutUsModel>() {

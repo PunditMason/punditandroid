@@ -6,14 +6,11 @@ package com.softuvo.ipundit.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.app.Activity;;
 import android.app.Dialog;
-import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.LabeledIntent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,6 +26,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
+import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.red5pro.streaming.R5Connection;
 import com.red5pro.streaming.R5Stream;
 import com.red5pro.streaming.R5StreamProtocol;
@@ -43,6 +42,8 @@ import com.softuvo.ipundit.config.AppPreferences;
 import com.softuvo.ipundit.fragments.LiveFeedsFragment;
 import com.softuvo.ipundit.fragments.LiveFeedsPlayerFragment;
 import com.softuvo.ipundit.models.AddsModel;
+import com.softuvo.ipundit.models.BreakingNewsDatum;
+import com.softuvo.ipundit.models.BreakingNewsParentModel;
 import com.softuvo.ipundit.models.BroadacstersDetailsModel;
 import com.softuvo.ipundit.models.FollowCheckModel;
 import com.softuvo.ipundit.models.FollowUnfollowModel;
@@ -65,7 +66,10 @@ import com.softuvo.ipundit.utils.SnackbarUtil;
 import com.softuvo.ipundit.views.CustomRelativeLayout;
 import com.softuvo.ipundit.views.CustomTextView;
 import com.squareup.picasso.Picasso;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,10 +78,9 @@ import java.util.TimerTask;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import static com.softuvo.ipundit.config.AppConstant.APP_BACKGROUND;
 
 public class LiveListeningActivity extends BaseActivity {
-    private static Activity mContext;
+    private Activity mContext;
     public static R5Stream subscribe;
     private Timer t;
     Timer timer, tm;
@@ -97,7 +100,7 @@ public class LiveListeningActivity extends BaseActivity {
     private String groupID;
     private String twitterStatus;
     private String chatChannelId;
-    private int followStatus, strMin = 0, strSec = 0, visible = 0;
+    private int followStatus,strHours, strMin = 0, strSec = 0, visible = 0;
 
 
     @BindView(R.id.rl_live_listening_main)
@@ -164,6 +167,8 @@ public class LiveListeningActivity extends BaseActivity {
     @BindView(R.id.tv_listners_count)
     CustomTextView tvListnersCount;
 
+    @BindView(R.id.tv_breaking_news)
+    CustomTextView tvBreakingNews;
 
     @BindView(R.id.btn_follow_unfollow)
     Button btnFollowUnfollow;
@@ -186,6 +191,12 @@ public class LiveListeningActivity extends BaseActivity {
         setContentView(R.layout.activity_live_listening);
         mContext = LiveListeningActivity.this;
         ButterKnife.bind(mContext);
+        Date date = new Date();  // to get the date
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd"); // getting date in this format
+        String formattedDate = df.format(date.getTime());
+        Log.e("cureent date:",formattedDate);
+        getNewsFromServer(formattedDate);
         setData();
     }
 
@@ -193,7 +204,8 @@ public class LiveListeningActivity extends BaseActivity {
         // getApplication();
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         t = new Timer();
-        Picasso.with(mContext).load(AppPreferences.init(mContext).getString(APP_BACKGROUND)).into(rlLiveListeningMain);
+        rlLiveListeningMain.setBackground(getResources().getDrawable(R.drawable.screen_image));
+//        Picasso.with(mContext).load(AppPreferences.init(mContext).getString(APP_BACKGROUND)).into(rlLiveListeningMain);
 //        AppPreferences.init(mContext).putString(AppConstant.User_CURRENT_STATE, "2");
         chatChannelId = getIntent().getStringExtra("chatChannelKey");
 //        streamingGif.setGifImageResource(R.drawable.listning_gif);
@@ -210,7 +222,7 @@ public class LiveListeningActivity extends BaseActivity {
                     tvTeam2Name.setText(matchDatum.getTeam2Name() + ":");
                     txtMatchNameTop.setText(matchDatum.getTeam1Name() + " Vs " + matchDatum.getTeam2Name());
                     broadcasterName = channel.getBroadcasterName();
-                    txtBroadcasterName.setText("BroadCasting this Game:" + broadcasterName);
+                    txtBroadcasterName.setText(broadcasterName);
                     broadcasterId = channel.getBroadcasterId();
                     channelId = channel.getId();
                     streamName = channel.getStreamName();
@@ -219,6 +231,7 @@ public class LiveListeningActivity extends BaseActivity {
 //                    getLiveFeedsFromServer(matchContenstentId);
                     setupViewPager(mViewPager, matchContenstentId);
                     mViewPager.setOffscreenPageLimit(0);
+                    mTabLayout.setVisibility(View.VISIBLE);
                     mTabLayout.setupWithViewPager(mViewPager);
                 }
             } else if (getIntent().getStringExtra("userComingFrom").equalsIgnoreCase("matchStandingListenList")) {
@@ -231,7 +244,7 @@ public class LiveListeningActivity extends BaseActivity {
                     txtMatchNameTop.setText(matchDatum.getContestantName());
                     txtMatchTimeTop.setText("Rank:" + matchDatum.getRank());
                     broadcasterName = channel.getBroadcasterName();
-                    txtBroadcasterName.setText("BroadCasting this Game:" + broadcasterName);
+                    txtBroadcasterName.setText(broadcasterName);
                     tvTeam1Name.setText(matchDatum.getContestantClubName());
                     tvTeam2Name.setText("Points: " + matchDatum.getPoints());
                     tvNoData.setVisibility(View.VISIBLE);
@@ -257,7 +270,7 @@ public class LiveListeningActivity extends BaseActivity {
                             tvTeam2Name.setText(userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name() + ":");
                             txtMatchNameTop.setText(userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + " Vs " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name());
                             broadcasterName = channell.getChannelInfo().get(0).getChannel().getBroadcasterName();
-                            txtBroadcasterName.setText("BroadCasting this Game:" + broadcasterName);
+                            txtBroadcasterName.setText(broadcasterName);
                             broadcasterId = channell.getChannelInfo().get(0).getChannel().getBroadcasterId();
                             channelId = channell.getChannelInfo().get(0).getChannel().getId();
                             streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
@@ -266,6 +279,7 @@ public class LiveListeningActivity extends BaseActivity {
 //                            getLiveFeedsFromServer(matchContenstentId);
                             setupViewPager(mViewPager, matchContenstentId);
                             mViewPager.setOffscreenPageLimit(0);
+                            mTabLayout.setVisibility(View.VISIBLE);
                             mTabLayout.setupWithViewPager(mViewPager);
 
                         } else if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
@@ -274,7 +288,7 @@ public class LiveListeningActivity extends BaseActivity {
                             txtMatchNameTop.setText(userDatum.getChannelInfo().get(0).getTeamInfo().getContestantName());
                             txtMatchTimeTop.setText("Rank:" + userDatum.getChannelInfo().get(0).getTeamInfo().getRank());
                             broadcasterName = userDatum.getChannelInfo().get(0).getChannel().getBroadcasterName();
-                            txtBroadcasterName.setText("BroadCasting this Game:" + broadcasterName);
+                            txtBroadcasterName.setText(broadcasterName);
                             tvTeam1Name.setText(userDatum.getChannelInfo().get(0).getTeamInfo().getContestantClubName());
                             tvTeam2Name.setText("Points: " + userDatum.getChannelInfo().get(0).getTeamInfo().getPoints());
                             broadcasterId = channell.getChannelInfo().get(0).getChannel().getBroadcasterId();
@@ -302,7 +316,7 @@ public class LiveListeningActivity extends BaseActivity {
                             tvTeam2Name.setText(userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name() + ":");
                             txtMatchNameTop.setText(userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + " Vs " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name());
                             broadcasterName = channel.getBroadcasterName();
-                            txtBroadcasterName.setText("BroadCasting this Game:" + broadcasterName);
+                            txtBroadcasterName.setText(broadcasterName);
                             broadcasterId = channel.getBroadcasterId();
                             channelId = channel.getId();
                             streamName = channel.getStreamName();
@@ -311,6 +325,7 @@ public class LiveListeningActivity extends BaseActivity {
 //                            getLiveFeedsFromServer(matchContenstentId);
                             setupViewPager(mViewPager, matchContenstentId);
                             mViewPager.setOffscreenPageLimit(0);
+                            mTabLayout.setVisibility(View.VISIBLE);
                             mTabLayout.setupWithViewPager(mViewPager);
                         } else if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
                             channel = (LiveBroacastersListModel.Channel) getIntent().getSerializableExtra("mBrListDatum");
@@ -318,7 +333,7 @@ public class LiveListeningActivity extends BaseActivity {
                             txtMatchNameTop.setText(userDatum.getChannelInfo().get(0).getTeamInfo().getContestantName());
                             txtMatchTimeTop.setText("Rank:" + userDatum.getChannelInfo().get(0).getTeamInfo().getRank());
                             broadcasterName = channel.getBroadcasterName();
-                            txtBroadcasterName.setText("BroadCasting this Game:" + broadcasterName);
+                            txtBroadcasterName.setText(broadcasterName);
                             tvTeam1Name.setText(userDatum.getChannelInfo().get(0).getTeamInfo().getContestantClubName());
                             tvTeam2Name.setText("Points: " + userDatum.getChannelInfo().get(0).getTeamInfo().getPoints());
                             broadcasterId = channel.getBroadcasterId();
@@ -346,7 +361,7 @@ public class LiveListeningActivity extends BaseActivity {
                             tvTeam2Name.setText(userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name() + ":");
                             txtMatchNameTop.setText(userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + " Vs " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name());
                             broadcasterName = channell.getChannelInfo().get(0).getChannel().getBroadcasterName();
-                            txtBroadcasterName.setText("BroadCasting this Game:" + broadcasterName);
+                            txtBroadcasterName.setText(broadcasterName);
                             broadcasterId = channell.getChannelInfo().get(0).getChannel().getBroadcasterId();
                             channelId = channell.getChannelInfo().get(0).getChannel().getId();
                             streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
@@ -355,6 +370,7 @@ public class LiveListeningActivity extends BaseActivity {
 //                            getLiveFeedsFromServer(matchContenstentId);
                             setupViewPager(mViewPager, matchContenstentId);
                             mViewPager.setOffscreenPageLimit(0);
+                            mTabLayout.setVisibility(View.VISIBLE);
                             mTabLayout.setupWithViewPager(mViewPager);
                         } else if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
                             channell = (UserSearchSportsModel.UserDatum) getIntent().getSerializableExtra("mUserDatum");
@@ -362,7 +378,7 @@ public class LiveListeningActivity extends BaseActivity {
                             txtMatchNameTop.setText(userDatum.getChannelInfo().get(0).getTeamInfo().getContestantName());
                             txtMatchTimeTop.setText("Rank:" + userDatum.getChannelInfo().get(0).getTeamInfo().getRank());
                             broadcasterName = userDatum.getChannelInfo().get(0).getChannel().getBroadcasterName();
-                            txtBroadcasterName.setText("BroadCasting this Game:" + broadcasterName);
+                            txtBroadcasterName.setText(broadcasterName);
                             tvTeam1Name.setText(userDatum.getChannelInfo().get(0).getTeamInfo().getContestantClubName());
                             tvTeam2Name.setText("Points: " + userDatum.getChannelInfo().get(0).getTeamInfo().getPoints());
                             broadcasterId = channell.getChannelInfo().get(0).getChannel().getBroadcasterId();
@@ -390,7 +406,7 @@ public class LiveListeningActivity extends BaseActivity {
                             tvTeam2Name.setText(userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name() + ":");
                             txtMatchNameTop.setText(userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + " Vs " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name());
                             broadcasterName = channel.getBroadcasterName();
-                            txtBroadcasterName.setText("BroadCasting this Game:" + broadcasterName);
+                            txtBroadcasterName.setText(broadcasterName);
                             broadcasterId = channel.getBroadcasterId();
                             channelId = channel.getId();
                             streamName = channel.getStreamName();
@@ -399,6 +415,7 @@ public class LiveListeningActivity extends BaseActivity {
 //                            getLiveFeedsFromServer(matchContenstentId);
                             setupViewPager(mViewPager, matchContenstentId);
                             mViewPager.setOffscreenPageLimit(0);
+                            mTabLayout.setVisibility(View.VISIBLE);
                             mTabLayout.setupWithViewPager(mViewPager);
                         } else if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
                             channel = (LiveBroacastersListModel.Channel) getIntent().getSerializableExtra("mBrListDatum");
@@ -406,7 +423,7 @@ public class LiveListeningActivity extends BaseActivity {
                             txtMatchNameTop.setText(userDatum.getChannelInfo().get(0).getTeamInfo().getContestantName());
                             txtMatchTimeTop.setText("Rank:" + userDatum.getChannelInfo().get(0).getTeamInfo().getRank());
                             broadcasterName = channel.getBroadcasterName();
-                            txtBroadcasterName.setText("BroadCasting this Game:" + broadcasterName);
+                            txtBroadcasterName.setText(broadcasterName);
                             tvTeam1Name.setText(userDatum.getChannelInfo().get(0).getTeamInfo().getContestantClubName());
                             tvTeam2Name.setText("Points: " + userDatum.getChannelInfo().get(0).getTeamInfo().getPoints());
                             broadcasterId = channel.getBroadcasterId();
@@ -432,7 +449,7 @@ public class LiveListeningActivity extends BaseActivity {
                             txtMatchNameTop.setText(channel.getBroadcasterName());
                             txtMatchTimeTop.setText("Rank:" + teamDatum.getRank());
                             broadcasterName = channel.getBroadcasterName();
-                            txtBroadcasterName.setText("BroadCasting this Game:" + broadcasterName);
+                            txtBroadcasterName.setText(broadcasterName);
                             tvTeam1Name.setText(teamDatum.getContestantClubName());
                             tvTeam2Name.setText("Points: " + teamDatum.getPoints());
                             broadcasterId = channel.getBroadcasterId();
@@ -460,7 +477,7 @@ public class LiveListeningActivity extends BaseActivity {
                             tvTeam2Name.setText(userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name() + ":");
                             txtMatchNameTop.setText(userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + " Vs " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name());
                             broadcasterName = channell.getChannelInfo().get(0).getChannel().getBroadcasterName();
-                            txtBroadcasterName.setText("BroadCasting this Game:" + broadcasterName);
+                            txtBroadcasterName.setText(broadcasterName);
                             broadcasterId = channell.getChannelInfo().get(0).getChannel().getBroadcasterId();
                             channelId = channell.getChannelInfo().get(0).getChannel().getId();
                             streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
@@ -469,6 +486,7 @@ public class LiveListeningActivity extends BaseActivity {
 //                            getLiveFeedsFromServer(matchContenstentId);
                             setupViewPager(mViewPager, matchContenstentId);
                             mViewPager.setOffscreenPageLimit(0);
+                            mTabLayout.setVisibility(View.VISIBLE);
                             mTabLayout.setupWithViewPager(mViewPager);
                         } else if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
                             channell = (UserSearchLeagueModel.Datum) getIntent().getSerializableExtra("mUserDatum");
@@ -476,7 +494,7 @@ public class LiveListeningActivity extends BaseActivity {
                             txtMatchNameTop.setText(userDatum.getChannelInfo().get(0).getTeamInfo().getContestantName());
                             txtMatchTimeTop.setText("Rank:" + userDatum.getChannelInfo().get(0).getTeamInfo().getRank());
                             broadcasterName = userDatum.getChannelInfo().get(0).getChannel().getBroadcasterName();
-                            txtBroadcasterName.setText("BroadCasting this Game:" + broadcasterName);
+                            txtBroadcasterName.setText(broadcasterName);
                             tvTeam1Name.setText(userDatum.getChannelInfo().get(0).getTeamInfo().getContestantClubName());
                             tvTeam2Name.setText("Points: " + userDatum.getChannelInfo().get(0).getTeamInfo().getPoints());
                             broadcasterId = channell.getChannelInfo().get(0).getChannel().getBroadcasterId();
@@ -504,7 +522,7 @@ public class LiveListeningActivity extends BaseActivity {
                             tvTeam2Name.setText(userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name() + ":");
                             txtMatchNameTop.setText(userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + " Vs " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name());
                             broadcasterName = channell.getChannelInfo().get(0).getChannel().getBroadcasterName();
-                            txtBroadcasterName.setText("BroadCasting this Game:" + broadcasterName);
+                            txtBroadcasterName.setText(broadcasterName);
                             broadcasterId = channell.getChannelInfo().get(0).getChannel().getBroadcasterId();
                             channelId = channell.getChannelInfo().get(0).getChannel().getId();
                             streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
@@ -513,6 +531,7 @@ public class LiveListeningActivity extends BaseActivity {
 //                            getLiveFeedsFromServer(matchContenstentId);
                             setupViewPager(mViewPager, matchContenstentId);
                             mViewPager.setOffscreenPageLimit(0);
+                            mTabLayout.setVisibility(View.VISIBLE);
                             mTabLayout.setupWithViewPager(mViewPager);
                         } else if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
                             channell = (FollowerListModel.Follwer) getIntent().getSerializableExtra("mUserDatum");
@@ -520,7 +539,7 @@ public class LiveListeningActivity extends BaseActivity {
                             txtMatchNameTop.setText(userDatum.getChannelInfo().get(0).getTeamInfo().getContestantName());
                             txtMatchTimeTop.setText("Rank:" + userDatum.getChannelInfo().get(0).getTeamInfo().getRank());
                             broadcasterName = userDatum.getChannelInfo().get(0).getChannel().getBroadcasterName();
-                            txtBroadcasterName.setText("BroadCasting this Game:" + broadcasterName);
+                            txtBroadcasterName.setText(broadcasterName);
                             tvTeam1Name.setText(userDatum.getChannelInfo().get(0).getTeamInfo().getContestantClubName());
                             tvTeam2Name.setText("Points: " + userDatum.getChannelInfo().get(0).getTeamInfo().getPoints());
                             broadcasterId = channell.getChannelInfo().get(0).getChannel().getBroadcasterId();
@@ -548,7 +567,7 @@ public class LiveListeningActivity extends BaseActivity {
                             tvTeam2Name.setText(userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name() + ":");
                             txtMatchNameTop.setText(userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + " Vs " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name());
                             broadcasterName = channell.getChannelInfo().get(0).getChannel().getBroadcasterName();
-                            txtBroadcasterName.setText("BroadCasting this Game:" + broadcasterName);
+                            txtBroadcasterName.setText(broadcasterName);
                             broadcasterId = channell.getChannelInfo().get(0).getChannel().getBroadcasterId();
                             channelId = channell.getChannelInfo().get(0).getChannel().getId();
                             streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
@@ -557,6 +576,7 @@ public class LiveListeningActivity extends BaseActivity {
 //                            getLiveFeedsFromServer(matchContenstentId);
                             setupViewPager(mViewPager, matchContenstentId);
                             mViewPager.setOffscreenPageLimit(0);
+                            mTabLayout.setVisibility(View.VISIBLE);
                             mTabLayout.setupWithViewPager(mViewPager);
                         } else if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
                             channell = (FollowerListModel.Follwer) getIntent().getSerializableExtra("mUserDatum");
@@ -564,7 +584,7 @@ public class LiveListeningActivity extends BaseActivity {
                             txtMatchNameTop.setText(userDatum.getChannelInfo().get(0).getTeamInfo().getContestantName());
                             txtMatchTimeTop.setText("Rank:" + userDatum.getChannelInfo().get(0).getTeamInfo().getRank());
                             broadcasterName = userDatum.getChannelInfo().get(0).getChannel().getBroadcasterName();
-                            txtBroadcasterName.setText("BroadCasting this Game:" + broadcasterName);
+                            txtBroadcasterName.setText(broadcasterName);
                             tvTeam1Name.setText(userDatum.getChannelInfo().get(0).getTeamInfo().getContestantClubName());
                             tvTeam2Name.setText("Points: " + userDatum.getChannelInfo().get(0).getTeamInfo().getPoints());
                             broadcasterId = channell.getChannelInfo().get(0).getChannel().getBroadcasterId();
@@ -592,7 +612,7 @@ public class LiveListeningActivity extends BaseActivity {
                             tvTeam2Name.setText(userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name() + ":");
                             txtMatchNameTop.setText(userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + " Vs " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name());
                             broadcasterName = channell.getChannelInfo().get(0).getChannel().getBroadcasterName();
-                            txtBroadcasterName.setText("BroadCasting this Game:" + broadcasterName);
+                            txtBroadcasterName.setText(broadcasterName);
                             broadcasterId = channell.getChannelInfo().get(0).getChannel().getBroadcasterId();
                             channelId = channell.getChannelInfo().get(0).getChannel().getId();
                             streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
@@ -601,6 +621,7 @@ public class LiveListeningActivity extends BaseActivity {
 //                            getLiveFeedsFromServer(matchContenstentId);
                             setupViewPager(mViewPager, matchContenstentId);
                             mViewPager.setOffscreenPageLimit(0);
+                            mTabLayout.setVisibility(View.VISIBLE);
                             mTabLayout.setupWithViewPager(mViewPager);
                         } else if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
                             channell = (FollowingListModel.Following) getIntent().getSerializableExtra("mUserDatum");
@@ -608,7 +629,7 @@ public class LiveListeningActivity extends BaseActivity {
                             txtMatchNameTop.setText(userDatum.getChannelInfo().get(0).getTeamInfo().getContestantName());
                             txtMatchTimeTop.setText("Rank:" + userDatum.getChannelInfo().get(0).getTeamInfo().getRank());
                             broadcasterName = userDatum.getChannelInfo().get(0).getChannel().getBroadcasterName();
-                            txtBroadcasterName.setText("BroadCasting this Game:" + broadcasterName);
+                            txtBroadcasterName.setText(broadcasterName);
                             tvTeam1Name.setText(userDatum.getChannelInfo().get(0).getTeamInfo().getContestantClubName());
                             tvTeam2Name.setText("Points: " + userDatum.getChannelInfo().get(0).getTeamInfo().getPoints());
                             broadcasterId = channell.getChannelInfo().get(0).getChannel().getBroadcasterId();
@@ -636,7 +657,7 @@ public class LiveListeningActivity extends BaseActivity {
                             tvTeam2Name.setText(userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name() + ":");
                             txtMatchNameTop.setText(userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + " Vs " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name());
                             broadcasterName = channell.getChannelInfo().get(0).getChannel().getBroadcasterName();
-                            txtBroadcasterName.setText("BroadCasting this Game:" + broadcasterName);
+                            txtBroadcasterName.setText(broadcasterName);
                             broadcasterId = channell.getChannelInfo().get(0).getChannel().getBroadcasterId();
                             channelId = channell.getChannelInfo().get(0).getChannel().getId();
                             streamName = channell.getChannelInfo().get(0).getChannel().getStreamName();
@@ -645,6 +666,7 @@ public class LiveListeningActivity extends BaseActivity {
 //                            getLiveFeedsFromServer(matchContenstentId);
                             setupViewPager(mViewPager, matchContenstentId);
                             mViewPager.setOffscreenPageLimit(0);
+                            mTabLayout.setVisibility(View.VISIBLE);
                             mTabLayout.setupWithViewPager(mViewPager);
                         } else if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
                             channell = (FollowingListModel.Following) getIntent().getSerializableExtra("mUserDatum");
@@ -652,7 +674,7 @@ public class LiveListeningActivity extends BaseActivity {
                             txtMatchNameTop.setText(userDatum.getChannelInfo().get(0).getTeamInfo().getContestantName());
                             txtMatchTimeTop.setText("Rank:" + userDatum.getChannelInfo().get(0).getTeamInfo().getRank());
                             broadcasterName = userDatum.getChannelInfo().get(0).getChannel().getBroadcasterName();
-                            txtBroadcasterName.setText("BroadCasting this Game:" + broadcasterName);
+                            txtBroadcasterName.setText(broadcasterName);
                             tvTeam1Name.setText(userDatum.getChannelInfo().get(0).getTeamInfo().getContestantClubName());
                             tvTeam2Name.setText("Points: " + userDatum.getChannelInfo().get(0).getTeamInfo().getPoints());
                             broadcasterId = channell.getChannelInfo().get(0).getChannel().getBroadcasterId();
@@ -679,7 +701,7 @@ public class LiveListeningActivity extends BaseActivity {
                             tvTeam2Name.setText(userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name() + ":");
                             txtMatchNameTop.setText(userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + " Vs " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam2Name());
                             broadcasterName = channel.getBroadcasterName();
-                            txtBroadcasterName.setText("BroadCasting this Game:" + broadcasterName);
+                            txtBroadcasterName.setText(broadcasterName);
                             broadcasterId = channel.getBroadcasterId();
                             channelId = channel.getId();
                             streamName = channel.getStreamName();
@@ -688,6 +710,7 @@ public class LiveListeningActivity extends BaseActivity {
 //                            getLiveFeedsFromServer(matchContenstentId);
                             setupViewPager(mViewPager, matchContenstentId);
                             mViewPager.setOffscreenPageLimit(0);
+                            mTabLayout.setVisibility(View.VISIBLE);
                             mTabLayout.setupWithViewPager(mViewPager);
                         } else if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
                             channel = (LiveBroacastersListModel.Channel) getIntent().getSerializableExtra("mBrListDatum");
@@ -695,7 +718,7 @@ public class LiveListeningActivity extends BaseActivity {
                             txtMatchNameTop.setText(userDatum.getChannelInfo().get(0).getTeamInfo().getContestantName());
                             txtMatchTimeTop.setText("Rank:" + userDatum.getChannelInfo().get(0).getTeamInfo().getRank());
                             broadcasterName = channel.getBroadcasterName();
-                            txtBroadcasterName.setText("BroadCasting this Game:" + broadcasterName);
+                            txtBroadcasterName.setText(broadcasterName);
                             tvTeam1Name.setText(userDatum.getChannelInfo().get(0).getTeamInfo().getContestantClubName());
                             tvTeam2Name.setText("Points: " + userDatum.getChannelInfo().get(0).getTeamInfo().getPoints());
                             broadcasterId = channel.getBroadcasterId();
@@ -703,6 +726,7 @@ public class LiveListeningActivity extends BaseActivity {
                             tvNoData.setVisibility(View.VISIBLE);
                             tvNoData.setText(R.string.team_talk);
                             streamName = channel.getStreamName();
+                            mTabLayout.setVisibility(View.GONE);
                             getRed5ProGroupId();
 //                            configRedPro(streamName);
                         }
@@ -720,7 +744,7 @@ public class LiveListeningActivity extends BaseActivity {
                             txtMatchNameTop.setText(channel.getBroadcasterName());
                             txtMatchTimeTop.setText("Rank:" + teamDatum.getRank());
                             broadcasterName = channel.getBroadcasterName();
-                            txtBroadcasterName.setText("BroadCasting this Game:" + broadcasterName);
+                            txtBroadcasterName.setText(broadcasterName);
                             tvTeam1Name.setText(teamDatum.getContestantClubName());
                             tvTeam2Name.setText("Points: " + teamDatum.getPoints());
                             broadcasterId = channel.getBroadcasterId();
@@ -755,6 +779,7 @@ public class LiveListeningActivity extends BaseActivity {
 //                    getLiveFeedsFromServer(matchContenstentId);
                     setupViewPager(mViewPager, matchContenstentId);
                     mViewPager.setOffscreenPageLimit(0);
+                    mTabLayout.setVisibility(View.VISIBLE);
                     mTabLayout.setupWithViewPager(mViewPager);
                 }
             }
@@ -775,6 +800,67 @@ public class LiveListeningActivity extends BaseActivity {
         adapter.addFragment(LiveFeedsFragment.newInstance("Listening", strMatchId), "Overview");
         adapter.addFragment(LiveFeedsPlayerFragment.newInstance("Listening", strMatchId), "Lineups");
         viewPager.setAdapter(adapter);
+    }
+
+    private void getNewsFromServer(final String date) {
+        if (ConnectivityReceivers.isConnected()) {
+            int apiHitTimeInterval = 40000;
+            Timer t = new Timer();
+            t.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                           /* App.getApiHelper().getBreakingNews(new ApiCallBack<BreakingNewsParentModel>() {
+                                @Override
+                                public void onSuccess(BreakingNewsParentModel breakingNewsParentModel) {
+                                    if (breakingNewsParentModel != null) {
+                                        ArrayList<BreakingNewsDatum> breakingNewsResponse = (ArrayList<BreakingNewsDatum>) breakingNewsParentModel.getData();
+                                        List<String> breakingNews = new ArrayList<>();
+                                        for (int i = 0; i < breakingNewsResponse.size(); i++) {
+                                            if (breakingNewsResponse.get(i).getTitle() != null)
+                                                breakingNews.add(breakingNewsResponse.get(i).getTitle());
+                                        }
+                                        String SubTitle = (breakingNews.toString().replace("[", "").replace("]", "").trim()).replaceAll(",", ". ||   ");
+                                        tvBreakingNews.setText(SubTitle);
+                                        tvBreakingNews.setSelected(true);
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(String message) {
+                                    SnackbarUtil.showErrorLongSnackbar(mContext, message);
+                                }
+                            });*/
+                            App.getApiHelper().getBreakingNewsList("null/"+date, new ApiCallBack<BreakingNewsParentModel>() {
+                                @Override
+                                public void onSuccess(BreakingNewsParentModel breakingNewsParentModel) {
+                                    if (breakingNewsParentModel != null) {
+                                        ArrayList<BreakingNewsDatum> breakingNewsResponse = (ArrayList<BreakingNewsDatum>) breakingNewsParentModel.getData();
+                                        List<String> breakingNews = new ArrayList<>();
+                                        for (int i = 0; i < breakingNewsResponse.size(); i++) {
+                                            if (breakingNewsResponse.get(i).getTitle() != null)
+                                                breakingNews.add(breakingNewsResponse.get(i).getTitle());
+                                        }
+                                        String SubTitle = (breakingNews.toString().replace("[", "").replace("]", "").trim()).replaceAll(",", ". ||   ");
+                                        tvBreakingNews.setText(SubTitle);
+                                        tvBreakingNews.setSelected(true);
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(String message) {
+
+                                }
+                            });
+                        }
+                    });
+                }
+            }, 0, apiHitTimeInterval);
+        } else {
+            SnackbarUtil.showWarningLongSnackbar(mContext, getResources().getString(R.string.internet_not_connected_text));
+        }
     }
 
     public void getRed5ProGroupId() {
@@ -1514,18 +1600,26 @@ public class LiveListeningActivity extends BaseActivity {
                     @Override
                     public void run() {
                       //  mckeckbool=true;
-                        txtkickoffTime.setText(String.valueOf(strMin) + ":" + String.valueOf(strSec));
                         strSec += 1;
-                        if (strSec == 59) {
-                            txtkickoffTime.setText(String.valueOf(strMin) + ":" + String.valueOf(strSec));
+                        txtkickoffTime.setText(String.valueOf(strHours)+":"+String.valueOf(strMin) + ":" + String.valueOf(strSec));
+                        if (strSec == 60) {
+                            txtkickoffTime.setText(String.valueOf(strHours)+":"+String.valueOf(strMin) + ":" + String.valueOf(strSec));
                             strSec = 0;
                             strMin = strMin + 1;
+                        }
+                        if(strMin==60){
+                            txtkickoffTime.setText(String.valueOf(strHours)+":"+String.valueOf(strMin) + ":" + String.valueOf(strSec));
+                            strMin=0;
+                            strHours=strHours+1;
+
+
                         }
                     }
                 });
             }
         }, 0, 1000);
     }
+
 
     private void openCancelDialog() {
         if (!isFinishing()) {
@@ -1656,15 +1750,18 @@ public class LiveListeningActivity extends BaseActivity {
                                             }
                                         }
                                     } catch (Exception e) {
+                                        t.cancel();
                                         e.printStackTrace();
                                     }
                                 }
 
                                 @Override
                                 public void onFailure(String message) {
+                                    t.cancel();
                                 }
                             });
                         } else {
+                            t.cancel();
                             SnackbarUtil.showWarningLongSnackbar(mContext, getResources().getString(R.string.internet_not_connected_text));
                         }
                     }
@@ -1782,6 +1879,9 @@ public class LiveListeningActivity extends BaseActivity {
                 public void onSuccess(Map map) {
                     if (map != null) {
                         stopMediaPlayer();
+                        if(t!=null){
+                            t.cancel();
+                        }
                         if (tm != null)
                             tm.cancel();
                         if (timer != null)
@@ -1853,7 +1953,7 @@ public class LiveListeningActivity extends BaseActivity {
         });
     }
 
-    public static void stopListenAppBackground() {
+    /*public static void stopListenAppBackground() {
         if (subscribe != null) {
             subscribe.stop();
             new LiveListeningActivity().unmountListner(listenerId);
@@ -1861,15 +1961,14 @@ public class LiveListeningActivity extends BaseActivity {
                 mContext.finish();
         }
     }
-
+*/
     @OnClick(R.id.rl_chat_tile)
     public void onClickChatListen() {
-        SnackbarUtil.showWarningShortSnackbar(mContext, getString(R.string.under_development_message));
-     /*   AppPreferences.init(mContext).putString(AppConstant.User_CURRENT_STATE, "3");
-        Intent intent = new Intent(this, ConversationActivity.class);
+//        SnackbarUtil.showWarningShortSnackbar(mContext, getString(R.string.under_development_message));
+        Intent intent = new Intent(mContext, ConversationActivity.class);
         intent.putExtra(ConversationUIService.GROUP_ID, Integer.parseInt(chatChannelId));
-        intent.putExtra(ConversationUIService.TAKE_ORDER, true);
-        startActivity(intent);*/
+        intent.putExtra(ConversationUIService.TAKE_ORDER,true);
+        startActivity(intent);
     }
 
     @Override

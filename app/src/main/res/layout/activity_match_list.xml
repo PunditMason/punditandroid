@@ -6,24 +6,37 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.softuvo.ipundit.activities.MatchListActivity">
+    <RelativeLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
     <ImageView
         android:id="@+id/ponditlogo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/app_logo_string"
         android:padding="@dimen/margin_large"
+        android:layout_centerHorizontal="true"
         android:src="@drawable/app_logo" />
-    <View
-        android:layout_below="@+id/ponditlogo"
-        android:id="@+id/viewHorizontalLine"
+    <ImageView
+        android:id="@+id/iv_user_profile_image"
         android:layout_width="wrap_content"
-        android:layout_height="1dp"
-        android:layout_marginLeft="@dimen/margin_small"
-        android:layout_marginRight="@dimen/margin_small"
-        android:background="#ffffff"/>
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:adjustViewBounds="true"
+        android:src="@drawable/listen_head"
+        android:contentDescription="@string/app_name"
+        android:paddingStart="@dimen/margin_small"
+        android:paddingEnd="@dimen/margin_small"
+        android:scaleType="fitXY"
+        android:visibility="gone"/>
+    </RelativeLayout>
+
 
     <RelativeLayout
-        android:layout_below="@+id/viewHorizontalLine"
+        android:layout_below="@+id/header"
         android:id="@+id/calender_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -110,7 +123,7 @@
                 android:text="@string/league_table_teams"
                 android:gravity="center"
                 android:textStyle="bold"
-                android:background="@color/colorMatchScreenBackground"
+                android:background="@color/colorRedLeagueTable"
                 android:textColor="@color/colorWhite"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_marginBottom="@dimen/margin_small_large"/>
@@ -132,12 +145,11 @@
             </com.softuvo.ipundit.views.CustomRelativeLayout>
         </RelativeLayout>
         <LinearLayout
-            android:layout_weight="0.16"
+            android:layout_weight="0.17"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@color/colorBlack"
-            android:orientation="horizontal"
-            android:layout_marginBottom="@dimen/margin_small">
+            android:orientation="horizontal">
             <com.softuvo.ipundit.views.CustomTextView
                 android:layout_width="@dimen/breaking_news_width"
                 android:layout_height="match_parent"

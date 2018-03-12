@@ -141,7 +141,7 @@ public class LiveBroadcastersListActivity extends AppCompatActivity {
 
     private void getLiveBroadcastersListData(String stringPath) {
         if (ConnectivityReceivers.isConnected()) {
-            Picasso.with(mContext).load(AppPreferences.init(mContext).getString(APP_BACKGROUND)).into(rlLiveBroadcasters);
+            rlLiveBroadcasters.setBackground(getResources().getDrawable(R.drawable.screen_image));
             App.getApiHelper().getLiveBroadcastersList(stringPath, new ApiCallBack<LiveBroacastersListModel>() {
 
                 @Override

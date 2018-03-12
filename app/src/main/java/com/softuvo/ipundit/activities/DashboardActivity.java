@@ -1,7 +1,7 @@
 package com.softuvo.ipundit.activities;
 
 /*
- * Created by Neha Kalia on 12/07/2017.
+ * created by Neha Kalia on 12/07/2017.
  */
 
 import android.animation.Animator;
@@ -35,6 +35,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
@@ -93,6 +94,7 @@ import butterknife.OnClick;
 import static com.softuvo.ipundit.config.AppConstant.APP_BACKGROUND;
 import static com.softuvo.ipundit.config.AppConstant.DEVICE_TOKENN;
 import static com.softuvo.ipundit.config.AppConstant.PUNDITS_PAGE_BACKGROUND;
+import static com.softuvo.ipundit.config.AppConstant.USER_ID;
 
 public class DashboardActivity extends BaseActivity {
     private Activity mContext;
@@ -124,8 +126,8 @@ public class DashboardActivity extends BaseActivity {
     @BindView(R.id.wv_listen)
     WebView wvListen;
 
-    @BindView(R.id.tv_breaking_news)
-    CustomTextView tvBreakingNews;
+   /* @BindView(R.id.tv_breaking_news)
+    CustomTextView tvBreakingNews;*/
 
     @BindView(R.id.tv_login_logout)
     CustomTextView tvLoginLogout;
@@ -139,17 +141,18 @@ public class DashboardActivity extends BaseActivity {
     @BindView(R.id.rl_listen_background)
     CustomRelativeLayout rlListenBackground;
 
-    @BindView(R.id.tv_listner_main_count)
-    CustomTextView tvListnerMainCount;
+   /* @BindView(R.id.tv_listner_main_count)
+    CustomTextView tvListnerMainCount;*/
 
     @BindView(R.id.tv_broadcasters_main_count)
     CustomTextView tvBroadcastersMainCount;
 
-    @BindView(R.id.crl_listner_main_count)
-    CustomRelativeLayout crlListnerMainCount;
+   /* @BindView(R.id.crl_listner_main_count)
+    CustomRelativeLayout crlListnerMainCount;*/
 
-    @BindView(R.id.crl_broadcasters_main_count)
-    CustomRelativeLayout crlBroadcastersMainCount;
+
+    @BindView(R.id.rl_broadcastercount)
+    RelativeLayout rl_Broadcastercount;
 
     @BindView(R.id.rl_background_signin)
     CustomRelativeLayout rlBackgroundSignin;
@@ -191,7 +194,7 @@ public class DashboardActivity extends BaseActivity {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd"); // getting date in this format
         String formattedDate = df.format(date.getTime());
         Log.e("cureent date:",formattedDate);
-        getNewsFromServer(formattedDate);
+//        getNewsFromServer(formattedDate);
         displayFirebaseRegId();
     }
 
@@ -225,7 +228,6 @@ public class DashboardActivity extends BaseActivity {
                     wvListen.loadDataWithBaseURL(null, listenTemplate, "text/html", "utf-8",null);
                     wvListen.getSettings();
                     wvListen.setBackgroundColor(Color.TRANSPARENT);
-
                     wvBroadcast.setOnTouchListener(new View.OnTouchListener() {
                         @Override
                         public boolean onTouch(View v, MotionEvent event) {
@@ -375,6 +377,8 @@ public class DashboardActivity extends BaseActivity {
             Map<String, String> loginMap = new HashMap<>();
             loginMap.put(ApiConstants.USER_EMAIL, edEmailSignIn.getText().toString());
             loginMap.put(ApiConstants.PASSWORD, edPasswordSignIn.getText().toString());
+            loginMap.put(ApiConstants.DEVICE_TOKEN,AppPreferences.init(mContext).getString(DEVICE_TOKENN));
+            loginMap.put(ApiConstants.DEVICE_TYPE,"ANDROID");
             loginNewUser(loginMap);
         }
     }
@@ -416,7 +420,7 @@ public class DashboardActivity extends BaseActivity {
                 @Override
                 public void onSuccess(LoginUserModel loginUserModel) {
                     if (loginUserModel != null) {
-                        if (loginUserModel.getResponsestatus().booleanValue()) {
+                        if (loginUserModel.getResponsestatus()) {
                             if (loginUserModel.getUser().get(0).getId() != null)
                                 AppPreferences.init(mContext).putString(AppConstant.USER_ID, loginUserModel.getUser().get(0).getId());
                             if (loginUserModel.getUser().get(0).getAvatar() != null)
@@ -445,7 +449,7 @@ public class DashboardActivity extends BaseActivity {
                             edPasswordSignIn.setText("");
                             hideKeyboard();
 
-                        } else if (!(loginUserModel.getResponsestatus().booleanValue())) {
+                        } else if (!(loginUserModel.getResponsestatus())) {
                             SnackbarUtil.showErrorShortSnackbar(mContext, loginUserModel.getMessage());
                         }
 
@@ -714,10 +718,23 @@ public class DashboardActivity extends BaseActivity {
                         }
                     });
         } else {
-            AppPreferences.init(mContext).putString(AppConstant.USER_ID, "");
-            LoginManager.getInstance().logOut();
-            tvLoginLogout.setText(R.string.fb_login_text);
-            SnackbarUtil.showSuccessLongSnackbar(mContext, getString(R.string.fb_logout_message));
+            Map<String, String> mountMap = new HashMap<>();
+            mountMap.put("user_id", AppPreferences.init(mContext).getString(USER_ID));
+            App.getApiHelper().logoutUSer(mountMap, new ApiCallBack<Map>() {
+                @Override
+                public void onSuccess(Map map) {
+                    AppPreferences.init(mContext).putString(AppConstant.USER_ID, "");
+                    LoginManager.getInstance().logOut();
+                    tvLoginLogout.setText(R.string.fb_login_text);
+                    SnackbarUtil.showSuccessLongSnackbar(mContext, getString(R.string.fb_logout_message));
+                }
+
+                @Override
+                public void onFailure(String message) {
+
+                }
+            });
+
         }
     }
 
@@ -902,8 +919,8 @@ public class DashboardActivity extends BaseActivity {
                                                 breakingNews.add(breakingNewsResponse.get(i).getTitle());
                                         }
                                         String SubTitle = (breakingNews.toString().replace("[", "").replace("]", "").trim()).replaceAll(",", ". ||   ");
-                                        tvBreakingNews.setText(SubTitle);
-                                        tvBreakingNews.setSelected(true);
+                                        /*tvBreakingNews.setText(SubTitle);
+                                        tvBreakingNews.setSelected(true);*/
                                     }
                                 }
 
@@ -1005,17 +1022,17 @@ public class DashboardActivity extends BaseActivity {
                                 @Override
                                 public void onSuccess(ListnerCountModel map) {
                                     if (map != null) {
-                                        if (map.getListnerCount() > 0) {
+                                      /*  if (map.getListnerCount() > 0) {
                                             crlListnerMainCount.setVisibility(View.VISIBLE);
                                             tvListnerMainCount.setText("" + map.getListnerCount());
                                         } else {
                                             crlListnerMainCount.setVisibility(View.GONE);
-                                        }
+                                        }*/
                                         if (map.getBroadcasterCount() > 0) {
-                                            crlBroadcastersMainCount.setVisibility(View.VISIBLE);
+                                            rl_Broadcastercount.setVisibility(View.VISIBLE);
                                             tvBroadcastersMainCount.setText("" + map.getBroadcasterCount());
                                         } else {
-                                            crlBroadcastersMainCount.setVisibility(View.GONE);
+                                            rl_Broadcastercount.setVisibility(View.GONE);
                                         }
                                     }
                                 }
@@ -1036,7 +1053,6 @@ public class DashboardActivity extends BaseActivity {
 
     @Override
     protected void onPause() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
         super.onPause();
     }
 
@@ -1044,17 +1060,6 @@ public class DashboardActivity extends BaseActivity {
     public void onResume() {
         super.onResume();
         getListnerCountData();
-        // register GCM registration complete receiver
-        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(NotificationConstants.REGISTRATION_COMPLETE));
-
-        // register new push message receiver
-        // by doing this, the activity will be notified each time a new message arrives
-        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(NotificationConstants.PUSH_NOTIFICATION));
-
-        // clear the notification area when the app is opened
-        NotificationUtils.clearNotifications(getApplicationContext());
     }
 
 

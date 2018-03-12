@@ -208,13 +208,13 @@ public class ChannelInfoActivity extends AppCompatActivity {
         channelImageLoader.addImageCache(this.getSupportFragmentManager(), 0.1f);
         channelImageLoader.setImageFadeIn(false);
 
-        if (channelImage != null && !channel.isBroadcastMessage()) {
+        if (channel!=null &&channelImage != null && !channel.isBroadcastMessage()) {
             channelImageLoader.loadImage(channel, channelImage);
         } else {
             channelImage.setImageResource(R.drawable.applozic_ic_applozic_broadcast);
         }
-
-        channelUserMapperList = ChannelService.getInstance(this).getListOfUsersFromChannelUserMapper(channel.getKey());
+        if(channel.getKey()!=null)
+            channelUserMapperList = ChannelService.getInstance(this).getListOfUsersFromChannelUserMapper(channel.getKey());
 
         contactsAdapter = new ContactsAdapter(this);
         mainListView.setAdapter(contactsAdapter);

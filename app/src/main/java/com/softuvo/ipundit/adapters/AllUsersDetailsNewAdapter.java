@@ -47,6 +47,12 @@ public class AllUsersDetailsNewAdapter extends RecyclerView.Adapter<RecyclerView
         UserDetailsViewHolder viewholder = (UserDetailsViewHolder) holder;
         if(userItemList.get(position).getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("match")) {
             viewholder.cvContainerMatch.setVisibility(View.VISIBLE);
+            if(userItemList.get(position).getChannelInfo().get(0).getMatchInfo().getMatchStatus().contains("First Half")||userItemList.get(position).getChannelInfo().get(0).getMatchInfo().getMatchStatus().contains("Second Half")){
+                viewholder.cvContainerMatch.setCardBackgroundColor(context.getResources().getColor(R.color.colorBroadcastersListBackground));
+            }
+            else{
+                viewholder.cvContainerMatch.setCardBackgroundColor(context.getResources().getColor(R.color.colorWhite));
+            }
             viewholder.cvContainerTeam.setVisibility(View.GONE);
             viewholder.tvPunditsNameMatch.setText(userItemList.get(position).getFirstName());
             viewholder.tvTeam1Name.setText(userItemList.get(position).getChannelInfo().get(0).getMatchInfo().getTeam1Name());

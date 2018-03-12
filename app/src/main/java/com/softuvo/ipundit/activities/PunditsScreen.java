@@ -22,9 +22,7 @@ import com.softuvo.ipundit.config.AppPreferences;
 import com.softuvo.ipundit.models.UserDetailsAndMatchDetailsModel;
 import com.softuvo.ipundit.receivers.ConnectivityReceivers;
 import com.softuvo.ipundit.utils.SnackbarUtil;
-
 import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 

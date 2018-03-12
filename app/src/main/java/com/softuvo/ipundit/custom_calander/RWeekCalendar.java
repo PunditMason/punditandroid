@@ -65,7 +65,7 @@ public class RWeekCalendar extends Fragment {
     //initial values of calender property
 
     String selectorDateIndicatorValue = "bg_red";
-    int currentDateIndicatorValue = Color.BLACK;
+    int currentDateIndicatorValue = Color.RED;
     int primaryTextColor = Color.WHITE;
 
     public static String PAKAGENAMEVALUE = "com.ramzcalender";
@@ -95,17 +95,17 @@ public class RWeekCalendar extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.calenderview, container, false);
 
-        pager = (ViewPager) view.findViewById(R.id.vp_pages);
-        monthView = (TextView) view.findViewById(R.id.monthTv);
-        nowView = (TextView) view.findViewById(R.id.nowTv);
-        sundayTv = (TextView) view.findViewById(R.id.week_sunday);
-        mondayTv = (TextView) view.findViewById(R.id.week_monday);
-        tuesdayTv = (TextView) view.findViewById(R.id.week_tuesday);
-        wednesdayTv = (TextView) view.findViewById(R.id.week_wednesday);
-        thursdayTv = (TextView) view.findViewById(R.id.week_thursday);
-        fridayTv = (TextView) view.findViewById(R.id.week_friday);
-        saturdayTv = (TextView) view.findViewById(R.id.week_saturday);
-        mBackground = (LinearLayout) view.findViewById(R.id.background);
+        pager =  view.findViewById(R.id.vp_pages);
+        monthView = view.findViewById(R.id.monthTv);
+        nowView =  view.findViewById(R.id.nowTv);
+        sundayTv = view.findViewById(R.id.week_sunday);
+        mondayTv = view.findViewById(R.id.week_monday);
+        tuesdayTv =  view.findViewById(R.id.week_tuesday);
+        wednesdayTv =  view.findViewById(R.id.week_wednesday);
+        thursdayTv =  view.findViewById(R.id.week_thursday);
+        fridayTv =  view.findViewById(R.id.week_friday);
+        saturdayTv =  view.findViewById(R.id.week_saturday);
+        mBackground =  view.findViewById(R.id.background);
 
         return view;
     }
@@ -124,6 +124,7 @@ public class RWeekCalendar extends Fragment {
         if (getArguments().containsKey(CALENDER_BACKGROUND)) {
 
             mBackground.setBackgroundColor(getArguments().getInt(CALENDER_BACKGROUND));
+
 
         }
 
@@ -268,7 +269,7 @@ public class RWeekCalendar extends Fragment {
         mStartDate = mCal.getStartDate();//sets start date from CalUtil
 
         //Setting the month name and selected date listener
-        monthView.setText(selectedDate.monthOfYear().getAsShortText().toUpperCase() + " " + selectedDate.year().getAsShortText().toUpperCase());
+        monthView.setText(selectedDate.monthOfYear().getAsShortText() + " " + selectedDate.year().getAsShortText());
 //        Log.e("hello0000",selectedDate.monthOfYear().getAsShortText() + " " + selectedDate.year().getAsShortText().toUpperCase());
 
         if (calenderListener != null)
@@ -291,7 +292,7 @@ public class RWeekCalendar extends Fragment {
             public void onPageSelected(int weekNumber) {
                 int addDays = weekNumber * 7;
                 selectedDate = mStartDate.plusDays(addDays); //add 7 days to the selected date
-                monthView.setText(selectedDate.monthOfYear().getAsShortText().toUpperCase() + " " + selectedDate.year().getAsShortText().toUpperCase());
+                monthView.setText(selectedDate.monthOfYear().getAsShortText() + " " + selectedDate.year().getAsShortText());
                 Log.e("hello111", selectedDate.monthOfYear().getAsShortText() + " " + selectedDate.year().getAsShortText().toUpperCase());
 
                 if (weekNumber == CURRENT_WEEK_POSITION) {

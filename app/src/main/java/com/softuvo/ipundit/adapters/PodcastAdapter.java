@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.softuvo.ipundit.R;
@@ -41,7 +42,7 @@ public class PodcastAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         PodcastViewHolder viewholder = (PodcastViewHolder) holder;
         if(podacstList.get(position).getChannel().size()>0)
-        viewholder.tvPodcastNameDetails.setText(podacstList.get(position).getChannel().get(0).getName());
+        viewholder.tvPodcastNameDetails.setText(podacstList.get(position).getChannel().get(0).getName().trim());
     }
 
     @Override
@@ -54,7 +55,7 @@ public class PodcastAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     }
     private class PodcastViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        CardView cvPodcastDetailsContainer;
+        RelativeLayout cvPodcastDetailsContainer;
         TextView tvPodcastNameDetails;
 
         private PodcastViewHolder(View view) {

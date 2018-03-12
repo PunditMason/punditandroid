@@ -2,12 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.softuvo.ipundit">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -43,8 +41,9 @@
 
         <meta-data
             android:name="com.applozic.application.key"
-            android:value="yopmail16bdf300d3e8d97588b435dfb25ddea2a" />
-        <!-- android:value="348ee5f2dc9df272707eb1a3f0b6ad07c"/> -->
+            android:value="punditsports348ee5f2dc9df272707eb1a3f0b6ad07c" />
+           <!-- android:value="softuvo26632f185aa66535997473c" />-->
+        <!-- android:value="punditsports348ee5f2dc9df272707eb1a3f0b6ad07c" /> -->
 
         <meta-data
             android:name="main_folder_name"
@@ -233,9 +232,11 @@
 
         <activity
             android:name=".activities.DashboardActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:resizeableActivity="true"
+            android:windowSoftInputMode="adjustPan"
+            />
 
-        </activity>
         <receiver
             android:name=".receivers.ConnectivityReceivers"
             android:enabled="true">
@@ -247,19 +248,18 @@
         <activity android:name=".activities.BaseActivity" />
         <activity
             android:name=".activities.UserProfileActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"
             android:resizeableActivity="true"
-             />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="3bf1a053d2b15052e85e359852ba365ff7fa7844"/>
-            <!--android:value="3bf1a053d2b15052e85e359852ba365ff7fa7844" />-->
-        <!--android:value="24a857ef84a5819bbf384f2c2c97505da3d36511"/>-->
+            android:value="24a857ef84a5819bbf384f2c2c97505da3d36511"/>
+        <!-- android:value="3bf1a053d2b15052e85e359852ba365ff7fa7844" /> -->
+        <!-- android:value="24a857ef84a5819bbf384f2c2c97505da3d36511"/> -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/notifiction_icon" />
@@ -274,8 +274,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.BroadcastListenerMainActivity"
-            android:screenOrientation="portrait"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activities.PunditsScreen"
@@ -304,41 +304,47 @@
         <activity
             android:name=".activities.LiveBroadcastersListActivity"
             android:screenOrientation="portrait" />
-
-        <activity android:name=".activities.PunditsProfileActivity"
-            android:screenOrientation="portrait">
+        <activity
+            android:name=".activities.PunditsProfileActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="http" android:host="play.pundit.world" android:pathPrefix="/broadcast"
-                    android:pathPattern="/.*"/>
-                <data android:scheme="app" android:host="com.softuvo.ipundit" />
+
+                <data
+                    android:host="play.pundit.world"
+                    android:pathPattern="/.*"
+                    android:pathPrefix="/broadcast"
+                    android:scheme="http" />
+                <data
+                    android:host="com.softuvo.ipundit"
+                    android:scheme="app" />
             </intent-filter>
-          <!--  <intent-filter>
+            <intent-filter>
                 <action android:name="OPEN_PROFILE_ACTIVITY" />
+
                 <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>-->
-
+            </intent-filter>
         </activity>
-
-        <activity android:name=".activities.PodcastActivity"
-            android:screenOrientation="portrait"/>
-
-        <activity android:name=".activities.PodcastDetailsActivity"
-            android:screenOrientation="portrait"/>
-
-        <activity android:name=".activities.FollowersListActivity"
-            android:screenOrientation="portrait"/>
-
-        <activity android:name=".activities.FollowingListActivity"
-            android:screenOrientation="portrait"/>
-
-        <activity android:name=".activities.LiveRightNowActivity"
-            android:screenOrientation="portrait"/>
-
-        <activity android:name=".activities.DummyActivity"/>
-
+        <activity
+            android:name=".activities.PodcastActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.PodcastDetailsActivity"
+            android:hardwareAccelerated="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.FollowersListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.FollowingListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.LiveRightNowActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".activities.DummyActivity" />
     </application>
 
 </manifest>

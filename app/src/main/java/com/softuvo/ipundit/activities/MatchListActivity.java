@@ -29,6 +29,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.datetimepicker.date.DatePickerDialog;
@@ -38,7 +39,6 @@ import com.applozic.mobicomkit.uiwidgets.async.ApplozicChannelAddMemberTask;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.softuvo.ipundit.R;
 import com.softuvo.ipundit.adapters.MatchListListnerAdapter;
-import com.softuvo.ipundit.config.ApiConstants;
 import com.softuvo.ipundit.adapters.MatchListBroadcastAdapter;
 import com.softuvo.ipundit.api.ApiCallBack;
 import com.softuvo.ipundit.config.App;
@@ -56,9 +56,7 @@ import com.softuvo.ipundit.utils.SnackbarUtil;
 import com.softuvo.ipundit.views.CustomRelativeLayout;
 import com.softuvo.ipundit.views.CustomTextView;
 import com.squareup.picasso.Picasso;
-
 import org.joda.time.LocalDateTime;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -69,12 +67,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.softuvo.ipundit.config.AppConstant.APP_BACKGROUND;
 import static com.softuvo.ipundit.config.AppConstant.FB_ID;
 
 public class MatchListActivity extends BaseActivity implements DatePickerDialog.OnDateSetListener {
@@ -117,6 +113,17 @@ public class MatchListActivity extends BaseActivity implements DatePickerDialog.
 
     @BindView(R.id.tv_leauge_name)
     TextView tvLeaugeName;
+
+    @BindView(R.id.recyclerview_layout)
+    RelativeLayout recyclerviewLayout;
+
+    @BindView(R.id.calender_container)
+    RelativeLayout calenderContainer;
+
+
+
+    @BindView(R.id.iv_user_profile_image)
+    ImageView ivUserProfileImage;
 
     @BindView(R.id.crl_team_broadcasters_count)
     CustomRelativeLayout crlTeamBroadcastersCount;
@@ -426,8 +433,20 @@ public class MatchListActivity extends BaseActivity implements DatePickerDialog.
 
     private void setData() {
         if (ConnectivityReceivers.isConnected()) {
-            if (AppPreferences.init(mContext).getString(APP_BACKGROUND) != null)
-                Picasso.with(mContext).load(AppPreferences.init(mContext).getString(APP_BACKGROUND)).into(rlMatcListingMain);
+            if (AppPreferences.init(mContext).getString(AppConstant.USER_SELECTION).equalsIgnoreCase(AppConstant.SELECTED_BROADCAST)){
+                rlMatcListingMain.setBackground(getResources().getDrawable(R.drawable.screen_image));
+                ivUserProfileImage.setVisibility(View.GONE);
+//                calenderContainer.setBackgroundColor(getResources().getColor(R.color.colorMatchScreenBackground));
+//                recyclerviewLayout.setBackgroundColor(getResources().getColor(R.color.colorMatchScreenBackground));
+            }
+            else if (AppPreferences.init(mContext).getString(AppConstant.USER_SELECTION).equalsIgnoreCase(AppConstant.SELECTED_LISTNER)) {
+                rlMatcListingMain.setBackground(getResources().getDrawable(R.drawable.screen_image));
+                ivUserProfileImage.setVisibility(View.GONE);
+//                calenderContainer.setBackgroundColor(getResources().getColor(R.color.colorMatchScreenListenBackground));
+//                recyclerviewLayout.setBackgroundColor(getResources().getColor(R.color.colorMatchScreenListenBackground));
+            }
+           /* if (AppPreferences.init(mContext).getString(APP_BACKGROUND) != null)
+                Picasso.with(mContext).load(AppPreferences.init(mContext).getString(APP_BACKGROUND)).into(rlMatcListingMain);*/
             if (getIntent().getSerializableExtra("subCatDetail") != null)
                 subCatDetail = (SportsNameModel.Sports.League) getIntent().getSerializableExtra("subCatDetail");
             if (subCatDetail.getMarkImage() != null&&(!subCatDetail.getMarkImage().equalsIgnoreCase("")))

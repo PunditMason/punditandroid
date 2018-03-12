@@ -51,6 +51,7 @@ public class PodcastActivity extends BaseActivity {
                             public void onClick(int position) {
                                 Intent intent=new Intent(mContext,PodcastDetailsActivity.class);
                                 intent.putExtra("mPodcastChannelDetails",podcastDetailsModel.getMatch().get(position));
+                                intent.putExtra("baseImageUrl",podcastDetailsModel.getMatch().get(position).getLeagueIcon());
                                 startActivity(intent);
                             }
                         });

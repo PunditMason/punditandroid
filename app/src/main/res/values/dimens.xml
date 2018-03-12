@@ -35,6 +35,7 @@
 
     <dimen name="text_size_14sp">14sp</dimen>
     <dimen name="text_size_medium">16sp</dimen>
+    <dimen name="text_size_small_medium">18sp</dimen>
     <dimen name="text_size_large">20sp</dimen>
     <dimen name="text_size_xlarge">25sp</dimen>
     <dimen name="text_sizex_large">40sp</dimen>
@@ -48,7 +49,8 @@
 
 
 
-
+    <dimen name="exo_media_button_width">71dp</dimen>
+    <dimen name="exo_media_button_height">52dp</dimen>
 
 
     <!--

@@ -7,7 +7,7 @@
     android:orientation="horizontal"
     android:layout_marginRight="20dp"
     android:layout_marginLeft="20dp"
-    android:background="@color/colorMatchScreenBackground"
+    android:background="@color/colorMatchScreenListenBackground"
     android:paddingStart="@dimen/pading_3dp"
     android:paddingEnd="@dimen/pading_3dp">
 
@@ -18,7 +18,7 @@
         android:text="@string/team"
         android:textSize="@dimen/text_size_small"
         android:gravity="center"
-        android:background="@color/colorMatchScreenHeadingBackground"
+        android:background="@color/colorMatchScreenHeadingListenBackground"
         android:textColor="@color/colorWhite"/>
     <TextView
         android:layout_width="wrap_content"
@@ -26,7 +26,7 @@
         android:layout_weight="1"
         android:textSize="@dimen/text_size_small"
         android:gravity="center"
-        android:background="@color/colorMatchScreenHeadingBackground"
+        android:background="@color/colorMatchScreenHeadingListenBackground"
         android:textColor="@color/colorWhite"/>
     <TextView
         android:layout_width="wrap_content"
@@ -35,7 +35,7 @@
         android:text="@string/score"
         android:textSize="@dimen/text_size_small"
         android:gravity="center"
-        android:background="@color/colorMatchScreenHeadingBackground"
+        android:background="@color/colorMatchScreenHeadingListenBackground"
         android:textColor="@color/colorWhite"/>
     <TextView
         android:layout_width="wrap_content"
@@ -44,7 +44,7 @@
         android:text="@string/time"
         android:textSize="@dimen/text_size_small"
         android:gravity="center"
-        android:background="@color/colorMatchScreenHeadingBackground"
+        android:background="@color/colorMatchScreenHeadingListenBackground"
         android:textColor="@color/colorWhite"
        />
 

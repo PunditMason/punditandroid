@@ -97,6 +97,9 @@ public class StandingListeningModel implements Serializable {
         @SerializedName("twitter_id")
         @Expose
         private String twitter_id;
+        @SerializedName("chatChannelid")
+        @Expose
+        private String chatChannelid;
         @SerializedName("channel")
         @Expose
         private List<Channel> channel = null;
@@ -147,6 +150,14 @@ public class StandingListeningModel implements Serializable {
 
         public void setRankStatus(String rankStatus) {
             this.rankStatus = rankStatus;
+        }
+
+        public String getChatChannelid() {
+            return chatChannelid;
+        }
+
+        public void setChatChannelid(String chatChannelid) {
+            this.chatChannelid = chatChannelid;
         }
 
         public String getLastRank() {

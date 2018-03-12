@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/rl_privacy_policy_main_background"
-    android:background="@drawable/default_background">
+    android:background="@color/broadcastingBackGround">
     <TextView
         android:id="@+id/tv_privacypolicy_heading"
         android:padding="12dp"
@@ -14,7 +14,7 @@
         android:gravity="center|top"
         android:textStyle="bold"
         android:textSize="@dimen/text_size_xlarge"
-        android:background="@color/colorPrivacyPolicyBackground" />
+        android:background="@color/colorTransparentRedBlack" />
     <ScrollView
         android:layout_below="@+id/tv_privacypolicy_heading"
         android:layout_width="match_parent"

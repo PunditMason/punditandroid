@@ -100,6 +100,10 @@ public class PodcastDetailsModel implements Serializable{
         @SerializedName("season_id")
         @Expose
         private String seasonId;
+        @SerializedName("league_icon")
+        @Expose
+        private String leagueIcon;
+
         @SerializedName("match_week")
         @Expose
         private String matchWeek;
@@ -171,6 +175,14 @@ public class PodcastDetailsModel implements Serializable{
 
         public String getSportId() {
             return sportId;
+        }
+
+        public String getLeagueIcon() {
+            return leagueIcon;
+        }
+
+        public void setLeagueIcon(String leagueIcon) {
+            this.leagueIcon = leagueIcon;
         }
 
         public void setSportId(String sportId) {
@@ -464,12 +476,21 @@ public class PodcastDetailsModel implements Serializable{
             @SerializedName("streamName")
             @Expose
             private String streamName;
+            @SerializedName("mCheckBool")
+            @Expose
+            private boolean mCheckBool=false;
             @SerializedName("channel_type")
             @Expose
             private String channelType;
             @SerializedName("time_stamp")
             @Expose
             private String timeStamp;
+            @SerializedName("podcast_name")
+            @Expose
+            private String podcastName;
+            @SerializedName("length")
+            @Expose
+            private String length;
             @SerializedName("start_time")
             @Expose
             private String startTime;
@@ -522,6 +543,21 @@ public class PodcastDetailsModel implements Serializable{
             public void setBroadcasterId(String broadcasterId) {
                 this.broadcasterId = broadcasterId;
             }
+            public String getPodcastName() {
+                return podcastName;
+            }
+
+            public void setPodcastName(String podcastName) {
+                this.podcastName = podcastName;
+            }
+
+            public String getLength() {
+                return length;
+            }
+
+            public void setLength(String length) {
+                this.length = length;
+            }
 
             public String getBroadcasterName() {
                 return broadcasterName;
@@ -529,6 +565,14 @@ public class PodcastDetailsModel implements Serializable{
 
             public void setBroadcasterName(String broadcasterName) {
                 this.broadcasterName = broadcasterName;
+            }
+
+            public boolean getmCheckBool() {
+                return mCheckBool;
+            }
+
+            public void setmCheckBool(boolean mCheckBool) {
+                this.mCheckBool = mCheckBool;
             }
 
             public String getStation() {

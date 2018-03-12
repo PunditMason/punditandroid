@@ -2701,8 +2701,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     public void updateChannelTitleAndSubTitle() {
         if (channel != null) {
             Channel channelInfo = ChannelService.getInstance(getActivity()).getChannelInfo(channel.getKey());
-
-            if (channelInfo.isDeleted()) {
+            if (channelInfo!=null && channelInfo.isDeleted()) {
                 channel.setDeletedAtTime(channelInfo.getDeletedAtTime());
                 individualMessageSendLayout.setVisibility(View.GONE);
                 userNotAbleToChatLayout.setVisibility(VISIBLE);
