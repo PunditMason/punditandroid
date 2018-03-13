@@ -78,11 +78,11 @@ public class PodcastDetailsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         if (podacstList.get(position).getPodcastName() != null)
             viewholder.edSubtitle.setText(podacstList.get(position).getPodcastName());
 
-        if (podacstList.get(viewholder.getLayoutPosition()).getmCheckBool()) {
+       /* if (podacstList.get(viewholder.getLayoutPosition()).getmCheckBool()) {
             viewholder.ivPlayPause.setImageDrawable(context.getResources().getDrawable(R.drawable.stop_podcast));
         } else {
             viewholder.ivPlayPause.setImageDrawable(context.getResources().getDrawable(R.drawable.play_podcast));
-        }
+        }*/
 
         if (AppPreferences.init(context).getString(AppConstant.USER_ID).equalsIgnoreCase(podacstList.get(viewholder.getAdapterPosition()).getBroadcasterId())) {
             viewholder.edSubtitle.setClickable(true);
@@ -182,12 +182,12 @@ public class PodcastDetailsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         @Override
         public void onClick(View v) {
             itemClickListener.onClick(getLayoutPosition());
-            if (podacstList.get(getLayoutPosition()).getmCheckBool()) {
+            /*if (podacstList.get(getLayoutPosition()).getmCheckBool()) {
                 ivPlayPause.setImageDrawable(context.getResources().getDrawable(R.drawable.stop_podcast));
             } else {
                 ivPlayPause.setImageDrawable(context.getResources().getDrawable(R.drawable.play_podcast));
             }
-
+*/
         }
     }
 }

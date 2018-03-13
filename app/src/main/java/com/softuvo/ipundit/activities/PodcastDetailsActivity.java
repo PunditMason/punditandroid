@@ -5,6 +5,8 @@ package com.softuvo.ipundit.activities;
  */
 
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -69,7 +71,7 @@ public class PodcastDetailsActivity extends BaseActivity implements RecyclerItem
         podcastDetailsAdapter = new PodcastDetailsAdapter(mContext, podacstchannelList, imgaeurl,new PodcastDetailsAdapter.ItemClickListener() {
             @Override
             public void onClick(final int position) {
-                if (!(podacstchannelList.get(position).getLength().equalsIgnoreCase("00:00:00")||!(podacstchannelList.get(position).getLength()==null))||!(podacstchannelList.get(position).getLength().equalsIgnoreCase(""))) {
+             /*   if (!(podacstchannelList.get(position).getLength().equalsIgnoreCase("00:00:00")||!(podacstchannelList.get(position).getLength()==null))||!(podacstchannelList.get(position).getLength().equalsIgnoreCase(""))) {
                     if (!podacstchannelList.get(position).getmCheckBool()) {
                         if (oldPosition != -1) {
                             podcastDetailsAdapter.notifyItemChanged(oldPosition);
@@ -110,7 +112,11 @@ public class PodcastDetailsActivity extends BaseActivity implements RecyclerItem
                 }
                 else{
                     SnackbarUtil.showWarningShortSnackbar(mContext,"Audio not get uploaded! Please wait for sometime");
-                }
+                }*/
+
+                Uri uri = Uri.parse("https://s3.amazonaws.com/red5proautoplay/live/streams/" +  podacstchannelList.get(position).getStreamName() + ".mp4");
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
             }
 
         });
@@ -167,7 +173,7 @@ public class PodcastDetailsActivity extends BaseActivity implements RecyclerItem
                         try {
                             if (podacstchannelList.size() > viewHolder.getAdapterPosition()) {
                                 podcastDetailsAdapter.removeItem(viewHolder.getAdapterPosition());
-                                stopMediaPlayer();
+                               // stopMediaPlayer();
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -193,14 +199,14 @@ public class PodcastDetailsActivity extends BaseActivity implements RecyclerItem
 
     @Override
     public void onBackPressed() {
-        stopMediaPlayer();
+       // stopMediaPlayer();
         super.onBackPressed();
 
     }
 
     @Override
     protected void onDestroy() {
-        stopMediaPlayer();
+       // stopMediaPlayer();
         super.onDestroy();
     }
 }

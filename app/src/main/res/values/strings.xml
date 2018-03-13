@@ -138,7 +138,6 @@
 
 
     <string name="default_media_location_folder">Applozic</string>
-    <!--   <string name="applozic_id">yopmail16bdf300d3e8d97588b435dfb25ddea2a</string>-->
    <!-- <string name="applozic_id">softuvo26632f185aa66535997473c</string>-->
 
     <string name="applozic_id">punditsports348ee5f2dc9df272707eb1a3f0b6ad07c</string>
@@ -172,5 +171,6 @@
     <string name="exo_controls_repeat_one_description">Repeat one</string>
     <string name="exo_controls_repeat_all_description">Repeat all</string>
     <string name="exo_controls_shuffle_description">Shuffle</string>
+    <string name="manage_leagues">Manage\nLeagues</string>
 
 </resources>

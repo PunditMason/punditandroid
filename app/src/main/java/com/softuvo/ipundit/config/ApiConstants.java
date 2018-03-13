@@ -6,8 +6,8 @@ package com.softuvo.ipundit.config;
 
 public class ApiConstants {
 
-
-   /* Staging Base URL
+/*
+//    Staging Base URL
     public static final String APP_BASE_URL = "http://52.19.91.90/pundit-ios/v1/";
     public static final String STAGING_APP_BASE_URL = "http://52.19.91.90/pundit-ios/v2/";
     public static final String IMAGE_BASE_URL = "http://52.19.91.90/pundit-ios/assets/img/icons/";
@@ -75,7 +75,6 @@ public class ApiConstants {
     public static final String USER_BIO = "userbio";
     public static final String USER_FACEBOOK_LINK = "facebook";
     public static final String USER_TWITTER_LINK = "twitter";
-    public static final String USER_TAGS = "tags";
     public static final String USER_YOU_TUBE_LINK = "youtube";
     public static final String USER_UPDATED_PROFILE_PIC = "avatar";
     public static final String USER_COUNTRY_ID = "countryid";

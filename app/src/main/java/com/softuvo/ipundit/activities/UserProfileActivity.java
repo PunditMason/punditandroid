@@ -27,16 +27,19 @@ import android.support.v7.app.AlertDialog;
 import android.util.Base64;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.google.gson.internal.LinkedTreeMap;
 import com.softuvo.ipundit.R;
+import com.softuvo.ipundit.adapters.ExpandableListAdapter;
 import com.softuvo.ipundit.api.ApiCallBack;
 import com.softuvo.ipundit.config.ApiConstants;
 import com.softuvo.ipundit.config.App;
 import com.softuvo.ipundit.config.AppConstant;
 import com.softuvo.ipundit.config.AppPreferences;
+import com.softuvo.ipundit.models.SportsNameModel;
 import com.softuvo.ipundit.models.UserProfileResponseModel;
 import com.softuvo.ipundit.receivers.ConnectivityReceivers;
 import com.softuvo.ipundit.utils.CommanUtil;
@@ -54,7 +57,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -66,6 +71,8 @@ public class UserProfileActivity extends BaseActivity {
     String userId, userChoosenTask, base64Img, userEmail;
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
     private Bitmap bm;
+    private List<SportsNameModel.Sports> sportsItemList;
+    ExpandableListAdapter expandableListAdapter;
 
     @BindView(R.id.ll_user_profile_background)
     CustomLinearLayout llUserPprofileBackground;
@@ -108,6 +115,9 @@ public class UserProfileActivity extends BaseActivity {
 
     @BindView(R.id.progress_bar_user_profile)
     ProgressBar progressBarUserProfile;
+
+    @BindView(R.id.lv_list)
+    ExpandableListView lvList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -521,5 +531,34 @@ public class UserProfileActivity extends BaseActivity {
         });
 
     }
+
+    @OnClick(R.id.tv_manage_leagues)
+    public void onClickManageLeagues(){
+        lvList.setVisibility(View.VISIBLE);
+        getSportsAndLeagueData();
+    }
+
+    private void getSportsAndLeagueData() {
+        if (ConnectivityReceivers.isConnected()) {
+            App.getApiHelper().getSportsAndLeauges(new ApiCallBack<SportsNameModel>() {
+                @Override
+                public void onSuccess(SportsNameModel sportsNameModel) {
+                    if (sportsNameModel.getData() != null)
+                    sportsItemList = new ArrayList<>();
+                    sportsItemList = sportsNameModel.getData();
+                    expandableListAdapter=new ExpandableListAdapter(mContext,sportsItemList,lvList);
+                    lvList.setAdapter(expandableListAdapter);
+                }
+
+                @Override
+                public void onFailure(String message) {
+
+                }
+            });
+        } else {
+            SnackbarUtil.showWarningLongSnackbar(mContext, getResources().getString(R.string.internet_not_connected_text));
+        }
+    }
+
 
 }
