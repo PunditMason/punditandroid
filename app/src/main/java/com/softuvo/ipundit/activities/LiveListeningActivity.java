@@ -1555,7 +1555,6 @@ public class LiveListeningActivity extends BaseActivity {
         subscribe = new R5Stream(connection);
         subscribe.play(media);
         getListnerCountData(channelId);
-
         String path = broadcasterId + "/" + channelId;
         getAddsList(path);
     }

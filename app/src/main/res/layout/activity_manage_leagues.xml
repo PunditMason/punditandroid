@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.softuvo.ipundit.activities.ManageLeaguesActivity">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/manage_league"
+        android:gravity="center"
+        android:textColor="@color/colorWhite"
+        android:background="@color/colorRedLeagueTable"
+        android:padding="@dimen/margin_small_large"/>
+    <ExpandableListView
+        android:layout_marginTop="@dimen/margin_small"
+        android:id="@+id/lv_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"/>
+</LinearLayout>

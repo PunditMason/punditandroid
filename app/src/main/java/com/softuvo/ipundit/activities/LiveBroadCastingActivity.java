@@ -699,9 +699,12 @@ public class LiveBroadCastingActivity extends BaseActivity {
         configuration.setBundleID(mContext.getPackageName());
         stream = new R5Stream(new R5Connection(configuration));
         R5Microphone r5Microphone = new R5Microphone();
+//        r5Microphone.setBitRate(AppConstant.RED5PRO_BIT_RATE);
+        stream.audioController.sampleRate =  44100;
         stream.attachMic(r5Microphone);
-        r5Microphone.setBitRate(AppConstant.RED5PRO_BIT_RATE);
+
     }
+
 
     protected void publish() {
         Map<String, String> mountMap = new HashMap<>();

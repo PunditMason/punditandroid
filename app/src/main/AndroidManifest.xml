@@ -16,6 +16,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.CAPTURE_AUDIO_OUTPUT" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
@@ -42,7 +43,7 @@
         <meta-data
             android:name="com.applozic.application.key"
             android:value="punditsports348ee5f2dc9df272707eb1a3f0b6ad07c" />
-           <!-- android:value="softuvo26632f185aa66535997473c" />-->
+        <!-- android:value="softuvo26632f185aa66535997473c" /> -->
         <!-- android:value="punditsports348ee5f2dc9df272707eb1a3f0b6ad07c" /> -->
 
         <meta-data
@@ -232,10 +233,9 @@
 
         <activity
             android:name=".activities.DashboardActivity"
-            android:screenOrientation="portrait"
             android:resizeableActivity="true"
-            android:windowSoftInputMode="adjustPan"
-            />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
 
         <receiver
             android:name=".receivers.ConnectivityReceivers"
@@ -257,7 +257,7 @@
             android:value="@string/facebook_app_id" />
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="24a857ef84a5819bbf384f2c2c97505da3d36511"/>
+            android:value="24a857ef84a5819bbf384f2c2c97505da3d36511" />
         <!-- android:value="3bf1a053d2b15052e85e359852ba365ff7fa7844" /> -->
         <!-- android:value="24a857ef84a5819bbf384f2c2c97505da3d36511"/> -->
         <meta-data
@@ -306,10 +306,11 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.PunditsProfileActivity"
-            android:screenOrientation="portrait"
-            android:launchMode="singleInstance">
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
@@ -345,6 +346,7 @@
             android:name=".activities.LiveRightNowActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".activities.DummyActivity" />
+        <activity android:name=".activities.ManageLeaguesActivity"></activity>
     </application>
 
 </manifest>

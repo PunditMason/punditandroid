@@ -71,7 +71,7 @@ public class MatchListListnerAdapter extends RecyclerView.Adapter<RecyclerView.V
             }
         }
         else {
-            holder1.cardViewMatches.setBackgroundResource(R.color.colorBroadcastersListBackground);
+            holder1.cardViewMatches.setCardBackgroundColor(context.getResources().getColor(R.color.colorBroadcastersListBackground));
             if (gameItemList.get(position).getTeam1Name() != null)
                 holder1.team1Name.setText(gameItemList.get(position).getTeam1Name());
             else
