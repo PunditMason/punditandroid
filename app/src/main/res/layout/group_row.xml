@@ -1,18 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="35dp">
+    android:layout_height="wrap_content">
 
-    <TextView android:id="@+id/tv_sports_name"
-         android:layout_width="match_parent"
-         android:layout_height="match_parent"
+    <TextView
+        android:id="@+id/tv_sports_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorBroadcastersListBackground"
         android:gravity="center_vertical"
+        android:padding="@dimen/margin_small_large"
         android:textColor="@color/colorWhite"
-        android:textSize="@dimen/text_size_small_medium"
-        android:paddingStart="@dimen/margin_large"
-        android:paddingEnd="@dimen/margin_xlarge"
-        android:background="@color/colorBroadcastersListBackground"/>
+        android:textSize="@dimen/text_size_small_medium" />
 
-</LinearLayout>
+    <android.support.v7.widget.RecyclerView
+        android:layout_marginTop="@dimen/margin_2_dp"
+        android:id="@+id/rv_sublist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_sports_name" />
+</RelativeLayout>
 

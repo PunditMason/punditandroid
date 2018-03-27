@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="35dp"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/margin_2_dp"
     android:background="@color/colorMatchScreenHeadingListenBackground">
 
-    <CheckedTextView
-        android:id="@+id/ctv_league_name"
-        android:layout_width="wrap_content"
+    <CheckBox
+        android:layout_marginStart="@dimen/margin_xlarge"
+        android:id="@+id/cb_sub_type"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:drawableStart="?android:attr/listChoiceIndicatorMultiple"
+        android:textColor="@color/colorWhite"
+        android:drawablePadding="@dimen/margin_large"
         android:checked="false"
-        android:gravity="center_vertical"
-        android:padding="10dp"
-        />
+        android:singleLine="true"/>
 
 </RelativeLayout>

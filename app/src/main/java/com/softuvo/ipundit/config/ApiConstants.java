@@ -6,13 +6,12 @@ package com.softuvo.ipundit.config;
 
 public class ApiConstants {
 
-/*
-//    Staging Base URL
+/*//    Staging Base URL
     public static final String APP_BASE_URL = "http://52.19.91.90/pundit-ios/v1/";
     public static final String STAGING_APP_BASE_URL = "http://52.19.91.90/pundit-ios/v2/";
     public static final String IMAGE_BASE_URL = "http://52.19.91.90/pundit-ios/assets/img/icons/";
     public static final String PROFILE_IMAGE_BASE_URL = "http://52.19.91.90/pundit-ios/profileusrimg/";
-    public static final String SHARE_BASE_URL = "http://play.pundit.world/broadcast/";
+    public static final String SHARE_BASE_URL = "https://play.pundit.world/broadcast/";
     public static final String TEAM_ICON_URL = "http://52.19.91.90/pundit-ios/assets/img/team_mark/";*/
 
 
@@ -23,7 +22,6 @@ public class ApiConstants {
     public static final String PROFILE_IMAGE_BASE_URL = "http://punditsports.com:81/pundit-ios/profileusrimg/";
     public static final String SHARE_BASE_URL = "https://play.punditsports.com/broadcast/";
     public static final String TEAM_ICON_URL = "http://punditsports.com:81/pundit-ios/assets/img/team_mark/";
-
 
     //Red5Pro BAse URL
     public static final String LIVE_FEEDS_BASE_URL="https://www.footballwebpages.co.uk/";
@@ -43,7 +41,7 @@ public class ApiConstants {
     public static final String UPDATE_USER_PROFILE_URL = "app/update";
     public static final String UPDATE_SCORE_URL = "app/updateScore";
     public static final String TERMS_AND_SERVICE_URL = "Game/get_term_condition";
-    public static final String MOUNT_CHANNEL_URL = "app/mountest";
+    public static final String MOUNT_CHANNEL_URL = "app/mount";
     public static final String GET_SPORTS_AND_LEAGUES_URL = "Game/getSports";
     public static final String LISTERNER_MAIN_COUNT = "Game/count";
     public static final String USER_DETAILS_MATCH_DETAILS_URL = "Game/get_users_match_info";
@@ -53,7 +51,10 @@ public class ApiConstants {
     public static final String FOLLOW_NOTIFICATION = "Cron/follow_notification/";
     public static final String DELETE_PODCAST = "app/deletePodcast";
     public static final String LOGOUT_USER = "app/logout";
-
+    public static final String UPDATE_LEAGUES = "app/updateUserleaguesList";
+    public static final String GET_TEAM_MATCHES ="app/getTeamMatches";
+    public static final String SCHEDULE_BROADCAST_FORM = "app/scheduleBroadcast";
+    public static final String GET_SCHEDULE_BROADCAST = "app/getScheduledBroadcast";
 
     //Applogics Chat Integration
     public static final String UPDATE_CHAT_ID = "app/updateChatId";
@@ -79,5 +80,6 @@ public class ApiConstants {
     public static final String USER_UPDATED_PROFILE_PIC = "avatar";
     public static final String USER_COUNTRY_ID = "countryid";
     public static final String USER_PROFILE_ID = "id";
+
 
 }

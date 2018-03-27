@@ -3,6 +3,7 @@ package com.softuvo.ipundit.activities;
 /*
  * Created by Neha Kalia on 12/08/2017.
  */
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -55,10 +56,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import static com.softuvo.ipundit.config.AppConstant.APP_BACKGROUND;
+
 import static com.softuvo.ipundit.config.AppConstant.FB_ID;
 
 public class SubCategotyActivity extends BaseActivity {
@@ -66,10 +68,10 @@ public class SubCategotyActivity extends BaseActivity {
     private AllLeagueAdapter allLeagueAdapter;
     private AllLeagueAdapter allLeagueAdapters;
     private SearchUserLeaguesAdapter searchUserLeaguesAdapter;
-    private List<SportsNameModel.Sports.League> leaguesItemLists;
-    private List<SportsNameModel.Sports.League> leaguesItemList;
-    private List<UserSearchLeagueModel.Datum> searchUserDetailsList;
-    private List<TeamSearchSportsModel.Datum> searchTeamDetailsList;
+    private List<SportsNameModel.Sports.League> leaguesItemLists = new ArrayList();
+    private List<SportsNameModel.Sports.League> leaguesItemList = new ArrayList();
+    private List<UserSearchLeagueModel.Datum> searchUserDetailsList = new ArrayList();
+    private List<TeamSearchSportsModel.Datum> searchTeamDetailsList = new ArrayList();
     private SearchTeamSportsAdapter searchTeamSportsAdapter;
     private String chatChannelId, chatChannelName, matchid;
 
@@ -125,7 +127,7 @@ public class SubCategotyActivity extends BaseActivity {
         @SuppressLint("SimpleDateFormat")
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd"); // getting date in this format
         formattedDate = df.format(date.getTime());
-        Log.e("cureent date:",formattedDate);
+        Log.e("cureent date:", formattedDate);
 
         ButterKnife.bind(mContext);
     }
@@ -146,8 +148,7 @@ public class SubCategotyActivity extends BaseActivity {
                 ivUserProfileImage.setVisibility(View.VISIBLE);
                 Picasso.with(mContext).load(ApiConstants.PROFILE_IMAGE_BASE_URL + AppPreferences.init(mContext).getString(AppConstant.USER_PROFILE_PIC)).into(ivUserProfileImage);
             }
-        }
-        else if (AppPreferences.init(mContext).getString(AppConstant.USER_SELECTION).equalsIgnoreCase(AppConstant.SELECTED_LISTNER)) {
+        } else if (AppPreferences.init(mContext).getString(AppConstant.USER_SELECTION).equalsIgnoreCase(AppConstant.SELECTED_LISTNER)) {
             llSubCatMain.setBackground(getResources().getDrawable(R.drawable.screen_image));
             ivUserProfileImage.setVisibility(View.GONE);
         }
@@ -212,8 +213,8 @@ public class SubCategotyActivity extends BaseActivity {
                     text = edSearchLeague.getText().toString();
                     allLeagueAdapters.filter(text);
                     if (AppPreferences.init(mContext).getString(AppConstant.USER_SELECTION).equalsIgnoreCase(AppConstant.SELECTED_BROADCAST)) {
-                            text = edSearchLeague.getText().toString();
-                            allLeagueAdapters.filter(text);
+                        text = edSearchLeague.getText().toString();
+                        allLeagueAdapters.filter(text);
 
                     } else if (AppPreferences.init(mContext).getString(AppConstant.USER_SELECTION).equalsIgnoreCase(AppConstant.SELECTED_LISTNER)) {
                         if (selectedSearchType.equalsIgnoreCase("leagues")) {
@@ -301,7 +302,7 @@ public class SubCategotyActivity extends BaseActivity {
                                 SnackbarUtil.showErrorLongSnackbar(mContext, message);
                             }
                         });*/
-                        App.getApiHelper().getBreakingNewsList("null/"+date , new ApiCallBack<BreakingNewsParentModel>() {
+                        App.getApiHelper().getBreakingNewsList("null/" + date, new ApiCallBack<BreakingNewsParentModel>() {
                             @Override
                             public void onSuccess(BreakingNewsParentModel breakingNewsParentModel) {
                                 if (breakingNewsParentModel != null) {
@@ -351,25 +352,31 @@ public class SubCategotyActivity extends BaseActivity {
     public void onClickBtn(View view) {
         if (view.getId() == R.id.btn_user) {
             selectedSearchType = "user";
-            if (leaguesItemList != null) {
+            if (leaguesItemList.size() > 0) {
                 leaguesItemList.clear();
                 cancelTimer();
-                allLeagueAdapters.notifyDataSetChanged();
-                rvLeagueItem.setAdapter(null);
+                if(allLeagueAdapters!=null) {
+                    allLeagueAdapters.notifyDataSetChanged();
+                    rvLeagueItem.setAdapter(null);
+                }
             }
-            if (leaguesItemList != null) {
+            if (leaguesItemList.size() > 0) {
                 leaguesItemList.clear();
                 cancelTimer();
-                allLeagueAdapter.notifyDataSetChanged();
-                rvLeagueItem.setAdapter(null);
+                if(allLeagueAdapters!=null) {
+                    allLeagueAdapter.notifyDataSetChanged();
+                    rvLeagueItem.setAdapter(null);
+                }
             }
             if (searchTeamDetailsList != null) {
                 searchTeamDetailsList.clear();
-                searchTeamSportsAdapter.notifyDataSetChanged();
                 cancelTimer();
-                rvLeagueItem.setAdapter(null);
+                if(searchTeamSportsAdapter!=null) {
+                    searchTeamSportsAdapter.notifyDataSetChanged();
+                    rvLeagueItem.setAdapter(null);
+                }
             }
-            if(edSearchLeague.getText()!=null)
+            if (edSearchLeague.getText() != null)
                 edSearchLeague.getText().clear();
             rvLeagueItem.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
             btnUser.setTextColor(ContextCompat.getColor(mContext, R.color.colorPurple));
@@ -382,22 +389,29 @@ public class SubCategotyActivity extends BaseActivity {
             if (leaguesItemLists != null) {
                 leaguesItemLists.clear();
                 cancelTimer();
-                allLeagueAdapters.notifyDataSetChanged();
-                rvLeagueItem.setAdapter(null);
+                if(allLeagueAdapters!=null) {
+                    allLeagueAdapters.notifyDataSetChanged();
+                    rvLeagueItem.setAdapter(null);
+
+                }
             }
             if (leaguesItemList != null) {
                 leaguesItemList.clear();
                 cancelTimer();
-                allLeagueAdapter.notifyDataSetChanged();
-                rvLeagueItem.setAdapter(null);
+                if(allLeagueAdapter!=null) {
+                    allLeagueAdapter.notifyDataSetChanged();
+                    rvLeagueItem.setAdapter(null);
+                }
             }
             if (searchUserDetailsList != null) {
                 searchUserDetailsList.clear();
                 cancelTimer();
-                searchUserLeaguesAdapter.notifyDataSetChanged();
-                rvLeagueItem.setAdapter(null);
+                if(searchUserLeaguesAdapter!=null) {
+                    searchUserLeaguesAdapter.notifyDataSetChanged();
+                    rvLeagueItem.setAdapter(null);
+                }
             }
-            if(edSearchLeague.getText()!=null)
+            if (edSearchLeague.getText() != null)
                 edSearchLeague.getText().clear();
             rvLeagueItem.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
             btnUser.setTextColor(ContextCompat.getColor(mContext, R.color.colorWhite));
@@ -410,17 +424,21 @@ public class SubCategotyActivity extends BaseActivity {
             if (searchTeamDetailsList != null) {
                 searchTeamDetailsList.clear();
                 cancelTimer();
-                searchTeamSportsAdapter.notifyDataSetChanged();
-                rvLeagueItem.setAdapter(null);
+                if(searchTeamSportsAdapter!=null) {
+                    searchTeamSportsAdapter.notifyDataSetChanged();
+                    rvLeagueItem.setAdapter(null);
+                }
             }
             if (searchUserDetailsList != null) {
                 searchUserDetailsList.clear();
                 cancelTimer();
-                searchUserLeaguesAdapter.notifyDataSetChanged();
-                rvLeagueItem.setAdapter(null);
+                if(searchUserLeaguesAdapter!=null) {
+                    searchUserLeaguesAdapter.notifyDataSetChanged();
+                    rvLeagueItem.setAdapter(null);
+                }
             }
             getSportsAndLeaugesData();
-            if(edSearchLeague.getText()!=null)
+            if (edSearchLeague.getText() != null)
                 edSearchLeague.getText().clear();
             btnUser.setTextColor(ContextCompat.getColor(mContext, R.color.colorWhite));
             btnLeagues.setTextColor(ContextCompat.getColor(mContext, R.color.colorPurple));
@@ -429,7 +447,7 @@ public class SubCategotyActivity extends BaseActivity {
     }
 
     private void cancelTimer() {
-        if(timer!=null){
+        if (timer != null) {
             timer.cancel();
         }
     }
@@ -468,7 +486,7 @@ public class SubCategotyActivity extends BaseActivity {
 
     private void getSportsAndLeaugesData() {
         if (ConnectivityReceivers.isConnected()) {
-            App.getApiHelper().getSportsAndLeauges(new ApiCallBack<SportsNameModel>() {
+            App.getApiHelper().getSportsAndLeauges(AppPreferences.init(mContext).getString(AppConstant.USER_ID), new ApiCallBack<SportsNameModel>() {
                 @Override
                 public void onSuccess(final SportsNameModel sportsNameModel) {
                     GridLayoutManager gridLayoutManager = new GridLayoutManager(getApplicationContext(), 2);
@@ -526,8 +544,8 @@ public class SubCategotyActivity extends BaseActivity {
                             text = edSearchLeague.getText().toString();
                             allLeagueAdapter.filter(text);
                             if (AppPreferences.init(mContext).getString(AppConstant.USER_SELECTION).equalsIgnoreCase(AppConstant.SELECTED_BROADCAST)) {
-                                    text = edSearchLeague.getText().toString();
-                                    allLeagueAdapter.filter(text);
+                                text = edSearchLeague.getText().toString();
+                                allLeagueAdapter.filter(text);
                             } else if (AppPreferences.init(mContext).getString(AppConstant.USER_SELECTION).equalsIgnoreCase(AppConstant.SELECTED_LISTNER)) {
                                 if (selectedSearchType.equalsIgnoreCase("leagues")) {
                                     text = edSearchLeague.getText().toString();
@@ -537,24 +555,46 @@ public class SubCategotyActivity extends BaseActivity {
                                 timer.schedule(new TimerTask() {
                                     @Override
                                     public void run() {
-                                        if (selectedSearchType.equalsIgnoreCase("user")) {
-                                            Map<String, String> mountMap = new HashMap<>();
-                                            mountMap.put("search_type", "user");
-                                            mountMap.put("search_text", edSearchLeague.getText().toString());
-                                            mountMap.put("live", "1");
-                                            mountMap.put("sport_id", getIntent().getStringExtra("sportsId"));
-                                            mountMap.put("user_id",AppPreferences.init(mContext).getString(AppConstant.USER_ID));
-                                            getUserSearchDetailsList(mountMap);
-                                        } else if (selectedSearchType.equalsIgnoreCase("team")) {
-                                            Map<String, String> mountMap = new HashMap<>();
-                                            mountMap.put("search_type", "team");
-                                            mountMap.put("search_text", edSearchLeague.getText().toString());
-                                            mountMap.put("live", "1");
-                                            mountMap.put("user_id",AppPreferences.init(mContext).getString(AppConstant.USER_ID));
-                                            mountMap.put("sport_id", getIntent().getStringExtra("sportsId"));
-                                            getTeamSearchDetailsList(mountMap);
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                if (selectedSearchType.equalsIgnoreCase("user")) {
+                                                    if (edSearchLeague.getText().length() == 0) {
+                                                        if (searchUserDetailsList != null) {
+                                                            cancelTimer();
+                                                            searchUserDetailsList.clear();
+                                                            searchUserLeaguesAdapter.notifyDataSetChanged();
+                                                        }
+                                                    }
+                                                    Map<String, String> mountMap = new HashMap<>();
+                                                    mountMap.put("search_type", "user");
+                                                    mountMap.put("search_text", edSearchLeague.getText().toString());
+                                                    mountMap.put("live", "1");
+                                                    mountMap.put("sport_id", getIntent().getStringExtra("sportsId"));
+                                                    mountMap.put("user_id", AppPreferences.init(mContext).getString(AppConstant.USER_ID));
+                                                    getUserSearchDetailsList(mountMap);
+                                                } else if (selectedSearchType.equalsIgnoreCase("team")) {
+                                                    if (edSearchLeague.getText().length() == 0) {
+                                                        if (searchTeamDetailsList != null) {
+                                                            cancelTimer();
+                                                            searchTeamDetailsList.clear();
+                                                            searchTeamSportsAdapter.notifyDataSetChanged();
+                                                        }
+                                                    }
+                                                    else if (edSearchLeague.getText().length() > 2) {
+                                                        Map<String, String> mountMap = new HashMap<>();
+                                                        mountMap.put("search_type", "team");
+                                                        mountMap.put("search_text", edSearchLeague.getText().toString());
+                                                        mountMap.put("live", "1");
+                                                        mountMap.put("user_id", AppPreferences.init(mContext).getString(AppConstant.USER_ID));
+                                                        mountMap.put("sport_id", getIntent().getStringExtra("sportsId"));
+                                                        getTeamSearchDetailsList(mountMap);
+                                                    }
 
-                                        }
+                                                }
+
+                                            }
+                                        });
                                     }
                                 }, 500);
                             }
@@ -599,7 +639,7 @@ public class SubCategotyActivity extends BaseActivity {
                 public void onSuccess(UserSearchLeagueModel userSearchLeagueModel) {
                     if (userSearchLeagueModel != null) {
                         rvLeagueItem.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
-                        searchUserDetailsList=new ArrayList<>();
+                        searchUserDetailsList = new ArrayList<>();
                         searchUserDetailsList = userSearchLeagueModel.getData();
                         swipeDownRefreshSubCat.setEnabled(false);
                         searchUserLeaguesAdapter = new SearchUserLeaguesAdapter(mContext, searchUserDetailsList, new SearchUserLeaguesAdapter.ItemClickListener() {
@@ -607,7 +647,7 @@ public class SubCategotyActivity extends BaseActivity {
                             public void onClick(int position) {
                                 Intent intent = new Intent(mContext, PunditsProfileActivity.class);
                                 intent.putExtra("userComingFrom", "leaguesUserSearch");
-                                intent.putExtra("switch","No");
+                                intent.putExtra("switch", "No");
                                 intent.putExtra("mUserDatum", searchUserDetailsList.get(position));
                                 startActivity(intent);
                             }
@@ -633,13 +673,16 @@ public class SubCategotyActivity extends BaseActivity {
                 public void onSuccess(TeamSearchSportsModel teamSearchSportsModel) {
                     if (teamSearchSportsModel != null) {
                         rvLeagueItem.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
-                        searchTeamDetailsList=new ArrayList<>();
+                        searchTeamDetailsList = new ArrayList<>();
                         searchTeamDetailsList = teamSearchSportsModel.getData();
                         swipeDownRefreshSubCat.setEnabled(false);
                         searchTeamSportsAdapter = new SearchTeamSportsAdapter(mContext, searchTeamDetailsList, new SearchTeamSportsAdapter.ItemClickListener() {
                             @Override
                             public void onClick(int position) {
-                                matchid=searchTeamDetailsList.get(position).getContestantId();
+                                Intent intent = new Intent(mContext, TeamMatchListActivity.class);
+                                intent.putExtra("mTeamId", searchTeamDetailsList.get(position).getId());
+                                startActivity(intent);
+                                /*matchid=searchTeamDetailsList.get(position).getContestantId();
                                 chatChannelId=searchTeamDetailsList.get(position).getChatChannelid();
                                 chatChannelName=searchTeamDetailsList.get(position).getContestantName();
                                 if(chatChannelId.equalsIgnoreCase("0")){
@@ -664,7 +707,7 @@ public class SubCategotyActivity extends BaseActivity {
                                 intent.putExtra("userComingFrom", "leaguesTeamSearch");
                                 intent.putExtra("mTeamSearchDatum", searchTeamDetailsList.get(position));
                                 intent.putExtra("chatChannelKey",chatChannelId);
-                                startActivity(intent);
+                                startActivity(intent);*/
                             }
                         });
                         rvLeagueItem.setAdapter(searchTeamSportsAdapter);
@@ -682,7 +725,7 @@ public class SubCategotyActivity extends BaseActivity {
     }
 
     private void getChannelId() {
-        try{
+        try {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -693,13 +736,15 @@ public class SubCategotyActivity extends BaseActivity {
                     ChannelService service = ChannelService.getInstance(mContext);
                     Channel channel = service.createChannel(channelInfo);
                     Log.i("Channel", "Channel respone is:" + channel);
-                    if (channel!=null && channel.getKey() != null) {
+                    if (channel != null && channel.getKey() != null) {
                         chatChannelId = String.valueOf(channel.getKey());
                         updateChatChannelId();
                     }
                 }
             }).start();
-        }catch (Exception e){e.printStackTrace();}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -708,6 +753,7 @@ public class SubCategotyActivity extends BaseActivity {
         protected void onPreExecute() {
             super.onPreExecute();
         }
+
         @Override
         protected Void doInBackground(Void... params) {
 //            ChannelMetadata channelMetadata = new ChannelMetadata();
@@ -719,16 +765,17 @@ public class SubCategotyActivity extends BaseActivity {
 //            channelMetadata.setGroupLeftMessage(ChannelMetadata.USER_NAME + " left group " + ChannelMetadata.GROUP_NAME);
 //            channelMetadata.setGroupIconChangeMessage(ChannelMetadata.USER_NAME + " changed icon");
 //            channelMetadata.setDeletedGroupMessage(ChannelMetadata.ADMIN_NAME + " deleted group " + ChannelMetadata.GROUP_NAME);
-            List<String> channelMembersList =  new ArrayList<>();
+            List<String> channelMembersList = new ArrayList<>();
             channelMembersList.add(AppPreferences.init(mContext).getString(FB_ID));
-            ChannelInfo channelInfo  = new ChannelInfo(chatChannelName,channelMembersList);
+            ChannelInfo channelInfo = new ChannelInfo(chatChannelName, channelMembersList);
             channelInfo.setType(Channel.GroupType.PUBLIC.getValue().intValue());
-            ChannelService service=ChannelService.getInstance(mContext);
+            ChannelService service = ChannelService.getInstance(mContext);
             Channel channel = service.createChannel(channelInfo);
-            Log.i("Channel","Channel respone is:"+channel);
-            chatChannelId= String.valueOf(channel.getKey());
+            Log.i("Channel", "Channel respone is:" + channel);
+            chatChannelId = String.valueOf(channel.getKey());
             return null;
         }
+
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
@@ -736,13 +783,14 @@ public class SubCategotyActivity extends BaseActivity {
         }
 
 
-
     }
-    private void updateChatChannelId(){
+
+    private void updateChatChannelId() {
         Map<String, String> mountMap = new HashMap<>();
         mountMap.put("match_id", matchid);
         mountMap.put("channeltype", "team");
         mountMap.put("chatChannelid", chatChannelId);
+        Log.e("===5",""+chatChannelId);
         App.getApiHelper().updateChatId(mountMap, new ApiCallBack<Map>() {
             @Override
             public void onSuccess(Map map) {

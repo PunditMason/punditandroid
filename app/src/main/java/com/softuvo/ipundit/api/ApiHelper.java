@@ -1,5 +1,9 @@
 package com.softuvo.ipundit.api;
 
+import android.util.Log;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.softuvo.ipundit.R;
 import com.softuvo.ipundit.config.ApiConstants;
 import com.softuvo.ipundit.config.App;
@@ -24,6 +28,8 @@ import com.softuvo.ipundit.models.MatchStandingListModel;
 import com.softuvo.ipundit.models.PodcastDetailsModel;
 import com.softuvo.ipundit.models.ReconnectModel;
 import com.softuvo.ipundit.models.RedFiveProGroupIdModel;
+import com.softuvo.ipundit.models.ScheduleFormModel;
+import com.softuvo.ipundit.models.ScheduleModel;
 import com.softuvo.ipundit.models.ServerAddressModel;
 import com.softuvo.ipundit.models.ServerListenerAddressModel;
 import com.softuvo.ipundit.models.SportsNameModel;
@@ -78,9 +84,12 @@ public class ApiHelper {
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
                 .build();
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(ApiConstants.APP_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .client(okHttpClient)
                 .build();
         apiservice = retrofit.create(ApiService.class);
@@ -93,9 +102,12 @@ public class ApiHelper {
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
                 .build();
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(ApiConstants.STAGING_APP_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .client(okHttpClient)
                 .build();
         apiservices = retrofit.create(ApiService.class);
@@ -109,9 +121,12 @@ public class ApiHelper {
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
                 .build();
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(ApiConstants.RED_FIVE_PRO_URL)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .client(okHttpClient)
                 .build();
         apiservices1 = retrofit.create(ApiService.class);
@@ -125,9 +140,12 @@ public class ApiHelper {
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
                 .build();
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(ApiConstants.LIVE_FEEDS_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .client(okHttpClient)
                 .build();
         apiServices2 = retrofit.create(ApiService.class);
@@ -321,9 +339,38 @@ public class ApiHelper {
         });
     }
 
+    public void scheduleBroadcastForm(Map map, final ApiCallBack<ScheduleFormModel> apiCallBack) {
+        apiservice.scheduleBroadcastForm(map).enqueue(new Callback<ScheduleFormModel>() {
+            @Override
+            public void onResponse(Call<ScheduleFormModel> call, Response<ScheduleFormModel> response) {
+                apiCallBack.onSuccess(response.body());
+            }
 
-    public void getSportsAndLeauges(final ApiCallBack<SportsNameModel> apiCallBack) {
-        apiservice.getSportsAndLeauges().enqueue(new Callback<SportsNameModel>() {
+            @Override
+            public void onFailure(Call<ScheduleFormModel> call, Throwable t) {
+                Log.e("bndsdhf",t.toString());
+                apiCallBack.onFailure(t.toString());
+            }
+        });
+    }
+
+    public void getscheduleBroadcast(Map map, final ApiCallBack<ScheduleModel> apiCallBack) {
+        apiservice.getscheduleBroadcast(map).enqueue(new Callback<ScheduleModel>() {
+            @Override
+            public void onResponse(Call<ScheduleModel> call, Response<ScheduleModel> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<ScheduleModel> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+
+    public void getSportsAndLeauges(String stringPath, final ApiCallBack<SportsNameModel> apiCallBack) {
+        apiservice.getSportsAndLeauges(stringPath).enqueue(new Callback<SportsNameModel>() {
             @Override
             public void onResponse(Call<SportsNameModel> call, Response<SportsNameModel> response) {
                 apiCallBack.onSuccess(response.body());
@@ -360,6 +407,20 @@ public class ApiHelper {
 
             @Override
             public void onFailure(Call<Map> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
+    public void getUserSelcetedLeagues(String stringPath, final ApiCallBack<SportsNameModel> apiCallBack) {
+        apiservice.getUserSelcetedLeagues(stringPath).enqueue(new Callback<SportsNameModel>() {
+            @Override
+            public void onResponse(Call<SportsNameModel> call, Response<SportsNameModel> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<SportsNameModel> call, Throwable t) {
                 apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
             }
         });
@@ -509,6 +570,35 @@ public class ApiHelper {
             }
         });
     }
+
+    public void getMatchTeamsAndPodcasts(Map map, final ApiCallBack<PodcastDetailsModel> apiCallBack) {
+        apiservice.getMatchTeamsAndPodcasts(map).enqueue(new Callback<PodcastDetailsModel>() {
+            @Override
+            public void onResponse(Call<PodcastDetailsModel> call, Response<PodcastDetailsModel> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<PodcastDetailsModel> call, Throwable t) {
+                apiCallBack.onFailure(t.toString());
+            }
+        });
+    }
+
+    public void updateLeagues(Map map, final ApiCallBack<Map> apiCallBack) {
+        apiservice.updateLeagues(map).enqueue(new Callback<Map>() {
+            @Override
+            public void onResponse(Call<Map> call, Response<Map> response) {
+                apiCallBack.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<Map> call, Throwable t) {
+                apiCallBack.onFailure(App.getAppContext().getResources().getString(R.string.server_error));
+            }
+        });
+    }
+
 
     public void searchLeaguesTeam(Map map, final ApiCallBack<TeamSearchSportsModel> apiCallBack) {
         apiservices.searchLeaguesTeam(map).enqueue(new Callback<TeamSearchSportsModel>() {

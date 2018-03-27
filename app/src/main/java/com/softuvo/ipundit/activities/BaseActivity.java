@@ -94,14 +94,13 @@ public class BaseActivity extends AppCompatActivity implements ConnectivityRecei
             listPermissionsNeeded.add(Manifest.permission.RECORD_AUDIO);
         }
         if (!listPermissionsNeeded.isEmpty()) {
-            ActivityCompat.requestPermissions(this,
-                    listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), AppConstant.MY_PERMISSIONS_REQUEST_CAMERA);
+            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), AppConstant.MY_PERMISSIONS_REQUEST_CAMERA);
         }
 
     }
-
+/*
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String permissions[],  int[] grantResults) {
         switch (requestCode) {
             case AppConstant.MY_PERMISSIONS_REQUEST_CAMERA:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -112,7 +111,22 @@ public class BaseActivity extends AppCompatActivity implements ConnectivityRecei
                 }
                 break;
         }
+    }*/
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        if (requestCode == AppConstant.MY_PERMISSIONS_REQUEST_CAMERA) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // do something
+            }
+            else{
+//                checkForPermission();
+            }
+            return;
+        }
     }
+
 
    /* public void fireLocalNotification(){
 

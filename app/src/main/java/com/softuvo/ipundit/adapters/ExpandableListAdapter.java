@@ -103,7 +103,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         }
 
 
-        CheckedTextView textView =  view.findViewById(R.id.ctv_league_name);
+        CheckBox textView =   view.findViewById(R.id.cb_sub_type);
 
         //"i" is the position of the parent/group in the list and
         //"i1" is the position of the child

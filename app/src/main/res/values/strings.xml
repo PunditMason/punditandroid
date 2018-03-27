@@ -135,12 +135,13 @@
     <string name="ok">OK</string>
     <string name="done_text">Done</string>
     <string name="name_updated_successfully">Podcast Name Updated Successfully.</string>
+    <string name="time_new">Time</string>
 
 
     <string name="default_media_location_folder">Applozic</string>
-    <!-- <string name="applozic_id">softuvo26632f185aa66535997473c</string>-->
+   <!-- <string name="applozic_id">softuvo26632f185aa66535997473c</string>-->
 
-    <string name="applozic_id">punditsports348ee5f2dc9df272707eb1a3f0b6ad07c</string>
+     <string name="applozic_id">punditsports348ee5f2dc9df272707eb1a3f0b6ad07c</string>
 
     <string name="podcast">PODCAST MATCHES</string>
     <string name="podcasts_details">MATCH PODCASTS</string>
@@ -172,5 +173,16 @@
     <string name="exo_controls_shuffle_description">Shuffle</string>
     <string name="manage_leagues">Manage\nLeagues</string>
     <string name="manage_league">Manage Leagues</string>
+    <string name="team_matches">Team Matches</string>
+    <string name="schedule_later">Schedule Later</string>
+    <string name="schedule_date_and_time">Schedule Date and Time</string>
+    <string name="date">Date</string>
+    <string name="title">Title</string>
+    <string name="please_enter_title">Please Enter Title</string>
+    <string name="save">Save</string>
+    <string name="schedule_broadcast">Schedule Broadcast</string>
+    <string name="scheduled_broadcasts">Scheduled\nBroadcasts</string>
+    <string name="unable">Unable to Schedule! Try Again Later</string>
+    <string name="scheduled_brodacasts">Scheduled Brodacasts</string>
 
 </resources>

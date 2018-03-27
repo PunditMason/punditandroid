@@ -22,6 +22,8 @@ import com.softuvo.ipundit.models.MatchStandingListModel;
 import com.softuvo.ipundit.models.PodcastDetailsModel;
 import com.softuvo.ipundit.models.ReconnectModel;
 import com.softuvo.ipundit.models.RedFiveProGroupIdModel;
+import com.softuvo.ipundit.models.ScheduleFormModel;
+import com.softuvo.ipundit.models.ScheduleModel;
 import com.softuvo.ipundit.models.ServerAddressModel;
 import com.softuvo.ipundit.models.ServerListenerAddressModel;
 import com.softuvo.ipundit.models.SportsNameModel;
@@ -40,6 +42,7 @@ import java.util.Map;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -86,8 +89,17 @@ interface ApiService {
     @POST(ApiConstants.UPDATE_SCORE_URL)
     Call<Map> updateScore(@Body Map map);
 
-    @POST(ApiConstants.GET_SPORTS_AND_LEAGUES_URL)
-    Call<SportsNameModel> getSportsAndLeauges();
+    @POST(ApiConstants.SCHEDULE_BROADCAST_FORM)
+    Call<ScheduleFormModel> scheduleBroadcastForm(@Body Map map);
+
+    @POST(ApiConstants.GET_SCHEDULE_BROADCAST)
+    Call<ScheduleModel> getscheduleBroadcast(@Body Map map);
+
+    @POST("Game/getSports/{path}")
+    Call<SportsNameModel> getSportsAndLeauges(@Path(value = "path", encoded = true) String stringPath);
+
+    @POST("Game/getUserleaguesList/{path}")
+    Call<SportsNameModel> getUserSelcetedLeagues(@Path(value = "path", encoded = true) String stringPath);
 
     @POST("Game/getLeaguenewsList/{path}")
     Call<BreakingNewsParentModel> getBreakingNewsList(@Path(value = "path", encoded = true) String stringPath);
@@ -127,6 +139,12 @@ interface ApiService {
 
     @POST(ApiConstants.LOGOUT_USER)
     Call<Map> logoutUSer(@Body Map map);
+
+    @POST(ApiConstants.UPDATE_LEAGUES)
+    Call<Map> updateLeagues(@Body Map map);
+
+    @POST(ApiConstants.GET_TEAM_MATCHES)
+    Call<PodcastDetailsModel> getMatchTeamsAndPodcasts(@Body Map map);
 
     @POST("Broadcast/unmount/{path}")
     Call<Map> unmountOnServer(@Path(value = "path", encoded = true) String stringPath);

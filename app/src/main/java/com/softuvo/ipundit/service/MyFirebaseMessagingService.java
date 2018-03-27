@@ -95,12 +95,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(getRequestCode(), notificationBuilder.build());
+        assert notificationManager != null;
+        notificationManager.notify(0, notificationBuilder.build());
     }
 
-    private static int getRequestCode() {
-        Random rnd = new Random();
-        return 100 + rnd.nextInt(900000);
-    }
+
 
 }

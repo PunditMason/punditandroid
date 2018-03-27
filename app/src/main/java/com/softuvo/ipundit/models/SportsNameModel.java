@@ -165,6 +165,9 @@ public class SportsNameModel implements Serializable{
             @SerializedName("broadcaster_count")
             @Expose
             private String broadcasterCount;
+            @SerializedName("selected_league")
+            @Expose
+            private Boolean selectedLeague;
 
             public String getBroadcasterCount() {
                 return broadcasterCount;
@@ -188,6 +191,14 @@ public class SportsNameModel implements Serializable{
 
             public void setId(String id) {
                 this.id = id;
+            }
+
+            public Boolean getSelectedLeague() {
+                return selectedLeague;
+            }
+
+            public void setSelectedLeague(Boolean selectedLeague) {
+                this.selectedLeague = selectedLeague;
             }
 
             public String getName() {

@@ -79,7 +79,7 @@ public class MatchListActivity extends BaseActivity implements DatePickerDialog.
     private MatchListBroadcastAdapter matchListBroadcastAdapter;
     private MatchListListnerAdapter matchListListnerAdapter;
     private SportsNameModel.Sports.League subCatDetail;
-    private String chatChannelId, chatChannelName, matchid;
+    private String chatChannelId, chatChannelName, matchid,matchName="";
 
     @BindView(R.id.rv_match_list)
     RecyclerView rvMatchList;
@@ -119,8 +119,6 @@ public class MatchListActivity extends BaseActivity implements DatePickerDialog.
 
     @BindView(R.id.calender_container)
     RelativeLayout calenderContainer;
-
-
 
     @BindView(R.id.iv_user_profile_image)
     ImageView ivUserProfileImage;
@@ -226,6 +224,7 @@ public class MatchListActivity extends BaseActivity implements DatePickerDialog.
                                     chatChannelId = matchListList.get(position).getChatChannelid();
                                     chatChannelName = matchListList.get(position).getTeam1Name() + " Vs " + matchListList.get(position).getTeam2Name();
                                     matchid = matchListList.get(position).getMatchId();
+                                    matchName=matchListList.get(position).getTeam1Name()+" Vs "+matchListList.get(position).getTeam1Name();
                                     if (chatChannelId.equalsIgnoreCase("0")) {
 //                                        new createChannel().execute();
                                       getChannelId();
@@ -292,6 +291,7 @@ public class MatchListActivity extends BaseActivity implements DatePickerDialog.
                                     chatChannelId = matchListenList.get(position).getChatChannelid();
                                     chatChannelName = matchListenList.get(position).getTeam1Name() + " Vs " + matchListenList.get(position).getTeam2Name();
                                     matchid = matchListenList.get(position).getMatchId();
+                                    Log.e("chat",""+chatChannelId);
                                     if (chatChannelId.equalsIgnoreCase("0")) {
 //                                        new createChannel().execute();
                                         getChannelId();
@@ -365,6 +365,7 @@ public class MatchListActivity extends BaseActivity implements DatePickerDialog.
                     Log.i("Channel", "Channel respone is:" + channel);
                     if (channel!=null && channel.getKey() != null) {
                         chatChannelId = String.valueOf(channel.getKey());
+                        Log.e("chat1",""+chatChannelId);
                         updateChatChannelId();
                     }
                 }
@@ -376,20 +377,22 @@ public class MatchListActivity extends BaseActivity implements DatePickerDialog.
         Map<String, String> mountMap = new HashMap<>();
         mountMap.put("match_id", matchid);
         mountMap.put("channeltype", "match");
+        Log.e("===1",""+chatChannelId);
         if (chatChannelId == null)
             mountMap.put("chatChannelid", "0");
         else {
             mountMap.put("chatChannelid", chatChannelId);
         }
+        Log.e("===1",""+mountMap);
         App.getApiHelper().updateChatId(mountMap, new ApiCallBack<Map>() {
             @Override
             public void onSuccess(Map map) {
-
+                Log.e("===1","sucees");
             }
 
             @Override
             public void onFailure(String message) {
-
+                Log.e("===1","fail");
             }
         });
     }
@@ -528,10 +531,22 @@ public class MatchListActivity extends BaseActivity implements DatePickerDialog.
                     intent.putExtra("userComingFrom", "matchList");
                     intent.putExtra("mBrDatum", mBrDatum);
                     intent.putExtra("chatChannelKey", chatChannelId);
+                    mBottomSheetDialog.dismiss();
                     startActivity(intent);
                 }
             }
         });
+        /*view.findViewById(R.id.rl_schedule_sheet).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, ScheduleBroadcastFormActivity.class);
+                intent.putExtra("matchid",matchid);
+                intent.putExtra("channelType","match");
+                intent.putExtra("matchname",matchName);
+                mBottomSheetDialog.dismiss();
+                startActivity(intent);
+            }
+        });*/
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)

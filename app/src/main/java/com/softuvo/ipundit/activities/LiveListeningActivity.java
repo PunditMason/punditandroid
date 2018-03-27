@@ -101,6 +101,7 @@ public class LiveListeningActivity extends BaseActivity {
     private String twitterStatus;
     private String chatChannelId;
     private int followStatus,strHours, strMin = 0, strSec = 0, visible = 0;
+    private String newtime;
 
 
     @BindView(R.id.rl_live_listening_main)
@@ -1600,14 +1601,15 @@ public class LiveListeningActivity extends BaseActivity {
                     public void run() {
                       //  mckeckbool=true;
                         strSec += 1;
-                        txtkickoffTime.setText(String.valueOf(strHours)+":"+String.valueOf(strMin) + ":" + String.valueOf(strSec));
+                        newtime = String.format("%02d:%02d:%02d",strHours,strHours,strHours);
+                        txtkickoffTime.setText(newtime);
                         if (strSec == 60) {
-                            txtkickoffTime.setText(String.valueOf(strHours)+":"+String.valueOf(strMin) + ":" + String.valueOf(strSec));
+                            txtkickoffTime.setText(newtime);
                             strSec = 0;
                             strMin = strMin + 1;
                         }
                         if(strMin==60){
-                            txtkickoffTime.setText(String.valueOf(strHours)+":"+String.valueOf(strMin) + ":" + String.valueOf(strSec));
+                            txtkickoffTime.setText(newtime);
                             strMin=0;
                             strHours=strHours+1;
 

@@ -48,6 +48,7 @@ import com.softuvo.ipundit.models.BroadcastMatchlistModel;
 import com.softuvo.ipundit.models.ListnerCountModel;
 import com.softuvo.ipundit.models.LiveBroadcstingModel;
 import com.softuvo.ipundit.models.MatchStandingListModel;
+import com.softuvo.ipundit.models.ScheduleModel;
 import com.softuvo.ipundit.models.ServerAddressModel;
 import com.softuvo.ipundit.receivers.ConnectivityReceivers;
 import com.softuvo.ipundit.utils.SnackbarUtil;
@@ -92,6 +93,7 @@ public class LiveBroadCastingActivity extends BaseActivity {
     private int isSelected = 0;
     String mUserComingFrom;
     String time;
+    String newtime;
 
     @BindView(R.id.rl_live_broadcasting_main)
     CustomRelativeLayout rlLiveBroadcastingMain;
@@ -211,6 +213,7 @@ public class LiveBroadCastingActivity extends BaseActivity {
 //        onIncommingCallBroadcast();
     }
 
+    @SuppressLint("SetTextI18n")
     private void setData() {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         if (isSelected == 0)
@@ -271,9 +274,53 @@ public class LiveBroadCastingActivity extends BaseActivity {
                 }
                 mTabLayout.setVisibility(View.GONE);
             }
+            else if((getIntent().getStringExtra("userComingFrom")).equalsIgnoreCase("schedule")){
+                if(getIntent().getSerializableExtra("mBrDatum") != null){
+                ScheduleModel.Schedule schedule=(ScheduleModel.Schedule)getIntent().getSerializableExtra("mBrDatum");
+                    if(schedule.getChannelType().equalsIgnoreCase("match")){
+                        tvTeam1Name.setText(schedule.getMatch().getTeam1Name() + ":");
+                        tvTeam2Name.setText(schedule.getMatch().getTeam2Name() + ":");
+                        team1_id = schedule.getMatch().getTeam1Id();
+                        team2_id = schedule.getMatch().getTeam2Id();
+                        tvTeam1NameEditboard.setText(schedule.getMatch().getTeam1Name());
+                        tvTeam2NameEditboard.setText(schedule.getMatch().getTeam2Name());
+                        strName = schedule.getMatch().getTeam1Name() + " Vs " + schedule.getMatch().getTeam2Name() + "-" + AppPreferences.init(mContext).getString(AppConstant.USER_NAME);
+                        strMatchId = schedule.getMatchId();
+                        strBroadcastName = AppPreferences.init(mContext).getString(USER_NAME);
+                        strBroadcastId = AppPreferences.init(mContext).getString(AppConstant.USER_ID);
+                        strAppName = "live";
+                        strChannelType = schedule.getChannelType();
+                        strFollowMsg = AppPreferences.init(mContext).getString(USER_NAME) + "is now the live pundit on " + schedule.getMatch().getTeam1Name() + " Vs " + schedule.getMatch().getTeam2Name() + ", " + "Listen now";
+                        setupViewPager(mViewPager, strMatchId);
+                        mViewPager.setOffscreenPageLimit(0);
+                        mTabLayout.setVisibility(View.VISIBLE);
+                        mTabLayout.setupWithViewPager(mViewPager);
+                    }
+                    else if(schedule.getChannelType().equalsIgnoreCase("team")){
+                        ivEditScore.setVisibility(View.GONE);
+//                    tvMatcNameTop.setText(mBrDatum.getContestantName());
+                        tvMatchTimeTop.setText("Rank:" + schedule.getTeam().getRank());
+                        // tvTeam1nameVsTeam2name.setText(mBrDatum.getContestantName());
+                        tvTeam1Name.setText(schedule.getTeam().getContestantClubName());
+                        tvTeam2Name.setText("Points : " + schedule.getTeam().getPoints());
+                        // tvTeam1scoreVsTeam2score.setText("");
+                        strName = schedule.getTeam().getContestantName() + "-" + AppPreferences.init(mContext).getString(AppConstant.USER_NAME);
+                        strMatchId = schedule.getMatchId();
+                        strBroadcastName = AppPreferences.init(mContext).getString(USER_NAME);
+                        strBroadcastId = AppPreferences.init(mContext).getString(AppConstant.USER_ID);
+                        strAppName = "live";
+                        strChannelType = mUserComingFrom;
+                        tvNo_DataBr.setVisibility(View.VISIBLE);
+                        tvNo_DataBr.setText(R.string.team_talk);
+                        strFollowMsg = AppPreferences.init(mContext).getString(USER_NAME) + "is now the live pundit on " + schedule.getTeam().getContestantName() + ", " + "Listen now";
+                        mTabLayout.setVisibility(View.GONE);
+                    }
+
+                }
+            }
             if (AppPreferences.init(mContext).getString(AppConstant.LEAGUE_IMAGE_URL) != null && !AppPreferences.init(mContext).getString(AppConstant.LEAGUE_IMAGE_URL).equalsIgnoreCase(""))
                 Picasso.with(mContext).load(AppPreferences.init(mContext).getString(AppConstant.LEAGUE_IMAGE_URL)).into(ivLeagueIcon);
-            String broadcasterName = "Logged in as " + AppPreferences.init(mContext).getString(USER_NAME);
+          //  String broadcasterName = "Logged in as " + AppPreferences.init(mContext).getString(USER_NAME);
             chatChannelId = getIntent().getStringExtra("chatChannelKey");
             //gifView.setGifImageResource(R.drawable.broadcast_gif);
 
@@ -356,7 +403,7 @@ public class LiveBroadCastingActivity extends BaseActivity {
             isSelected = 0;
             ivPlayPause.setImageResource(R.drawable.break_new);
         }
-        String path = channelId + "/" + isSelected+"/"+time;
+        String path = channelId + "/" + isSelected+"/"+newtime;
         pauseStream(path);
         Log.e("pathtime",path);
     }
@@ -399,22 +446,25 @@ public class LiveBroadCastingActivity extends BaseActivity {
             @Override
             public void run() {
                 runOnUiThread(new Runnable() {
+                    @SuppressLint("DefaultLocale")
                     @Override
                     public void run() {
-                        String newMinute,newSeconds,newHour;
                         seconds += 1;
                         time=String.valueOf(hours)+":"+String.valueOf(minutes) + ":" + String.valueOf(seconds);
-                        tvKickoffTimeTop.setText(time);
+                        newtime = String.format("%02d:%02d:%02d",hours,minutes,seconds);
+                        tvKickoffTimeTop.setText(newtime);
                         if (seconds == 60) {
                             time=String.valueOf(hours)+":"+String.valueOf(minutes) + ":" + String.valueOf(seconds);
-                            tvKickoffTimeTop.setText(time);
+                            newtime = String.format("%02d:%02d:%02d",hours,minutes,seconds);
+                            tvKickoffTimeTop.setText(newtime);
                             //tvMatchKickoffTime.setText(String.valueOf(minutes) + ":" + String.valueOf(seconds));
                             seconds = 0;
                             minutes = minutes + 1;
                         }
                         if(minutes==60){
                             time=String.valueOf(hours)+":"+String.valueOf(minutes) + ":" + String.valueOf(seconds);
-                            tvKickoffTimeTop.setText(time);
+                            newtime = String.format("%02d:%02d:%02d",hours,minutes,seconds);
+                            tvKickoffTimeTop.setText(newtime);
                             minutes=0;
                             hours=hours+1;
 
@@ -714,9 +764,11 @@ public class LiveBroadCastingActivity extends BaseActivity {
         mountMap.put("broadcaster_id", strBroadcastId);
         mountMap.put("appName", strAppName);
         mountMap.put("channel_type", strChannelType);
+        mountMap.put("ChatChannelId", chatChannelId);
         mountMap.put("sport_id", AppPreferences.init(mContext).getString(AppConstant.SPORTS_ID));
         mountMap.put("league_id", AppPreferences.init(mContext).getString(AppConstant.LEAGUE_ID));
         postMountOnServer(mountMap);
+        Log.e("===",""+mountMap);
     }
 
     protected void createMap() {
@@ -808,6 +860,26 @@ public class LiveBroadCastingActivity extends BaseActivity {
                             twitterStatus = "Twitter: @" + mBrDatum.getTwitter_id();
                         } else {
                             twitterStatus = "";
+                        }
+                    }
+                }
+                else if((getIntent().getStringExtra("userComingFrom")).equalsIgnoreCase("schedule")){
+                    if (getIntent().getSerializableExtra("mBrDatum") != null) {
+                        ScheduleModel.Schedule schedule=(ScheduleModel.Schedule)getIntent().getSerializableExtra("mBrDatum");
+                        if(schedule.getChannelType().equalsIgnoreCase("match")){
+                            status = "I'm live on Pundit now discussing the game between " + schedule.getMatch().getTeam1Name() + " Vs " + schedule.getMatch().getTeam2Name() + ", come join me.";
+                            if (!schedule.getMatch().getTeam1TwitterId().equalsIgnoreCase("") && !schedule.getMatch().getTeam2TwitterId().equalsIgnoreCase("")) {
+                                twitterStatus = "Twitter: @" + schedule.getMatch().getTeam1TwitterId() + " @" + schedule.getMatch().getTeam2TwitterId();
+                            } else
+                                twitterStatus = "";
+                        }
+                        else if(schedule.getChannelType().equalsIgnoreCase("team")){
+                            status = "I'm live on Pundit now discussing " + schedule.getTeam().getContestantClubName() + ", come join me.";
+                            if (!schedule.getTeam().getTwitterId().equalsIgnoreCase("")) {
+                                twitterStatus = "Twitter: @" + schedule.getTeam().getTwitterId();
+                            } else {
+                                twitterStatus = "";
+                            }
                         }
                     }
                 }

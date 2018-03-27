@@ -149,6 +149,12 @@ public class UserProfileActivity extends BaseActivity {
         startActivity(intent);
     }
 
+    @OnClick(R.id.tv_schedule_broadcasts)
+    public void OnClickScheduledBroadcasts() {
+        Intent intent = new Intent(mContext, ScheduledBroadcastingListActivity.class);
+        startActivity(intent);
+    }
+
     @OnClick(R.id.ll_followings)
     public void OnClickFollowings() {
         Intent intent = new Intent(mContext, FollowingListActivity.class);

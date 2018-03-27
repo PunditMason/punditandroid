@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.widget.EditText;
 import android.widget.ListView;
 
-/**
+/*
  * Created by devashish on 3/2/14.
  */
 public class ConversationListView extends ListView {

@@ -42,6 +42,7 @@ public class ApplozicMqttIntentService extends JobIntentService {
      * Convenience method for enqueuing work in to this service.
      */
     static public void enqueueWork(Context context, Intent work) {
+        if(work!=null)
         enqueueWork(context, ApplozicMqttIntentService.class, JOB_ID, work);
     }
 

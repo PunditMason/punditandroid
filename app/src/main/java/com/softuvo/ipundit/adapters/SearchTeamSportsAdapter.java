@@ -43,13 +43,7 @@ public interface ItemClickListener {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         SearchTeamDetailsViewHolder viewholder = (SearchTeamDetailsViewHolder) holder;
-        if (searchTeamItemList.get(position).getLive().toString().equals("1")) {
-            viewholder.cvUserDetailsContainer.setBackgroundResource(R.color.colorBroadcastersListBackground);
-        }
-        else {
-            viewholder.cvUserDetailsContainer.setOnClickListener(null);
-            viewholder.cvUserDetailsContainer.setBackgroundResource(R.color.colorPrivacyPolicyBackground);
-        }
+        viewholder.cvUserDetailsContainer.setBackgroundResource(R.color.colorPrivacyPolicyBackground);
         viewholder.tvUsername.setText(searchTeamItemList.get(position).getName());
         viewholder.tvUsername.setGravity(Gravity.CENTER);
 
@@ -71,8 +65,8 @@ public interface ItemClickListener {
 
         private SearchTeamDetailsViewHolder(View view) {
             super(view);
-            cvUserDetailsContainer = (CardView) view.findViewById(R.id.cv_user_details_container);
-            tvUsername = (TextView) view.findViewById(R.id.tv_username);
+            cvUserDetailsContainer =  view.findViewById(R.id.cv_user_details_container);
+            tvUsername =  view.findViewById(R.id.tv_username);
             cvUserDetailsContainer.setOnClickListener(this);
         }
 

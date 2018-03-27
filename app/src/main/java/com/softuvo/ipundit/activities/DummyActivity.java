@@ -25,7 +25,7 @@ public class DummyActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dummy);
-        Handler mainHandler = new Handler();
+       /* Handler mainHandler = new Handler();
         BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
         TrackSelection.Factory videoTrackSelectionFactory =
                 new AdaptiveTrackSelection.Factory(bandwidthMeter);
@@ -34,7 +34,7 @@ public class DummyActivity extends AppCompatActivity {
 
 // 2. Create the player
         SimpleExoPlayer player =
-                ExoPlayerFactory.newSimpleInstance(this, trackSelector);
+                ExoPlayerFactory.newSimpleInstance(this, trackSelector);*/
 
 
     }

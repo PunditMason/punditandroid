@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ScrollView01"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:scrollbars="none">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusableInTouchMode="true">
+
+        <ImageView
+            android:id="@+id/iv_header_image"
+            android:layout_width="match_parent"
+            android:layout_height="320dp"
+            android:contentDescription="@string/app_name"
+            android:scaleType="fitXY"
+            android:src="@drawable/schedule_header" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:text="@string/schedule_broadcast"
+            android:padding="@dimen/margin_small"
+            android:textColor="@color/colorWhite"
+            android:layout_marginTop="@dimen/margin_xlarge"
+            android:textSize="@dimen/text_size_large"
+            android:background="@color/colorGreenRoundShape"/>
+
+        <TextView
+            android:id="@+id/tv_heading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:layout_below="@+id/iv_header_image"
+            android:layout_marginStart="@dimen/margin_xlarge"
+            android:layout_marginTop="@dimen/margin_xlarge"
+            android:text="@string/schedule_date_and_time"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/text_size_large"
+            android:fontFamily="@string/helvetica_neu_bold"/>
+
+        <LinearLayout
+            android:id="@+id/ll_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_heading"
+            android:layout_marginStart="@dimen/margin_xlarge"
+            android:layout_marginTop="@dimen/margin_small_large"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"
+                android:text="@string/title"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/text_size_medium" />
+
+            <EditText
+                android:id="@+id/ed_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.7"
+                android:padding="@dimen/pading_smalll"
+                android:singleLine="true"
+                android:background="@drawable/black_border_white_shape"
+                android:hint="@string/please_enter_title"
+                android:imeOptions="actionNext"
+                android:textSize="@dimen/text_size_medium" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ll_title"
+            android:layout_marginStart="@dimen/margin_xlarge"
+            android:layout_marginTop="@dimen/margin_small_large"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"
+                android:text="@string/date"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/text_size_medium" />
+
+            <TextView
+                android:id="@+id/tv_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.7"
+                android:padding="@dimen/pading_smalll"
+                android:singleLine="true"
+
+                android:background="@drawable/black_border_white_shape"
+                android:textSize="@dimen/text_size_medium" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ll_date"
+            android:layout_marginStart="@dimen/margin_xlarge"
+            android:layout_marginTop="@dimen/margin_small_large"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"
+                android:text="@string/time_new"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/text_size_medium" />
+
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.7"
+                android:padding="@dimen/pading_smalll"
+                android:singleLine="true"
+                android:background="@drawable/black_border_white_shape"
+                android:textSize="@dimen/text_size_medium" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/ll_time"
+            android:layout_centerInParent="true"
+            android:layout_marginEnd="@dimen/margin_xlarge"
+            android:layout_marginTop="@dimen/margin_large"
+            android:background="@color/colorBlack"
+            android:padding="@dimen/margin_small_large"
+            android:text="@string/save"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/text_size_large" />
+
+    </RelativeLayout>
+</ScrollView>

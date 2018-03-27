@@ -5,7 +5,6 @@ package com.softuvo.ipundit.activities;
  */
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,7 +14,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -23,10 +21,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import com.applozic.mobicomkit.api.people.ChannelInfo;
-import com.applozic.mobicomkit.channel.service.ChannelService;
-import com.applozic.mobicomkit.uiwidgets.async.ApplozicChannelAddMemberTask;
-import com.applozic.mobicommons.people.channel.Channel;
 import com.softuvo.ipundit.R;
 import com.softuvo.ipundit.adapters.AllSportsAdapter;
 import com.softuvo.ipundit.adapters.SearchTeamSportsAdapter;
@@ -41,7 +35,6 @@ import com.softuvo.ipundit.models.UserSearchSportsModel;
 import com.softuvo.ipundit.receivers.ConnectivityReceivers;
 import com.softuvo.ipundit.utils.SnackbarUtil;
 import com.softuvo.ipundit.views.CustomLinearLayout;
-import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,8 +44,6 @@ import java.util.TimerTask;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import static com.softuvo.ipundit.config.AppConstant.APP_BACKGROUND;
-import static com.softuvo.ipundit.config.AppConstant.FB_ID;
 
 public class BroadcastListenerMainActivity extends BaseActivity {
     private Activity mContext;
@@ -63,7 +54,7 @@ public class BroadcastListenerMainActivity extends BaseActivity {
     private SearchUserSportsAdapter searchUserSportsAdapter;
     private SearchTeamSportsAdapter searchTeamSportsAdapter;
     String selectedSearchType = "sports";
-    private String chatChannelId, chatChannelName, matchid;
+//    private String chatChannelId, chatChannelName, matchid;
     private Timer timer;
     String text = null;
 
@@ -142,8 +133,7 @@ public class BroadcastListenerMainActivity extends BaseActivity {
             if (AppPreferences.init(mContext).getString(AppConstant.USER_SELECTION).equalsIgnoreCase(AppConstant.SELECTED_BROADCAST)) {
                 llMainSports.setBackground(getResources().getDrawable(R.drawable.screen_image));
                 ivUserProfileImage.setVisibility(View.GONE);
-            }
-            else if (AppPreferences.init(mContext).getString(AppConstant.USER_SELECTION).equalsIgnoreCase(AppConstant.SELECTED_LISTNER)) {
+            } else if (AppPreferences.init(mContext).getString(AppConstant.USER_SELECTION).equalsIgnoreCase(AppConstant.SELECTED_LISTNER)) {
                 llMainSports.setBackground(getResources().getDrawable(R.drawable.screen_image));
                 ivUserProfileImage.setVisibility(View.GONE);
             }
@@ -151,7 +141,7 @@ public class BroadcastListenerMainActivity extends BaseActivity {
            /* if (AppPreferences.init(mContext).getString(APP_BACKGROUND) != null)
                 Picasso.with(mContext).load(AppPreferences.init(mContext).getString(APP_BACKGROUND)).into(llMainSports);*/
             mContext.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-            App.getApiHelper().getSportsAndLeauges(new ApiCallBack<SportsNameModel>() {
+            App.getApiHelper().getSportsAndLeauges(AppPreferences.init(mContext).getString(AppConstant.USER_ID), new ApiCallBack<SportsNameModel>() {
                 @Override
                 public void onSuccess(final SportsNameModel sportsNameModel) {
                     progressBar.setVisibility(View.GONE);
@@ -226,22 +216,43 @@ public class BroadcastListenerMainActivity extends BaseActivity {
                                 timer.schedule(new TimerTask() {
                                     @Override
                                     public void run() {
-                                        if (selectedSearchType.equalsIgnoreCase("user")) {
-                                            Map<String, String> mountMap = new HashMap<>();
-                                            mountMap.put("search_type", "user");
-                                            mountMap.put("search_text", edSearchGame.getText().toString());
-                                            mountMap.put("live", "1");
-                                            mountMap.put("user_id", AppPreferences.init(mContext).getString(AppConstant.USER_ID));
-                                            getUserSearchDetailsList(mountMap);
-                                        } else if (selectedSearchType.equalsIgnoreCase("team")) {
-                                            Map<String, String> mountMap = new HashMap<>();
-                                            mountMap.put("search_type", "team");
-                                            mountMap.put("search_text", edSearchGame.getText().toString());
-                                            mountMap.put("live", "1");
-                                            mountMap.put("user_id", AppPreferences.init(mContext).getString(AppConstant.USER_ID));
-                                            getTeamSearchDetailsList(mountMap);
-                                        }
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                if (selectedSearchType.equalsIgnoreCase("user")) {
+                                                    if (edSearchGame.getText().length() == 0) {
+                                                        if (searchUserDetailsList != null) {
+                                                            cancelTimer();
+                                                            searchUserDetailsList.clear();
+                                                            searchUserSportsAdapter.notifyDataSetChanged();
+                                                        }
+                                                    }
+                                                    Map<String, String> mountMap = new HashMap<>();
+                                                    mountMap.put("search_type", "user");
+                                                    mountMap.put("search_text", edSearchGame.getText().toString());
+                                                    mountMap.put("live", "1");
+                                                    mountMap.put("user_id", AppPreferences.init(mContext).getString(AppConstant.USER_ID));
+                                                    getUserSearchDetailsList(mountMap);
+                                                } else if (selectedSearchType.equalsIgnoreCase("team")) {
+                                                    if (edSearchGame.getText().length() == 0) {
+                                                        if (searchTeamDetailsList != null) {
+                                                            cancelTimer();
+                                                            searchTeamDetailsList.clear();
+                                                            searchTeamSportsAdapter.notifyDataSetChanged();
+                                                        }
+                                                    } else if (edSearchGame.getText().length() > 2) {
+                                                        Map<String, String> mountMap = new HashMap<>();
+                                                        mountMap.put("search_type", "team");
+                                                        mountMap.put("search_text", edSearchGame.getText().toString());
+                                                        mountMap.put("live", "1");
+                                                        mountMap.put("user_id", AppPreferences.init(mContext).getString(AppConstant.USER_ID));
+                                                        getTeamSearchDetailsList(mountMap);
+                                                    }
+                                                }
+                                            }
+                                        });
                                     }
+
                                 }, 500);
                             }
                         }
@@ -354,7 +365,7 @@ public class BroadcastListenerMainActivity extends BaseActivity {
     }
 
     private void cancelTimer() {
-        if(timer!=null){
+        if (timer != null) {
             timer.cancel();
         }
     }
@@ -405,7 +416,10 @@ public class BroadcastListenerMainActivity extends BaseActivity {
                         searchTeamSportsAdapter = new SearchTeamSportsAdapter(mContext, searchTeamDetailsList, new SearchTeamSportsAdapter.ItemClickListener() {
                             @Override
                             public void onClick(int position) {
-                                matchid = searchTeamDetailsList.get(position).getContestantId();
+                                Intent intent = new Intent(mContext, TeamMatchListActivity.class);
+                                intent.putExtra("mTeamId", searchTeamDetailsList.get(position).getId());
+                                startActivity(intent);
+                               /* matchid = searchTeamDetailsList.get(position).getContestantId();
                                 chatChannelId = searchTeamDetailsList.get(position).getChatChannelid();
                                 chatChannelName = searchTeamDetailsList.get(position).getContestantName();
                                 if (chatChannelId.equalsIgnoreCase("0")) {
@@ -430,7 +444,7 @@ public class BroadcastListenerMainActivity extends BaseActivity {
                                 intent.putExtra("userComingFrom", "sprotsTeamSearch");
                                 intent.putExtra("mTeamSearchDatum", searchTeamDetailsList.get(position));
                                 intent.putExtra("chatChannelKey", chatChannelId);
-                                startActivity(intent);
+                                startActivity(intent);*/
                             }
                         });
                         rvGameItems.setAdapter(searchTeamSportsAdapter);
@@ -447,7 +461,7 @@ public class BroadcastListenerMainActivity extends BaseActivity {
             SnackbarUtil.showWarningLongSnackbar(mContext, getResources().getString(R.string.internet_not_connected_text));
     }
 
-    private void getChannelId() {
+   /* private void getChannelId() {
         try{
             new Thread(new Runnable() {
                 @Override
@@ -483,9 +497,7 @@ public class BroadcastListenerMainActivity extends BaseActivity {
 
             }
         });
-    }
-
-
+    }*/
 
 
     @Override

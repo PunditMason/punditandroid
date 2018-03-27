@@ -619,6 +619,7 @@ public class PunditsProfileActivity extends BaseActivity {
         mountMap.put("match_id", matchid);
         mountMap.put("channeltype", channelType);
         mountMap.put("chatChannelid", chatChannelId);
+        Log.e("===3",""+chatChannelId);
         App.getApiHelper().updateChatId(mountMap, new ApiCallBack<Map>() {
             @Override
             public void onSuccess(Map map) {

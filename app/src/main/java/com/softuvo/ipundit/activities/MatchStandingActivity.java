@@ -35,7 +35,6 @@ import com.applozic.mobicomkit.api.people.ChannelInfo;
 import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.uiwidgets.async.ApplozicChannelAddMemberTask;
 import com.applozic.mobicommons.people.channel.Channel;
-import com.applozic.mobicommons.people.channel.ChannelMetadata;
 import com.softuvo.ipundit.R;
 import com.softuvo.ipundit.adapters.MatchSatadingAdapter;
 import com.softuvo.ipundit.adapters.TeamStandingAdapter;
@@ -49,12 +48,10 @@ import com.softuvo.ipundit.receivers.ConnectivityReceivers;
 import com.softuvo.ipundit.utils.SnackbarUtil;
 import com.softuvo.ipundit.views.CustomLinearLayout;
 import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -66,7 +63,7 @@ public class MatchStandingActivity extends BaseActivity {
     private MatchSatadingAdapter matchSatadingAdapter;
     private TeamStandingAdapter teamStandingAdapter;
     private String sportsLeagueId;
-    String chatChannelId, chatChannelName, matchid;
+    String chatChannelId, chatChannelName, matchid,matchName="";
 
     @BindView(R.id.ll_match_stansing_main)
     CustomLinearLayout tvAboutUsContent;
@@ -127,6 +124,7 @@ public class MatchStandingActivity extends BaseActivity {
                                     chatChannelId = matchStandingList.get(position).getChatChannelid();
                                     chatChannelName = matchStandingList.get(position).getContestantName();
                                     matchid = matchStandingList.get(position).getContestantId();
+                                    matchName=matchStandingList.get(position).getContestantName();
                                     if (chatChannelId.equalsIgnoreCase("0")) {
                                         getChannelId();
                                     } else {
@@ -263,6 +261,7 @@ public class MatchStandingActivity extends BaseActivity {
         mountMap.put("match_id", matchid);
         mountMap.put("channeltype", "team");
         mountMap.put("chatChannelid", chatChannelId);
+        Log.e("===2",""+chatChannelId);
         App.getApiHelper().updateChatId(mountMap, new ApiCallBack<Map>() {
             @Override
             public void onSuccess(Map map) {
@@ -332,10 +331,23 @@ public class MatchStandingActivity extends BaseActivity {
                     intent.putExtra("userComingFrom", "matchStandingList");
                     intent.putExtra("mBrDatum", mBrDatum);
                     intent.putExtra("chatChannelKey", chatChannelId);
+                    mBottomSheetDialog.dismiss();
                     startActivity(intent);
+
                 }
             }
         });
+       /* view.findViewById(R.id.rl_schedule_sheet).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, ScheduleBroadcastFormActivity.class);
+                intent.putExtra("matchid",matchid);
+                intent.putExtra("channelType","team");
+                intent.putExtra("matchname",matchName);
+                mBottomSheetDialog.dismiss();
+                startActivity(intent);
+            }
+        });*/
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
