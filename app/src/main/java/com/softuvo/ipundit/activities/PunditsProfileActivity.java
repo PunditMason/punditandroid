@@ -202,11 +202,13 @@ public class PunditsProfileActivity extends BaseActivity {
                                 if (userDetailsAndMatchDetailsModel.getUsersList().get(0).getLive().toString().equals("1")) {
                                     if (userDetailsAndMatchDetailsModel.getUsersList().get(0).getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("match")) {
                                         chatChannelId = userDetailsAndMatchDetailsModel.getUsersList().get(0).getChannelInfo().get(0).getMatchInfo().getChatChannelid();
+                                        AppPreferences.init(mContext).putString(AppConstant.CHAT_CHANNEL_ID,chatChannelId);
                                         chatChannelName = userDetailsAndMatchDetailsModel.getUsersList().get(0).getChannelInfo().get(0).getMatchInfo().getTeam1Name() + " Vs " + userDetailsAndMatchDetailsModel.getUsersList().get(0).getChannelInfo().get(0).getMatchInfo().getTeam1Name();
                                         matchid = userDetailsAndMatchDetailsModel.getUsersList().get(0).getChannelInfo().get(0).getChannel().getMatchId();
                                         channelType = userDetailsAndMatchDetailsModel.getUsersList().get(0).getChannelInfo().get(0).getChannel().getChannelType();
                                     } else if (userDetailsAndMatchDetailsModel.getUsersList().get(0).getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
                                         chatChannelId = userDetailsAndMatchDetailsModel.getUsersList().get(0).getChannelInfo().get(0).getTeamInfo().getChatChannelid();
+                                        AppPreferences.init(mContext).putString(AppConstant.CHAT_CHANNEL_ID,chatChannelId);
                                         chatChannelName = userDetailsAndMatchDetailsModel.getUsersList().get(0).getChannelInfo().get(0).getTeamInfo().getContestantName();
                                         matchid = userDetailsAndMatchDetailsModel.getUsersList().get(0).getChannelInfo().get(0).getTeamInfo().getContestantId();
                                         channelType = userDetailsAndMatchDetailsModel.getUsersList().get(0).getChannelInfo().get(0).getChannel().getChannelType();
@@ -248,7 +250,6 @@ public class PunditsProfileActivity extends BaseActivity {
                                             Intent intent = new Intent(mContext, LiveListeningActivity.class);
                                             intent.putExtra("userComingFrom", "pundits");
                                             intent.putExtra("mUserDatum", userDetailsAndMatchDetailsModel.getUsersList().get(0));
-                                            intent.putExtra("chatChannelKey", chatChannelId);
                                             startActivity(intent);
                                         }
                                     });
@@ -296,11 +297,13 @@ public class PunditsProfileActivity extends BaseActivity {
                 if (userDatum.getLive().toString().equals("1")) {
                     if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("match")) {
                         chatChannelId = userDatum.getChannelInfo().get(0).getMatchInfo().getChatChannelid();
+                        AppPreferences.init(mContext).putString(AppConstant.CHAT_CHANNEL_ID,chatChannelId);
                         chatChannelName = userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + " Vs " + userDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name();
                         matchid = userDatum.getChannelInfo().get(0).getChannel().getMatchId();
                         channelType = userDatum.getChannelInfo().get(0).getChannel().getChannelType();
                     } else if (userDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
                         chatChannelId = userDatum.getChannelInfo().get(0).getTeamInfo().getChatChannelid();
+                        AppPreferences.init(mContext).putString(AppConstant.CHAT_CHANNEL_ID,chatChannelId);
                         chatChannelName = userDatum.getChannelInfo().get(0).getTeamInfo().getContestantName();
                         matchid = userDatum.getChannelInfo().get(0).getTeamInfo().getContestantId();
                         channelType = userDatum.getChannelInfo().get(0).getChannel().getChannelType();
@@ -343,11 +346,13 @@ public class PunditsProfileActivity extends BaseActivity {
                 if (userSearchSportsDatum.getLive().toString().equals("1")) {
                     if (userSearchSportsDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("match")) {
                         chatChannelId = userSearchSportsDatum.getChannelInfo().get(0).getMatchInfo().getChatChannelid();
+                        AppPreferences.init(mContext).putString(AppConstant.CHAT_CHANNEL_ID,chatChannelId);
                         chatChannelName = userSearchSportsDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + " Vs " + userSearchSportsDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name();
                         matchid = userSearchSportsDatum.getChannelInfo().get(0).getChannel().getMatchId();
                         channelType = userSearchSportsDatum.getChannelInfo().get(0).getChannel().getChannelType();
                     } else if (userSearchSportsDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
                         chatChannelId = userSearchSportsDatum.getChannelInfo().get(0).getTeamInfo().getChatChannelid();
+                        AppPreferences.init(mContext).putString(AppConstant.CHAT_CHANNEL_ID,chatChannelId);
                         chatChannelName = userSearchSportsDatum.getChannelInfo().get(0).getTeamInfo().getContestantName();
                         matchid = userSearchSportsDatum.getChannelInfo().get(0).getTeamInfo().getContestantId();
                         channelType = userSearchSportsDatum.getChannelInfo().get(0).getChannel().getChannelType();
@@ -389,11 +394,13 @@ public class PunditsProfileActivity extends BaseActivity {
                 if (userSearchLeagueDatum.getLive().toString().equals("1")) {
                     if (userSearchLeagueDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("match")) {
                         chatChannelId = userSearchLeagueDatum.getChannelInfo().get(0).getMatchInfo().getChatChannelid();
+                        AppPreferences.init(mContext).putString(AppConstant.CHAT_CHANNEL_ID,chatChannelId);
                         chatChannelName = userSearchLeagueDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + " Vs " + userSearchLeagueDatum.getChannelInfo().get(0).getMatchInfo().getTeam1Name();
                         matchid = userSearchLeagueDatum.getChannelInfo().get(0).getChannel().getMatchId();
                         channelType = userSearchLeagueDatum.getChannelInfo().get(0).getChannel().getChannelType();
                     } else if (userSearchLeagueDatum.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
                         chatChannelId = userSearchLeagueDatum.getChannelInfo().get(0).getTeamInfo().getChatChannelid();
+                        AppPreferences.init(mContext).putString(AppConstant.CHAT_CHANNEL_ID,chatChannelId);
                         chatChannelName = userSearchLeagueDatum.getChannelInfo().get(0).getTeamInfo().getContestantName();
                         matchid = userSearchLeagueDatum.getChannelInfo().get(0).getTeamInfo().getContestantId();
                         channelType = userSearchLeagueDatum.getChannelInfo().get(0).getChannel().getChannelType();
@@ -435,11 +442,13 @@ public class PunditsProfileActivity extends BaseActivity {
                 if (follwerlist.getLive().toString().equals("1")) {
                     if (follwerlist.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("match")) {
                         chatChannelId = follwerlist.getChannelInfo().get(0).getMatchInfo().getChatChannelid();
+                        AppPreferences.init(mContext).putString(AppConstant.CHAT_CHANNEL_ID,chatChannelId);
                         chatChannelName = follwerlist.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + " Vs " + follwerlist.getChannelInfo().get(0).getMatchInfo().getTeam1Name();
                         matchid = follwerlist.getChannelInfo().get(0).getChannel().getMatchId();
                         channelType = follwerlist.getChannelInfo().get(0).getChannel().getChannelType();
                     } else if (follwerlist.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
                         chatChannelId = follwerlist.getChannelInfo().get(0).getTeamInfo().getChatChannelid();
+                        AppPreferences.init(mContext).putString(AppConstant.CHAT_CHANNEL_ID,chatChannelId);
                         chatChannelName = follwerlist.getChannelInfo().get(0).getTeamInfo().getContestantName();
                         matchid = follwerlist.getChannelInfo().get(0).getTeamInfo().getContestantId();
                         channelType = follwerlist.getChannelInfo().get(0).getChannel().getChannelType();
@@ -481,11 +490,13 @@ public class PunditsProfileActivity extends BaseActivity {
                 if (follwinglist.getLive().toString().equals("1")) {
                     if (follwinglist.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("match")) {
                         chatChannelId = follwinglist.getChannelInfo().get(0).getMatchInfo().getChatChannelid();
+                        AppPreferences.init(mContext).putString(AppConstant.CHAT_CHANNEL_ID,chatChannelId);
                         chatChannelName = follwinglist.getChannelInfo().get(0).getMatchInfo().getTeam1Name() + " Vs " + follwinglist.getChannelInfo().get(0).getMatchInfo().getTeam1Name();
                         matchid = follwinglist.getChannelInfo().get(0).getChannel().getMatchId();
                         channelType = follwinglist.getChannelInfo().get(0).getChannel().getChannelType();
                     } else if (follwinglist.getChannelInfo().get(0).getChannel().getChannelType().equalsIgnoreCase("team")) {
                         chatChannelId = follwinglist.getChannelInfo().get(0).getTeamInfo().getChatChannelid();
+                        AppPreferences.init(mContext).putString(AppConstant.CHAT_CHANNEL_ID,chatChannelId);
                         chatChannelName = follwinglist.getChannelInfo().get(0).getTeamInfo().getContestantName();
                         matchid = follwinglist.getChannelInfo().get(0).getTeamInfo().getContestantId();
                         channelType = follwinglist.getChannelInfo().get(0).getChannel().getChannelType();
@@ -527,7 +538,6 @@ public class PunditsProfileActivity extends BaseActivity {
                     Intent intent = new Intent(mContext, LiveListeningActivity.class);
                     intent.putExtra("userComingFrom", getIntent().getStringExtra("userComingFrom"));
                     intent.putExtra("mUserDatum", getIntent().getSerializableExtra("mUserDatum"));
-                    intent.putExtra("chatChannelKey", chatChannelId);
                     startActivity(intent);
                 }
             });
@@ -556,6 +566,7 @@ public class PunditsProfileActivity extends BaseActivity {
                     Log.i("Channel", "Channel respone is:" + channel);
                     if (channel != null && channel.getKey() != null) {
                         chatChannelId = String.valueOf(channel.getKey());
+                        AppPreferences.init(mContext).putString(AppConstant.CHAT_CHANNEL_ID,chatChannelId);
                         updateChatChannelId();
                     }
                 }
@@ -623,7 +634,7 @@ public class PunditsProfileActivity extends BaseActivity {
         App.getApiHelper().updateChatId(mountMap, new ApiCallBack<Map>() {
             @Override
             public void onSuccess(Map map) {
-
+                AppPreferences.init(mContext).putString(AppConstant.CHAT_CHANNEL_ID,chatChannelId);
             }
 
             @Override

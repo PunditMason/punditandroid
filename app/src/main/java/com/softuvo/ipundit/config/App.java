@@ -40,7 +40,7 @@ public class App extends MultiDexApplication {
         appPreferences = AppPreferences.init(appInstance);
         Fabric.with(this, new Crashlytics());
 //        generateHash();
-//        getHashKey();
+        getHashKey();
 //        Thread.setDefaultUncaughtExceptionHandler(
 //                new Thread.UncaughtExceptionHandler() {
 //                    @Override

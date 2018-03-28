@@ -19,13 +19,13 @@ import java.util.List;
  */
 
 public class SearchTeamSportsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener {
-private Context context;
-private List<TeamSearchSportsModel.Datum> searchTeamItemList;
-private ItemClickListener itemClickListener;
+    private Context context;
+    private List<TeamSearchSportsModel.Datum> searchTeamItemList;
+    private ItemClickListener itemClickListener;
 
-public interface ItemClickListener {
-    void onClick(int position);
-}
+    public interface ItemClickListener {
+        void onClick(int position);
+    }
 
 
     public SearchTeamSportsAdapter(Context context, List<TeamSearchSportsModel.Datum> searchTeamItemList, ItemClickListener itemClickListener) {
@@ -43,7 +43,13 @@ public interface ItemClickListener {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         SearchTeamDetailsViewHolder viewholder = (SearchTeamDetailsViewHolder) holder;
-        viewholder.cvUserDetailsContainer.setBackgroundResource(R.color.colorPrivacyPolicyBackground);
+        if (searchTeamItemList.get(position).getLive().toString().equals("1")) {
+            viewholder.cvUserDetailsContainer.setBackgroundResource(R.color.colorBroadcastersListBackground);
+        } else {
+            viewholder.cvUserDetailsContainer.setOnClickListener(null);
+            viewholder.cvUserDetailsContainer.setBackgroundResource(R.color.colorPrivacyPolicyBackground);
+        }
+        // viewholder.cvUserDetailsContainer.setBackgroundResource(R.color.colorPrivacyPolicyBackground);
         viewholder.tvUsername.setText(searchTeamItemList.get(position).getName());
         viewholder.tvUsername.setGravity(Gravity.CENTER);
 
@@ -65,8 +71,8 @@ public interface ItemClickListener {
 
         private SearchTeamDetailsViewHolder(View view) {
             super(view);
-            cvUserDetailsContainer =  view.findViewById(R.id.cv_user_details_container);
-            tvUsername =  view.findViewById(R.id.tv_username);
+            cvUserDetailsContainer = view.findViewById(R.id.cv_user_details_container);
+            tvUsername = view.findViewById(R.id.tv_username);
             cvUserDetailsContainer.setOnClickListener(this);
         }
 

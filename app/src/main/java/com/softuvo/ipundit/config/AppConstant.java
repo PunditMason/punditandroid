@@ -26,6 +26,7 @@ public class AppConstant {
     public static final String USER_NAME = "userName";
     public static final String FB_ID = "facebookID";
     public static final String LEAGUE_IMAGE_URL = "leagueImageUrl";
+    public static final String CHAT_CHANNEL_ID = "chatChannelId";
     public static final String User_CURRENT_STATE = "userCurrentState";
     public static final String LIVE = "live";
 

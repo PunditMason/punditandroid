@@ -222,11 +222,13 @@ public class MatchListActivity extends BaseActivity implements DatePickerDialog.
                                     if(subCatDetail.getMarkImage()!=null&&(!subCatDetail.getMarkImage().equalsIgnoreCase("")))
                                     AppPreferences.init(mContext).putString(AppConstant.LEAGUE_IMAGE_URL, subCatDetail.getMarkImage());
                                     chatChannelId = matchListList.get(position).getChatChannelid();
+                                    AppPreferences.init(mContext).putString(AppConstant.CHAT_CHANNEL_ID,chatChannelId);
                                     chatChannelName = matchListList.get(position).getTeam1Name() + " Vs " + matchListList.get(position).getTeam2Name();
                                     matchid = matchListList.get(position).getMatchId();
                                     matchName=matchListList.get(position).getTeam1Name()+" Vs "+matchListList.get(position).getTeam1Name();
                                     if (chatChannelId.equalsIgnoreCase("0")) {
 //                                        new createChannel().execute();
+                                        AppPreferences.init(mContext).putString(AppConstant.CHAT_CHANNEL_ID,chatChannelId);
                                       getChannelId();
                                     } else {
                                         ApplozicChannelAddMemberTask.ChannelAddMemberListener channelAddMemberListener = new ApplozicChannelAddMemberTask.ChannelAddMemberListener() {
@@ -289,10 +291,12 @@ public class MatchListActivity extends BaseActivity implements DatePickerDialog.
                                     if(subCatDetail.getMarkImage()!=null&&(!subCatDetail.getMarkImage().equalsIgnoreCase("")))
                                     AppPreferences.init(mContext).putString(AppConstant.LEAGUE_IMAGE_URL, subCatDetail.getMarkImage());
                                     chatChannelId = matchListenList.get(position).getChatChannelid();
+                                    AppPreferences.init(mContext).putString(AppConstant.CHAT_CHANNEL_ID,chatChannelId);
                                     chatChannelName = matchListenList.get(position).getTeam1Name() + " Vs " + matchListenList.get(position).getTeam2Name();
                                     matchid = matchListenList.get(position).getMatchId();
                                     Log.e("chat",""+chatChannelId);
                                     if (chatChannelId.equalsIgnoreCase("0")) {
+                                        AppPreferences.init(mContext).putString(AppConstant.CHAT_CHANNEL_ID,chatChannelId);
 //                                        new createChannel().execute();
                                         getChannelId();
                                     } else {
@@ -309,21 +313,19 @@ public class MatchListActivity extends BaseActivity implements DatePickerDialog.
                                         };
                                         ApplozicChannelAddMemberTask applozicChannelAddMemberTask = new ApplozicChannelAddMemberTask(mContext, Integer.parseInt(chatChannelId), AppPreferences.init(mContext).getString(FB_ID), channelAddMemberListener);//pass channel key and userId whom you want to add to channel
                                         applozicChannelAddMemberTask.execute((Void) null);
-
                                     }
                                     if (matchListenList.get(position).getChannel().size() == 0) {
                                         Intent intent = new Intent(mContext, LiveListeningActivity.class);
                                         intent.putExtra("userComingFrom", "matchListNoBroadcast");
                                         intent.putExtra("mMatchDatum", matchListenList.get(position));
-                                        intent.putExtra("chatChannelKey", chatChannelId);
                                         startActivity(intent);
                                     } else {
                                         Intent intent = new Intent(mContext, LiveBroadcastersListActivity.class);
                                         intent.putExtra("userComingFrom", "matchList");
                                         intent.putExtra("mMatchDatum", matchListenList.get(position));
-                                        intent.putExtra("chatChannelKey", chatChannelId);
                                         startActivity(intent);
                                     }
+
                                 }
                             });
                             rvMatchList.setAdapter(matchListListnerAdapter);
@@ -365,7 +367,8 @@ public class MatchListActivity extends BaseActivity implements DatePickerDialog.
                     Log.i("Channel", "Channel respone is:" + channel);
                     if (channel!=null && channel.getKey() != null) {
                         chatChannelId = String.valueOf(channel.getKey());
-                        Log.e("chat1",""+chatChannelId);
+                        Log.e("getID",""+chatChannelId);
+                        AppPreferences.init(mContext).putString(AppConstant.CHAT_CHANNEL_ID,chatChannelId);
                         updateChatChannelId();
                     }
                 }
@@ -382,12 +385,14 @@ public class MatchListActivity extends BaseActivity implements DatePickerDialog.
             mountMap.put("chatChannelid", "0");
         else {
             mountMap.put("chatChannelid", chatChannelId);
+            Log.e("updatechatid",chatChannelId);
         }
         Log.e("===1",""+mountMap);
         App.getApiHelper().updateChatId(mountMap, new ApiCallBack<Map>() {
             @Override
             public void onSuccess(Map map) {
                 Log.e("===1","sucees");
+                AppPreferences.init(mContext).putString(AppConstant.CHAT_CHANNEL_ID,chatChannelId);
             }
 
             @Override
@@ -530,7 +535,7 @@ public class MatchListActivity extends BaseActivity implements DatePickerDialog.
                     Intent intent = new Intent(mContext, LiveBroadCastingActivity.class);
                     intent.putExtra("userComingFrom", "matchList");
                     intent.putExtra("mBrDatum", mBrDatum);
-                    intent.putExtra("chatChannelKey", chatChannelId);
+                    AppPreferences.init(mContext).putString(AppConstant.CHAT_CHANNEL_ID,chatChannelId);
                     mBottomSheetDialog.dismiss();
                     startActivity(intent);
                 }

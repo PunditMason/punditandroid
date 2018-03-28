@@ -321,7 +321,6 @@ public class LiveBroadCastingActivity extends BaseActivity {
             if (AppPreferences.init(mContext).getString(AppConstant.LEAGUE_IMAGE_URL) != null && !AppPreferences.init(mContext).getString(AppConstant.LEAGUE_IMAGE_URL).equalsIgnoreCase(""))
                 Picasso.with(mContext).load(AppPreferences.init(mContext).getString(AppConstant.LEAGUE_IMAGE_URL)).into(ivLeagueIcon);
           //  String broadcasterName = "Logged in as " + AppPreferences.init(mContext).getString(USER_NAME);
-            chatChannelId = getIntent().getStringExtra("chatChannelKey");
             //gifView.setGifImageResource(R.drawable.broadcast_gif);
 
             Glide.with(mContext).load(R.drawable.live_gif).into(gifLiveView);
@@ -764,7 +763,7 @@ public class LiveBroadCastingActivity extends BaseActivity {
         mountMap.put("broadcaster_id", strBroadcastId);
         mountMap.put("appName", strAppName);
         mountMap.put("channel_type", strChannelType);
-        mountMap.put("ChatChannelId", chatChannelId);
+        mountMap.put("ChatChannelId", AppPreferences.init(mContext).getString(AppConstant.CHAT_CHANNEL_ID));
         mountMap.put("sport_id", AppPreferences.init(mContext).getString(AppConstant.SPORTS_ID));
         mountMap.put("league_id", AppPreferences.init(mContext).getString(AppConstant.LEAGUE_ID));
         postMountOnServer(mountMap);
@@ -1194,6 +1193,8 @@ public class LiveBroadCastingActivity extends BaseActivity {
 
     @OnClick(R.id.rl_chat_tile)
     public void onClickChatBroadcast() {
+        chatChannelId = AppPreferences.init(mContext).getString(AppConstant.CHAT_CHANNEL_ID);
+        Log.e("chatbroadcastPage",""+chatChannelId);
         Intent intent = new Intent(mContext, ConversationActivity.class);
         intent.putExtra(ConversationUIService.GROUP_ID, Integer.parseInt(chatChannelId));
         intent.putExtra(ConversationUIService.TAKE_ORDER,true);

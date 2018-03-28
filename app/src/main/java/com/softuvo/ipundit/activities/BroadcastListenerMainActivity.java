@@ -5,6 +5,7 @@ package com.softuvo.ipundit.activities;
  */
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,6 +15,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -21,6 +23,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+
+import com.applozic.mobicomkit.api.people.ChannelInfo;
+import com.applozic.mobicomkit.channel.service.ChannelService;
+import com.applozic.mobicomkit.uiwidgets.async.ApplozicChannelAddMemberTask;
+import com.applozic.mobicommons.people.channel.Channel;
 import com.softuvo.ipundit.R;
 import com.softuvo.ipundit.adapters.AllSportsAdapter;
 import com.softuvo.ipundit.adapters.SearchTeamSportsAdapter;
@@ -54,7 +61,7 @@ public class BroadcastListenerMainActivity extends BaseActivity {
     private SearchUserSportsAdapter searchUserSportsAdapter;
     private SearchTeamSportsAdapter searchTeamSportsAdapter;
     String selectedSearchType = "sports";
-//    private String chatChannelId, chatChannelName, matchid;
+    private String chatChannelId, chatChannelName, matchid;
     private Timer timer;
     String text = null;
 
@@ -416,11 +423,13 @@ public class BroadcastListenerMainActivity extends BaseActivity {
                         searchTeamSportsAdapter = new SearchTeamSportsAdapter(mContext, searchTeamDetailsList, new SearchTeamSportsAdapter.ItemClickListener() {
                             @Override
                             public void onClick(int position) {
-                                Intent intent = new Intent(mContext, TeamMatchListActivity.class);
+                               /* Intent intent = new Intent(mContext, TeamMatchListActivity.class);
                                 intent.putExtra("mTeamId", searchTeamDetailsList.get(position).getId());
-                                startActivity(intent);
-                               /* matchid = searchTeamDetailsList.get(position).getContestantId();
-                                chatChannelId = searchTeamDetailsList.get(position).getChatChannelid();
+                                startActivity(intent);*/
+                                matchid = searchTeamDetailsList.get(position).getContestantId();
+                                chatChannelId = searchTeamDetailsList.get(position).git ();
+                                AppPreferences.init(mContext).putString(AppConstant.CHAT_CHANNEL_ID,chatChannelId);
+                                Log.e("chatidsportsget",chatChannelId);
                                 chatChannelName = searchTeamDetailsList.get(position).getContestantName();
                                 if (chatChannelId.equalsIgnoreCase("0")) {
                                     getChannelId();
@@ -436,15 +445,15 @@ public class BroadcastListenerMainActivity extends BaseActivity {
 
                                         }
                                     };
-                                    ApplozicChannelAddMemberTask applozicChannelAddMemberTask = new ApplozicChannelAddMemberTask(mContext, Integer.parseInt(chatChannelId), AppPreferences.init(mContext).getString(FB_ID), channelAddMemberListener);//pass channel key and userId whom you want to add to channel
+                                    ApplozicChannelAddMemberTask applozicChannelAddMemberTask = new ApplozicChannelAddMemberTask(mContext, Integer.parseInt(chatChannelId), AppPreferences.init(mContext).getString(AppConstant.FB_ID), channelAddMemberListener);//pass channel key and userId whom you want to add to channel
                                     applozicChannelAddMemberTask.execute((Void) null);
                                 }
 
                                 Intent intent = new Intent(mContext, LiveBroadcastersListActivity.class);
                                 intent.putExtra("userComingFrom", "sprotsTeamSearch");
                                 intent.putExtra("mTeamSearchDatum", searchTeamDetailsList.get(position));
-                                intent.putExtra("chatChannelKey", chatChannelId);
-                                startActivity(intent);*/
+
+                                startActivity(intent);
                             }
                         });
                         rvGameItems.setAdapter(searchTeamSportsAdapter);
@@ -461,13 +470,13 @@ public class BroadcastListenerMainActivity extends BaseActivity {
             SnackbarUtil.showWarningLongSnackbar(mContext, getResources().getString(R.string.internet_not_connected_text));
     }
 
-   /* private void getChannelId() {
+    private void getChannelId() {
         try{
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     List<String> channelMembersList = new ArrayList<>();
-                    channelMembersList.add(AppPreferences.init(mContext).getString(FB_ID));
+                    channelMembersList.add(AppPreferences.init(mContext).getString(AppConstant.FB_ID));
                     ChannelInfo channelInfo = new ChannelInfo(chatChannelName, channelMembersList);
                     channelInfo.setType(Channel.GroupType.PUBLIC.getValue().intValue());
                     ChannelService service = ChannelService.getInstance(mContext);
@@ -475,6 +484,7 @@ public class BroadcastListenerMainActivity extends BaseActivity {
                     Log.i("Channel", "Channel respone is:" + channel);
                     if (channel!=null && channel.getKey() != null) {
                         chatChannelId = String.valueOf(channel.getKey());
+                        AppPreferences.init(mContext).putString(AppConstant.CHAT_CHANNEL_ID,chatChannelId);
                         updateChatChannelId();
                     }
                 }
@@ -489,6 +499,8 @@ public class BroadcastListenerMainActivity extends BaseActivity {
         App.getApiHelper().updateChatId(mountMap, new ApiCallBack<Map>() {
             @Override
             public void onSuccess(Map map) {
+                AppPreferences.init(mContext).putString(AppConstant.CHAT_CHANNEL_ID,chatChannelId);
+                Log.e("chatidsportsupdate",chatChannelId);
 
             }
 
@@ -497,7 +509,7 @@ public class BroadcastListenerMainActivity extends BaseActivity {
 
             }
         });
-    }*/
+    }
 
 
     @Override

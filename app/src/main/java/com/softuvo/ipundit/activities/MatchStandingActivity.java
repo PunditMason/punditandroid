@@ -122,6 +122,8 @@ public class MatchStandingActivity extends BaseActivity {
                                 @Override
                                 public void onClick(int position) {
                                     chatChannelId = matchStandingList.get(position).getChatChannelid();
+                                    Log.e("chatidgetfromapi",chatChannelId);
+                                    AppPreferences.init(mContext).putString(AppConstant.CHAT_CHANNEL_ID,chatChannelId);
                                     chatChannelName = matchStandingList.get(position).getContestantName();
                                     matchid = matchStandingList.get(position).getContestantId();
                                     matchName=matchStandingList.get(position).getContestantName();
@@ -187,9 +189,13 @@ public class MatchStandingActivity extends BaseActivity {
                             @Override
                             public void onClick(int position) {
                                 chatChannelId = teamStandingList.get(position).getChatChannelid();
+                                AppPreferences.init(mContext).putString(AppConstant.CHAT_CHANNEL_ID,chatChannelId);
+                                Log.e("chatidgetfromapi",chatChannelId);
                                 chatChannelName = teamStandingList.get(position).getContestantName();
                                 matchid = teamStandingList.get(position).getContestantId();
                                 if (chatChannelId.equalsIgnoreCase("0")) {
+                                    AppPreferences.init(mContext).putString(AppConstant.CHAT_CHANNEL_ID,chatChannelId);
+
                                     getChannelId();
                                 } else {
                                     ApplozicChannelAddMemberTask.ChannelAddMemberListener channelAddMemberListener = new ApplozicChannelAddMemberTask.ChannelAddMemberListener() {
@@ -209,7 +215,6 @@ public class MatchStandingActivity extends BaseActivity {
                                 Intent intent = new Intent(mContext, LiveBroadcastersListActivity.class);
                                 intent.putExtra("userComingFrom", "matchStandingListenList");
                                 intent.putExtra("mMatchDatum", teamStandingList.get(position));
-                                intent.putExtra("chatChannelKey", chatChannelId);
                                 startActivity(intent);
 
                             }
@@ -247,6 +252,8 @@ public class MatchStandingActivity extends BaseActivity {
                     Log.i("Channel", "Channel respone is:" + channel);
                     if (channel != null && channel.getKey() != null) {
                         chatChannelId = String.valueOf(channel.getKey());
+                        AppPreferences.init(mContext).putString(AppConstant.CHAT_CHANNEL_ID,chatChannelId);
+                        Log.e("chatidcreated",chatChannelId);
                         updateChatChannelId();
                     }
                 }
@@ -266,6 +273,8 @@ public class MatchStandingActivity extends BaseActivity {
             @Override
             public void onSuccess(Map map) {
                 Log.e("chat", map.toString());
+                Log.e("chatidupdated",chatChannelId);
+                AppPreferences.init(mContext).putString(AppConstant.CHAT_CHANNEL_ID,chatChannelId);
             }
 
             @Override
@@ -274,43 +283,6 @@ public class MatchStandingActivity extends BaseActivity {
             }
         });
     }
-
-    private class createChannel extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-//            ChannelMetadata channelMetadata = new ChannelMetadata();
-//            channelMetadata.setCreateGroupMessage(ChannelMetadata.ADMIN_NAME + " created " + chatChannelName);
-//            channelMetadata.setAddMemberMessage(ChannelMetadata.ADMIN_NAME + " added " + ChannelMetadata.USER_NAME);
-//            channelMetadata.setRemoveMemberMessage(ChannelMetadata.ADMIN_NAME + " removed " + ChannelMetadata.USER_NAME);
-//            channelMetadata.setGroupNameChangeMessage(ChannelMetadata.USER_NAME + " changed group name " + ChannelMetadata.GROUP_NAME);
-//            channelMetadata.setJoinMemberMessage(ChannelMetadata.USER_NAME + " joined");
-//            channelMetadata.setGroupLeftMessage(ChannelMetadata.USER_NAME + " left group " + ChannelMetadata.GROUP_NAME);
-//            channelMetadata.setGroupIconChangeMessage(ChannelMetadata.USER_NAME + " changed icon");
-//            channelMetadata.setDeletedGroupMessage(ChannelMetadata.ADMIN_NAME + " deleted group " + ChannelMetadata.GROUP_NAME);
-            List<String> channelMembersList = new ArrayList<>();
-            channelMembersList.add(AppPreferences.init(mContext).getString(FB_ID));
-            ChannelInfo channelInfo = new ChannelInfo(chatChannelName, channelMembersList);
-            channelInfo.setType(Channel.GroupType.PUBLIC.getValue().intValue());
-            ChannelService service = ChannelService.getInstance(mContext);
-            Channel channel = service.createChannel(channelInfo);
-            Log.i("Channel", "Channel respone is:" + channel);
-            chatChannelId = String.valueOf(channel.getKey());
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            updateChatChannelId();
-        }
-
-    }
-
 
     public void openBottomSheet(final MatchStandingListModel.Datum mBrDatum) {
         @SuppressLint("InflateParams")
@@ -330,7 +302,6 @@ public class MatchStandingActivity extends BaseActivity {
                     Intent intent = new Intent(mContext, LiveBroadCastingActivity.class);
                     intent.putExtra("userComingFrom", "matchStandingList");
                     intent.putExtra("mBrDatum", mBrDatum);
-                    intent.putExtra("chatChannelKey", chatChannelId);
                     mBottomSheetDialog.dismiss();
                     startActivity(intent);
 

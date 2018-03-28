@@ -208,7 +208,7 @@ public class LiveListeningActivity extends BaseActivity {
         rlLiveListeningMain.setBackground(getResources().getDrawable(R.drawable.screen_image));
 //        Picasso.with(mContext).load(AppPreferences.init(mContext).getString(APP_BACKGROUND)).into(rlLiveListeningMain);
 //        AppPreferences.init(mContext).putString(AppConstant.User_CURRENT_STATE, "2");
-        chatChannelId = getIntent().getStringExtra("chatChannelKey");
+
 //        streamingGif.setGifImageResource(R.drawable.listning_gif);
         LiveBroacastersListModel.Channel channel;
         if (ConnectivityReceivers.isConnected()) {
@@ -876,7 +876,7 @@ public class LiveListeningActivity extends BaseActivity {
 
             @Override
             public void onFailure(String message) {
-                Log.e("hello", message);
+//                Log.e("hello", message);
             }
         });
 
@@ -1965,10 +1965,13 @@ public class LiveListeningActivity extends BaseActivity {
 */
     @OnClick(R.id.rl_chat_tile)
     public void onClickChatListen() {
+        chatChannelId = AppPreferences.init(mContext).getString(AppConstant.CHAT_CHANNEL_ID);
+        Log.e("chatlistenPage",""+chatChannelId);
 //        SnackbarUtil.showWarningShortSnackbar(mContext, getString(R.string.under_development_message));
         Intent intent = new Intent(mContext, ConversationActivity.class);
         intent.putExtra(ConversationUIService.GROUP_ID, Integer.parseInt(chatChannelId));
         intent.putExtra(ConversationUIService.TAKE_ORDER,true);
+        Log.e("chatidconversation",chatChannelId);
         startActivity(intent);
     }
 

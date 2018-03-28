@@ -598,6 +598,7 @@ public class DashboardActivity extends BaseActivity {
     public void onClickLogIn() {
         if (ConnectivityReceivers.isConnected()) {
             if (AppPreferences.init(mContext).getBoolean(AppConstant.IS_FIRST_LOGIN)) {
+                LoginManager.getInstance().logOut();
                 LoginManager.getInstance().logInWithReadPermissions(DashboardActivity.this, Arrays.asList("public_profile", "email", "user_posts", "user_birthday"));
                 LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
                     @Override
@@ -627,6 +628,7 @@ public class DashboardActivity extends BaseActivity {
                     @Override
                     public void onClick(View v) {
                         AppPreferences.init(mContext).putBoolean(AppConstant.IS_FIRST_LOGIN, true);
+                        LoginManager.getInstance().logOut();
                         dialog.dismiss();
                         LoginManager.getInstance().logInWithReadPermissions(DashboardActivity.this, Arrays.asList("public_profile", "email", "user_posts", "user_birthday"));
                         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
@@ -980,7 +982,7 @@ public class DashboardActivity extends BaseActivity {
         protected Bitmap doInBackground(String... params) {
             Bitmap bitmap = null;
             try {
-                bitmap = Picasso.with(mContext).load(params[0]).resize(250, 250).get();
+                bitmap = Picasso.with(mContext).load(params[0]).resize(150, 150).get();
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -679,11 +679,12 @@ public class SubCategotyActivity extends BaseActivity {
                         searchTeamSportsAdapter = new SearchTeamSportsAdapter(mContext, searchTeamDetailsList, new SearchTeamSportsAdapter.ItemClickListener() {
                             @Override
                             public void onClick(int position) {
-                                Intent intent = new Intent(mContext, TeamMatchListActivity.class);
+                                /*Intent intent = new Intent(mContext, TeamMatchListActivity.class);
                                 intent.putExtra("mTeamId", searchTeamDetailsList.get(position).getId());
-                                startActivity(intent);
-                                /*matchid=searchTeamDetailsList.get(position).getContestantId();
+                                startActivity(intent);*/
+                                matchid=searchTeamDetailsList.get(position).getContestantId();
                                 chatChannelId=searchTeamDetailsList.get(position).getChatChannelid();
+                                AppPreferences.init(mContext).putString(AppConstant.CHAT_CHANNEL_ID,chatChannelId);
                                 chatChannelName=searchTeamDetailsList.get(position).getContestantName();
                                 if(chatChannelId.equalsIgnoreCase("0")){
                                    getChannelId();
@@ -706,8 +707,8 @@ public class SubCategotyActivity extends BaseActivity {
                                 Intent intent = new Intent(mContext, LiveBroadcastersListActivity.class);
                                 intent.putExtra("userComingFrom", "leaguesTeamSearch");
                                 intent.putExtra("mTeamSearchDatum", searchTeamDetailsList.get(position));
-                                intent.putExtra("chatChannelKey",chatChannelId);
-                                startActivity(intent);*/
+
+                                startActivity(intent);
                             }
                         });
                         rvLeagueItem.setAdapter(searchTeamSportsAdapter);
@@ -738,6 +739,7 @@ public class SubCategotyActivity extends BaseActivity {
                     Log.i("Channel", "Channel respone is:" + channel);
                     if (channel != null && channel.getKey() != null) {
                         chatChannelId = String.valueOf(channel.getKey());
+                        AppPreferences.init(mContext).putString(AppConstant.CHAT_CHANNEL_ID,chatChannelId);
                         updateChatChannelId();
                     }
                 }
@@ -747,43 +749,7 @@ public class SubCategotyActivity extends BaseActivity {
         }
     }
 
-    @SuppressLint("StaticFieldLeak")
-    private class createChannel extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
 
-        @Override
-        protected Void doInBackground(Void... params) {
-//            ChannelMetadata channelMetadata = new ChannelMetadata();
-//            channelMetadata.setCreateGroupMessage(ChannelMetadata.ADMIN_NAME + " created " + chatChannelName);
-//            channelMetadata.setAddMemberMessage(ChannelMetadata.ADMIN_NAME + " added " + ChannelMetadata.USER_NAME);
-//            channelMetadata.setRemoveMemberMessage(ChannelMetadata.ADMIN_NAME + " removed " + ChannelMetadata.USER_NAME);
-//            channelMetadata.setGroupNameChangeMessage(ChannelMetadata.USER_NAME + " changed group name " + ChannelMetadata.GROUP_NAME);
-//            channelMetadata.setJoinMemberMessage(ChannelMetadata.USER_NAME + " joined");
-//            channelMetadata.setGroupLeftMessage(ChannelMetadata.USER_NAME + " left group " + ChannelMetadata.GROUP_NAME);
-//            channelMetadata.setGroupIconChangeMessage(ChannelMetadata.USER_NAME + " changed icon");
-//            channelMetadata.setDeletedGroupMessage(ChannelMetadata.ADMIN_NAME + " deleted group " + ChannelMetadata.GROUP_NAME);
-            List<String> channelMembersList = new ArrayList<>();
-            channelMembersList.add(AppPreferences.init(mContext).getString(FB_ID));
-            ChannelInfo channelInfo = new ChannelInfo(chatChannelName, channelMembersList);
-            channelInfo.setType(Channel.GroupType.PUBLIC.getValue().intValue());
-            ChannelService service = ChannelService.getInstance(mContext);
-            Channel channel = service.createChannel(channelInfo);
-            Log.i("Channel", "Channel respone is:" + channel);
-            chatChannelId = String.valueOf(channel.getKey());
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            updateChatChannelId();
-        }
-
-
-    }
 
     private void updateChatChannelId() {
         Map<String, String> mountMap = new HashMap<>();
@@ -794,7 +760,7 @@ public class SubCategotyActivity extends BaseActivity {
         App.getApiHelper().updateChatId(mountMap, new ApiCallBack<Map>() {
             @Override
             public void onSuccess(Map map) {
-
+                AppPreferences.init(mContext).putString(AppConstant.CHAT_CHANNEL_ID,chatChannelId);
             }
 
             @Override
