@@ -427,7 +427,7 @@ public class BroadcastListenerMainActivity extends BaseActivity {
                                 intent.putExtra("mTeamId", searchTeamDetailsList.get(position).getId());
                                 startActivity(intent);*/
                                 matchid = searchTeamDetailsList.get(position).getContestantId();
-                                chatChannelId = searchTeamDetailsList.get(position).git ();
+                                chatChannelId = searchTeamDetailsList.get(position).getChatChannelid();
                                 AppPreferences.init(mContext).putString(AppConstant.CHAT_CHANNEL_ID,chatChannelId);
                                 Log.e("chatidsportsget",chatChannelId);
                                 chatChannelName = searchTeamDetailsList.get(position).getContestantName();
